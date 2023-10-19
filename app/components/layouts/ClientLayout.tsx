@@ -1,6 +1,6 @@
 import React from "react";
-import AppBar from "./AppBar";
-import Footer from "./Footer";
+import AppBar from "../AppBar";
+import Footer from "../Footer";
 import Link from "next/link";
 import { Toaster } from "react-hot-toast";
 import {
@@ -9,7 +9,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
-import NextProgressbar from "./NextProgressbar";
+import NextProgressbar from "../NextProgressbar";
 
 export default function ClientLayout({
   children,
@@ -19,7 +19,7 @@ export default function ClientLayout({
   return (
     <>
       <AppBar />
-      <NextProgressbar/>
+      <NextProgressbar />
       <main className="w-full min-h-screen flex flex-col items-center mx-auto bg-white">
         {children}
       </main>

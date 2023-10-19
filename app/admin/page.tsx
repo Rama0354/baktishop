@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import AdminLayout from "../components/AdminLayout";
+import AdminLayout from "../components/layouts/AdminLayout";
 
 export const metadata: Metadata = {
   title: "Administrator",

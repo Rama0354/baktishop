@@ -1,5 +1,5 @@
 import React from "react";
-import ClientLayout from "../components/ClientLayout";
+import ClientLayout from "../components/layouts/ClientLayout";
 import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
 import Count from "../components/Count";
 import Link from "next/link";

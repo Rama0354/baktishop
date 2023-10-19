@@ -1,5 +1,5 @@
 import React from "react";
-import ClientLayout from "../components/ClientLayout";
+import ClientLayout from "../components/layouts/ClientLayout";
 import { AiOutlineMessage } from "react-icons/ai";
 
 export default function MessagePage() {

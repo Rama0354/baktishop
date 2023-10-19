@@ -3,7 +3,7 @@ import React from "react";
 import WishButton from "./WishButton";
 import GiftRating from "./GiftRating";
 import { Gifts } from "../types/gifts";
-import Link from 'next/link'
+import Link from "next/link";
 
 const GiftCard = ({ gift }: { gift: Gifts }) => {
   const priceText = gift.fitem_gift_point.split(" ~ ");
@@ -28,7 +28,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
           alt="product"
           width={250}
           height={250}
-          className="w-full h-36 object-cover"
+          className="w-full h-36 object-contain"
         />
         <Link href={`${gift.item_gift_slug}`}>
           <p className="font-semibold text-sm md:text-base line-clamp-2">

@@ -24,13 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <StoreProvider>
-          <QueryProvider>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </QueryProvider>
-        </StoreProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <StoreProvider>{children}</StoreProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

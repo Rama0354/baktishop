@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return NextResponse.json(res.data);
     } else {
       const res = await axios.get(
-        `${process.env.BACKEND_API}/gifts/slug/?${slug}`,
+        `${process.env.BACKEND_API}/gifts/slug/${slug}`,
         {
           headers: {
             "Content-Type": "application/json",

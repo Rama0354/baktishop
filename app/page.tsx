@@ -5,11 +5,11 @@ import { dehydrate } from "@tanstack/query-core";
 import Hydrate from "./lib/Hydrate";
 import axios from "axios";
 import SelectSort from "./components/SelectSort";
-import ClientLayout from "./components/ClientLayout";
+import ClientLayout from "./components/layouts/ClientLayout";
 import { getServerSession } from "next-auth";
 import { options } from "./api/auth/[...nextauth]/options";
 import CategoryList from "./components/CategoryListContainer";
-import HomeLayout from "./components/HomeLayout";
+import HomeLayout from "./components/layouts/HomeLayout";
 
 async function getGift(params: string) {
   const session = await getServerSession(options);
@@ -40,7 +40,7 @@ async function getGift(params: string) {
 export default async function Home() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(["gifts", ``], async () => {
-    const res = await getGift('');
+    const res = await getGift("");
     return res.data;
   });
   const dehydratedState = dehydrate(queryClient);

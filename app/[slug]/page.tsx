@@ -1,5 +1,5 @@
 import React from "react";
-import ClientLayout from "../components/ClientLayout";
+import ClientLayout from "../components/layouts/ClientLayout";
 import GiftDetail from "../components/GiftDetail";
 import axios from "axios";
 import { getQueryClient } from "../lib/getQueryClient";
@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth";
 import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "../lib/Hydrate";
 import GiftList from "../components/GiftList";
-import HomeLayout from "../components/HomeLayout";
+import CatAndBrLayout from "../components/layouts/CatAndBrLayout";
 
 async function getDetail(slug: string) {
   const session = await getServerSession(options);
@@ -86,22 +86,31 @@ async function getListByBrand(brand: string) {
   }
 }
 
-
-export default async function SlugPage({ params }: { params: { slug: string } }) {
-  const slug = params.slug
+export default async function SlugPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const slug = params.slug;
 
   const queryClient = getQueryClient();
-  if(slug.split('.')[0] === 'cat'){
-    await queryClient.prefetchQuery([`cat-${slug.split('.')[1]}`, ''], async () => {
-      const res = await getListByCat(slug.split('.')[1]);
-      return res.data;
-    });
-  }else if(slug.split('.')[0] === 'b'){
-    await queryClient.prefetchQuery([`b-${slug.split('.')[1]}`, ''], async () => {
-      const res = await getListByBrand(slug.split('.')[1]);
-      return res.data;
-    });
-  }else{
+  if (slug.split(".")[0] === "cat") {
+    await queryClient.prefetchQuery(
+      [`cat-${slug.split(".")[1]}`, ""],
+      async () => {
+        const res = await getListByCat(slug.split(".")[1]);
+        return res.data;
+      }
+    );
+  } else if (slug.split(".")[0] === "b") {
+    await queryClient.prefetchQuery(
+      [`b-${slug.split(".")[1]}`, ""],
+      async () => {
+        const res = await getListByBrand(slug.split(".")[1]);
+        return res.data;
+      }
+    );
+  } else {
     await queryClient.prefetchQuery(["detail", `${slug}`], async () => {
       const res = await getDetail(slug);
       return res.data;
@@ -111,16 +120,23 @@ export default async function SlugPage({ params }: { params: { slug: string } })
   return (
     <ClientLayout>
       <Hydrate state={dehydratedState}>
-        {slug.split('.')[0] === 'cat' 
-          ? <HomeLayout hometype="cat">
-              <GiftList pType={`${slug.split('.')[0]}`} sType={`${slug.split('.')[1]}`}/>
-            </HomeLayout>
-          :slug.split('.')[0] === 'b' 
-          ? <HomeLayout hometype="b">
-              <GiftList pType={`${slug.split('.')[0]}`} sType={`${slug.split('.')[1]}`}/>
-            </HomeLayout>
-          :<GiftDetail slug={slug}/>
-        }
+        {slug.split(".")[0] === "cat" ? (
+          <CatAndBrLayout layoutType="cat">
+            <GiftList
+              pType={`${slug.split(".")[0]}`}
+              sType={`${slug.split(".")[1]}`}
+            />
+          </CatAndBrLayout>
+        ) : slug.split(".")[0] === "b" ? (
+          <CatAndBrLayout layoutType="b">
+            <GiftList
+              pType={`${slug.split(".")[0]}`}
+              sType={`${slug.split(".")[1]}`}
+            />
+          </CatAndBrLayout>
+        ) : (
+          <GiftDetail slug={slug} />
+        )}
       </Hydrate>
     </ClientLayout>
   );

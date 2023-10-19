@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import ClientLayout from "../components/ClientLayout";
+import ClientLayout from "../components/layouts/ClientLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import SelectProvince from "../components/SelectProvince";
 import SelectCity from "../components/SelectCity";
@@ -31,10 +31,17 @@ const products = [
 ];
 
 export default function CheckoutPage() {
-  const [selectedProvinceId, setSelectedProvinceId] = useState('');
-  const [selectedCityId, setSelectedCityId] = useState('');
-  const [selectedSubdistrictId, setSelectedSubdistrictId] = useState('');
-  console.log('provinsi: '+selectedProvinceId+' kota: '+selectedCityId+' kecamatan: '+selectedSubdistrictId)
+  const [selectedProvinceId, setSelectedProvinceId] = useState("");
+  const [selectedCityId, setSelectedCityId] = useState("");
+  const [selectedSubdistrictId, setSelectedSubdistrictId] = useState("");
+  console.log(
+    "provinsi: " +
+      selectedProvinceId +
+      " kota: " +
+      selectedCityId +
+      " kecamatan: " +
+      selectedSubdistrictId
+  );
 
   const handleProvinceChange = (provinceId: string) => {
     setSelectedProvinceId(provinceId);
@@ -83,9 +90,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                       <div>
-                      <p className="font-medium text-lg">
-                          x1
-                        </p>
+                        <p className="font-medium text-lg">x1</p>
                       </div>
                     </td>
                   </tr>
@@ -93,64 +98,153 @@ export default function CheckoutPage() {
               </tbody>
             </table>
             <div className="mt-6 text-slate-700">
-                <div className="relative my-3 border-b-2 border-slate-300 bg-slate-200">
-                    <h2 className="p-3 font-semibold text-xs uppercase">Data diri</h2>
+              <div className="relative my-3 border-b-2 border-slate-300 bg-slate-200">
+                <h2 className="p-3 font-semibold text-xs uppercase">
+                  Data diri
+                </h2>
+              </div>
+              <form>
+                <div className="grid gap-6 mb-6 md:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="first_name"
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      Nama Penerima
+                    </label>
+                    <input
+                      type="text"
+                      id="first_name"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="User"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="phone"
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      No. Telp
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="0813-0000-0000"
+                      pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                      required
+                    />
+                  </div>
+                  <SelectProvince onProvinceChange={handleProvinceChange} />
+                  <SelectCity
+                    selectedProvinceId={selectedProvinceId}
+                    onCityChange={handleCityChange}
+                  />
+                  <SelectSubdistrict
+                    selectedCityId={selectedCityId}
+                    selectedProvinceId={selectedProvinceId}
+                    onSubdistrictChange={handleSubdistrictChange}
+                  />
+                  <div>
+                    <label
+                      htmlFor="address"
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      Alamat Lengkap(desa dsb.)
+                    </label>
+                    <input
+                      type="text"
+                      id="address"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="menganti, RT 01 RW 01"
+                      required
+                    />
+                  </div>
                 </div>
-                <form>
-                    <div className="grid gap-6 mb-6 md:grid-cols-2">
-                        <div>
-                            <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900">Nama Penerima</label>
-                            <input type="text" id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="User" required/>
+                <div className="mb-6">
+                  <label
+                    htmlFor="shipping"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Pilih Pengiriman
+                  </label>
+                  <ul className="grid w-full gap-6 md:grid-cols-2">
+                    <li>
+                      <input
+                        type="radio"
+                        id="shipping-jne"
+                        name="hosting"
+                        value="shipping-jne"
+                        className="hidden peer"
+                        required
+                      />
+                      <label
+                        htmlFor="shipping-jne"
+                        className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
+                      >
+                        <div className="block">
+                          <div className="w-full text-lg font-semibold">
+                            JNE OKE
+                          </div>
+                          <div className="w-full">Ext 6 - 8 Apr Rp 50.000</div>
                         </div>
-                        <div>
-                            <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900">No. Telp</label>
-                            <input type="tel" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="0813-0000-0000" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required/>
-                        </div>
-                        <SelectProvince onProvinceChange={handleProvinceChange} />
-                        <SelectCity
-                          selectedProvinceId={selectedProvinceId}
-                          onCityChange={handleCityChange}
+                        <svg
+                          className="w-5 h-5 ml-3"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
                           />
-                        <SelectSubdistrict
-                          selectedCityId={selectedCityId}
-                          selectedProvinceId={selectedProvinceId}
-                          onSubdistrictChange={handleSubdistrictChange}
-                          />
-                        <div>
-                            <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">Alamat Lengkap(desa dsb.)</label>
-                            <input type="text" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="menganti, RT 01 RW 01" required/>
+                        </svg>
+                      </label>
+                    </li>
+                    <li>
+                      <input
+                        type="radio"
+                        id="shipping-jnt"
+                        name="hosting"
+                        value={"shipping-jnt"}
+                        className="hidden peer"
+                        required
+                      />
+                      <label
+                        htmlFor="shipping-jnt"
+                        className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
+                      >
+                        <div className="block">
+                          <div className="w-full text-lg font-semibold">
+                            J&T Express
+                          </div>
+                          <div className="w-full">Ext 6 - 8 Apr Rp 48.000</div>
                         </div>
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="shipping" className="block mb-2 text-sm font-medium text-gray-900">Pilih Pengiriman</label>
-                        <ul className="grid w-full gap-6 md:grid-cols-2">
-                            <li>
-                                <input type="radio" id="shipping-jne" name="hosting" value="shipping-jne" className="hidden peer" required/>
-                                <label htmlFor="shipping-jne" className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100">                           
-                                    <div className="block">
-                                        <div className="w-full text-lg font-semibold">JNE OKE</div>
-                                        <div className="w-full">Ext 6 - 8 Apr Rp 50.000</div>
-                                    </div>
-                                    <svg className="w-5 h-5 ml-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                    </svg>
-                                </label>
-                            </li>
-                            <li>
-                                <input type="radio" id="shipping-jnt" name="hosting" value={"shipping-jnt"} className="hidden peer" required/>
-                                <label htmlFor="shipping-jnt" className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100">                           
-                                    <div className="block">
-                                        <div className="w-full text-lg font-semibold">J&T Express</div>
-                                        <div className="w-full">Ext 6 - 8 Apr Rp 48.000</div>
-                                    </div>
-                                    <svg className="w-5 h-5 ml-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                    </svg>
-                                </label>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
+                        <svg
+                          className="w-5 h-5 ml-3"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </form>
             </div>
           </div>
           <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1">

@@ -1,6 +1,6 @@
 "use client";
 import React, { Fragment, useState } from "react";
-import ClientLayout from "../components/ClientLayout";
+import ClientLayout from "../components/layouts/ClientLayout";
 import { Tab } from "@headlessui/react";
 import DashboardClient from "../components/client/DasboardClient";
 import WishlistClient from "../components/client/WishlistClient";
