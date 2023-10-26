@@ -1,7 +1,7 @@
 import React from "react";
 import type { RootState } from "../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setFilter, setSort, resetAll } from "../redux/filterSlice";
+import { setFilter, setSort, resetAll } from "../redux/slice/filterSlice";
 
 function MyNewFilter() {
   // const { filters, sort, setFilters, setSort, resetAll } = useFilterAndSort();

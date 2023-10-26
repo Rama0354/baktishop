@@ -18,6 +18,7 @@ export interface Gifts {
       brand_sort: number
   },
   item_gift_description: string;
+  item_gift_description: string | null;
   item_gift_images: [
     {
       id: number;

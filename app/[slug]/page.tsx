@@ -9,6 +9,7 @@ import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "../lib/Hydrate";
 import GiftList from "../components/GiftList";
 import CatAndBrLayout from "../components/layouts/CatAndBrLayout";
+import { cookies } from "next/headers";
 
 async function getDetail(slug: string) {
   const session = await getServerSession(options);
@@ -91,22 +92,28 @@ export default async function SlugPage({
 }: {
   params: { slug: string };
 }) {
+  const cookie = cookies();
+  const getFiltersortDetail = cookie.get("filtersort_detail");
+  const filterDetail = getFiltersortDetail
+    ? JSON.parse(getFiltersortDetail?.value as any)
+    : "";
+
   const slug = params.slug;
 
   const queryClient = getQueryClient();
   if (slug.split(".")[0] === "cat") {
     await queryClient.prefetchQuery(
-      [`cat-${slug.split(".")[1]}`, ""],
+      [`cat-${slug.split(".")[1]}`, ``],
       async () => {
-        const res = await getListByCat(slug.split(".")[1]);
+        const res = await getListByCat(`${slug.split(".")[1]}`);
         return res.data;
       }
     );
   } else if (slug.split(".")[0] === "b") {
     await queryClient.prefetchQuery(
-      [`b-${slug.split(".")[1]}`, ""],
+      [`b-${slug.split(".")[1]}`, ``],
       async () => {
-        const res = await getListByBrand(slug.split(".")[1]);
+        const res = await getListByBrand(`${slug.split(".")[1]}`);
         return res.data;
       }
     );
@@ -135,7 +142,7 @@ export default async function SlugPage({
             />
           </CatAndBrLayout>
         ) : (
-          <GiftDetail slug={slug} />
+          <GiftDetail slug={slug} filterDetail={filterDetail.variant} />
         )}
       </Hydrate>
     </ClientLayout>

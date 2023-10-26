@@ -2,8 +2,9 @@
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { AiFillCaretDown, AiOutlineCheck } from "react-icons/ai";
-import { useDispatch } from "react-redux";
-import { setSort } from "../redux/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setSort } from "../redux/slice/filterSlice";
+import { RootState } from "../redux/store";
 
 const sorts = [
   { id: 1, name: "Terbaru", value: "" },
@@ -20,7 +21,10 @@ type SortOption = {
 };
 
 export default function SelectSort() {
-  const [selected, setSelected] = useState(sorts[0]);
+  const sort = useSelector((state: RootState) => state.filter.sort);
+  const sortState = sort !== null ? `${sort.column}-${sort.type}` : "";
+  const sortSet = sorts.findIndex((f) => f.value === sortState);
+  const [selected, setSelected] = useState(sorts[sortSet]);
   const dispatch = useDispatch();
 
   const setSorting = (event: SortOption) => {

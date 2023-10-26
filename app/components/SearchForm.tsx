@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../redux/filterSlice";
+import { setFilter } from "../redux/slice/filterSlice";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
@@ -13,13 +13,13 @@ export default function SearchForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    if (e.target.value === "") {
-      const newFilter = {
-        column: "item_gift_slug",
-        text: "",
-      };
-      dispatch(setFilter(newFilter));
-    }
+    // if (e.target.value === "") {
+    //   const newFilter = {
+    //     column: "item_gift_slug",
+    //     text: "",
+    //   };
+    // dispatch(setFilter(newFilter));
+    // }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,13 +28,7 @@ export default function SearchForm() {
     const name = inputValue
       .replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, "-")
       .toLowerCase();
-    const newFilter = {
-      column: "item_gift_slug",
-      text: name,
-    };
-    dispatch(setFilter(newFilter));
-    setInputValue(inputValue);
-    router.push("/#maincontent");
+    router.push(`/search?${name ? "st=" + name : ""}`);
   };
   return (
     <form onSubmit={handleSubmit} className="relative w-full">

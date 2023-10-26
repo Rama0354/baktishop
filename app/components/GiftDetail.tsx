@@ -4,12 +4,27 @@ import GiftRating from "./GiftRating";
 import Count from "./Count";
 import Link from "next/link";
 import WishButton from "./WishButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VariantButton from "./VariatButton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { setUrlDetail, setVariant } from "../redux/slice/detailSlice";
+import { usePathname, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-const GiftDetail = ({ slug }: { slug: string }) => {
+const GiftDetail = ({
+  slug,
+  filterDetail,
+}: {
+  slug: string;
+  filterDetail?: any;
+}) => {
+  const dispatch = useDispatch();
+  const pathname = usePathname();
+  const router = useRouter();
+  const variant = useSelector((state: RootState) => state.detail.variant);
   const {
     data: detail,
     isError,
@@ -31,9 +46,38 @@ const GiftDetail = ({ slug }: { slug: string }) => {
   const [mainImage, setMainImage] = useState(
     images[0] !== undefined ? images[0] : "/assets/img/no-image.jpg"
   );
-  const [selectedVariant, setSelectedVariant] = useState<number | null>(null);
-  const handleVariantSelect = (variantId: number) => {
-    setSelectedVariant(variantId);
+  const handleVariantSelect = (variant: any) => {
+    dispatch(setVariant(variant));
+  };
+  function rupiahCurrency(x: number) {
+    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
+  }
+  function generateSlug(text: string) {
+    const sanitizedText = text.replace(/[^\w\s]/g, "");
+    const lowercaseText = sanitizedText.toLowerCase();
+    const slug = lowercaseText.replace(/\s+/g, "-");
+    return slug;
+  }
+  useEffect(() => {
+    if (variant.variant_name) {
+      const url = `${pathname + "-" + generateSlug(variant.variant_name)}`;
+      // router.replace(url);
+    }
+    dispatch(setUrlDetail(pathname));
+  }, [variant.variant_name, pathname, router, dispatch]);
+
+  const handleAddToCart = () => {
+    if (detail.variants.length !== 0) {
+      if (variant.id !== 0) {
+        toast.success(
+          `${detail.item_gift_name} varian ${variant.variant_name} Masuk Keranjang`
+        );
+      } else {
+        toast.error("Mohon pilih varian");
+      }
+    } else {
+      toast.success(`${detail.item_gift_name} Masuk Keranjang`);
+    }
   };
   return (
     <section id="maincontent" className="container text-slate-700">
@@ -83,7 +127,17 @@ const GiftDetail = ({ slug }: { slug: string }) => {
           </div>
         </div>
         <div className="px-3 md:2/4 lg:w-3/4 flex flex-col gap-3">
-          <p className="font-bold text-2xl">{detail.item_gift_name}</p>
+          <p className="font-bold text-2xl">
+            {`${
+              variant
+                ? variant.variant_name !== ""
+                  ? detail.item_gift_name + " - " + variant.variant_name
+                  : filterDetail
+                  ? detail.item_gift_name + " - " + filterDetail.variant_name
+                  : detail.item_gift_name
+                : detail.item_gift_name
+            }`}
+          </p>
           <div className="flex gap-3 items-center">
             <GiftRating
               stars={detail.total_rating}
@@ -97,7 +151,13 @@ const GiftDetail = ({ slug }: { slug: string }) => {
           </div>
           <div className="flex items-center gap-3">
             <p className="font-bold text-2xl text-purple-500">
-              {detail.fitem_gift_point}
+              {variant
+                ? variant.variant_point !== 0
+                  ? rupiahCurrency(variant.variant_point)
+                  : filterDetail
+                  ? rupiahCurrency(filterDetail.variant_point)
+                  : detail.fitem_gift_point
+                : detail.fitem_gift_point}
             </p>
           </div>
           <div className="w-full">
@@ -134,7 +194,11 @@ const GiftDetail = ({ slug }: { slug: string }) => {
                   <p className="font-medium uppercase">Stok</p>
                 </div>
                 <p>
-                  {detail.item_gift_quantity > 0
+                  {variant.variant_quantity !== 0
+                    ? variant.variant_quantity
+                    : filterDetail
+                    ? filterDetail.variant_quantity
+                    : detail.item_gift_quantity > 0
                     ? detail.item_gift_quantity
                     : "Stok Habis"}
                 </p>
@@ -160,7 +224,10 @@ const GiftDetail = ({ slug }: { slug: string }) => {
           </div>
           <div className="flex gap-3">
             <WishButton id={detail.id} isWishlist={detail.is_wishlist} />
-            <button className="px-3 py-1.5 text-white text-sm font-semibold bg-fuchsia-500 border border-purple-500 hover:bg-fuchsia-600 rounded-full">
+            <button
+              onClick={handleAddToCart}
+              className="px-3 py-1.5 text-white text-sm font-semibold bg-fuchsia-500 border border-purple-500 hover:bg-fuchsia-600 rounded-full"
+            >
               + Keranjang
             </button>
             <button className="px-3 py-1.5 text-white text-sm font-semibold bg-purple-500 border border-fuchsia-500 hover:bg-purple-600 rounded-full">

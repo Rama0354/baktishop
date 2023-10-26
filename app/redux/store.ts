@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import filterReducer from "./filterSlice";
+import filterReducer from "./slice/filterSlice";
+import detailSlice from "./slice/detailSlice";
 
 const store = configureStore({
   reducer: {
     filter: filterReducer,
+    detail: detailSlice,
   },
 });
 

@@ -1,56 +1,50 @@
-import GiftList from "./components/GiftList";
-import Sidebar from "./components/Sidebar";
-import { getQueryClient } from "./lib/getQueryClient";
-import { dehydrate } from "@tanstack/query-core";
-import Hydrate from "./lib/Hydrate";
-import axios from "axios";
-import SelectSort from "./components/SelectSort";
 import ClientLayout from "./components/layouts/ClientLayout";
-import { getServerSession } from "next-auth";
-import { options } from "./api/auth/[...nextauth]/options";
-import CategoryList from "./components/CategoryListContainer";
-import HomeLayout from "./components/layouts/HomeLayout";
-
-async function getGift(params: string) {
-  const session = await getServerSession(options);
-  if (session) {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts?${params}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-      }
-    );
-    return res.data;
-  } else {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts?${params}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-        },
-      }
-    );
-    return res.data;
-  }
-}
+import CategoryListContainer from "./components/CategoryListContainer";
+import GiftListNewContainer from "./components/GiftListNewContainer";
+import SliderContainer from "./components/SliderContainer";
+import GiftListBestContainer from "./components/GiftListBestContainer";
 
 export default async function Home() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(["gifts", ``], async () => {
-    const res = await getGift("");
-    return res.data;
-  });
-  const dehydratedState = dehydrate(queryClient);
   return (
     <ClientLayout>
-      <HomeLayout>
-        <Hydrate state={dehydratedState}>
-          <GiftList />
-        </Hydrate>
-      </HomeLayout>
+      <div className="container px-3 md:px-9 min-h-screen">
+        <div className="w-full bg-purple-100">
+          {/* <div className="w-full h-48 md:h-96"></div> */}
+          <SliderContainer />
+        </div>
+        <CategoryListContainer />
+        <div id="newcontent" className="w-full flex gap-6 text-slate-700 mb-12">
+          <div className="w-full">
+            {/* main content */}
+            <div className="w-full sticky top-16 lg:top-20 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-slate-200">
+              <div className="w-full">
+                <p className="font-semibold text-base">Produk Terbaru</p>
+              </div>
+              <div className="flex justify-end gap-3 items-center w-1/2 md:w-full"></div>
+            </div>
+            <div className="w-full pb-12">
+              <GiftListNewContainer />
+            </div>
+          </div>
+        </div>
+        <div
+          id="bestsellercontent"
+          className="w-full flex gap-6 text-slate-700 mb-12"
+        >
+          <div className="w-full">
+            {/* main content */}
+            <div className="w-full sticky top-16 lg:top-20 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-slate-200">
+              <div className="w-full">
+                <p className="font-semibold text-base">Produk Terlaris</p>
+              </div>
+              <div className="flex justify-end gap-3 items-center w-1/2 md:w-full"></div>
+            </div>
+            <div className="w-full pb-12">
+              <GiftListBestContainer />
+            </div>
+          </div>
+        </div>
+      </div>
     </ClientLayout>
   );
 }

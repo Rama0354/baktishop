@@ -38,9 +38,9 @@ export default function CartPage() {
             Keranjang
           </h1>
         </div>
-        <div className="w-full py-3 px-6 flex gap-3">
-          <div className="w-2/3">
-            <table className="w-full text-sm text-left text-gray-500 border border-slate-200">
+        <div className="w-full py-3 px-6 flex flex-col sm:flex-row gap-3">
+          <div className="w-full sm:w-2/3">
+            <table className="w-full min-w-min overflow-x-auto text-sm text-left text-gray-500 border border-slate-200">
               <thead className="text-xs text-gray-700 uppercase bg-gray-200">
                 <tr>
                   <th scope="col" className="px-6 py-3">
@@ -55,15 +55,17 @@ export default function CartPage() {
                       scope="row"
                       className="flex items-center justify-between gap-3 px-6 py-3 text-slate-700"
                     >
-                      <div className="w-full">
-                        <p className="text-lg font-medium">
-                          {product.product_name}
-                        </p>
-                        <p className="font-semibold text-sm text-amber-500">
-                          {product.fprice}
-                        </p>
+                      <div className="w-full flex flex-col sm:flex-row justify-between">
+                        <div className="w-full">
+                          <p className="text-lg font-medium">
+                            {product.product_name}
+                          </p>
+                          <p className="font-semibold text-sm text-amber-500">
+                            {product.fprice}
+                          </p>
+                        </div>
+                        <Count value={product.qty} scale={75} />
                       </div>
-                      <Count value={product.qty} scale={75} />
                       <div className="flex items-center">
                         <button className="py-1 px-3 flex gap-1 items-center hover:bg-rose-100 rounded-md">
                           <AiOutlineDelete
@@ -80,7 +82,7 @@ export default function CartPage() {
               </tbody>
             </table>
           </div>
-          <div className="w-1/3 flex flex-col gap-1">
+          <div className="w-full sm:w-1/3 flex flex-col gap-1">
             <div className="flex justify-between items-center text-slate-700">
               <p className="font-semibold text-sm">Total Sementara</p>
               <p>Rp 850.000</p>

@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAll } from "../redux/filterSlice";
+import { resetAll } from "../redux/slice/filterSlice";
 import { RootState } from "../redux/store";
 import { useRouter } from "next/navigation";
+import { SkeletonCatCard } from "./Skeleton";
 
 type catListType = {
   id: number;
@@ -35,30 +36,34 @@ export default function CategoryList() {
       console.log("Data not found");
     },
   });
+  const catSk = [...Array(5)];
   return (
-    <div className="w-full flex gap-3 py-6">
-      {data.map((cat: catListType) => (
-        <Link
-          key={cat.id}
-          href={`cat.${cat.category_slug}`}
-          className="w-24 p-3 flex flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md"
-        >
-          <Image
-            src={
-              cat.category_image_url
-                ? cat.category_image_url
-                : "/assets/img/no-image.jpg"
-            }
-            width={100}
-            height={100}
-            alt={`${cat.category_slug}-category`}
-            className="w-20 h-20 shrink object-contain"
-          />
-          <span className="text-sm text-slate-700 font-medium">
-            {cat.category_name}
-          </span>
-        </Link>
-      ))}
+    <div className="w-full flex shrink gap-3 py-6">
+      {isLoading
+        ? catSk.map((_, id) => <SkeletonCatCard key={id} />)
+        : data &&
+          data.map((cat: catListType) => (
+            <Link
+              key={cat.id}
+              href={`cat.${cat.category_slug}`}
+              className="w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md"
+            >
+              <Image
+                src={
+                  cat.category_image_url
+                    ? cat.category_image_url
+                    : "/assets/img/no-image.jpg"
+                }
+                width={100}
+                height={100}
+                alt={`${cat.category_slug}-category`}
+                className="w-20 h-20 shrink object-contain"
+              />
+              <span className="text-sm text-slate-700 font-medium">
+                {cat.category_name}
+              </span>
+            </Link>
+          ))}
     </div>
   );
 }

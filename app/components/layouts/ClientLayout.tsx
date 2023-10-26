@@ -19,7 +19,7 @@ export default function ClientLayout({
   return (
     <>
       <AppBar />
-      <NextProgressbar />
+      {/* <NextProgressbar /> */}
       <main className="w-full min-h-screen flex flex-col items-center mx-auto bg-white">
         {children}
       </main>

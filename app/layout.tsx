@@ -1,4 +1,5 @@
 import "./globals.css";
+// import "./nprogress.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import AuthProvider from "./context/AuthProviders";
@@ -9,6 +10,8 @@ const poppins = Poppins({
 });
 import QueryProvider from "./context/QueryProvider";
 import StoreProvider from "./redux/StoreProvider";
+import { NavigationEvents } from "./components/navigation-events";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Bakti Shop",
@@ -26,7 +29,12 @@ export default function RootLayout({
       <body className={poppins.className}>
         <QueryProvider>
           <AuthProvider>
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              {children}
+              <Suspense fallback={null}>
+                <NavigationEvents />
+              </Suspense>
+            </StoreProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
