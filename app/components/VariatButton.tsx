@@ -3,29 +3,31 @@ import { RadioGroup } from "@headlessui/react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-type Variants = [
-  {
-    id: number;
-    variant_name: string;
-    variant_point: number;
-    variant_quantity: number;
-  }
-];
+type Variants = {
+  id: number;
+  variant_name: string;
+  variant_point: number;
+  variant_quantity: number;
+};
 interface VariantButtonProps {
-  variants: Variants;
+  variants: Variants[];
+  filterDetail?: any;
   onVariantSelect: (selectedVariantId: number) => void;
 }
 
 export default function VariantButton({
   variants,
+  filterDetail,
   onVariantSelect,
 }: VariantButtonProps) {
   const variantselected = useSelector(
     (state: RootState) => state.detail.variant
   );
-  const findidx = variants.findIndex((f) => f.id === variantselected.id);
-  const [variantselect, setVariantSelect] = useState<any>(
-    variants[findidx || 0]
+  const findidx = filterDetail
+    ? variants.findIndex((f) => f.id === filterDetail.id)
+    : 99;
+  const [variantselect, setVariantSelect] = useState<Variants | null>(
+    findidx !== -1 ? variants[findidx] : null
   );
   const handleVariantSelection = (e: any) => {
     setVariantSelect(e);

@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import GiftRating from "./GiftRating";
-import Count from "./Count";
 import Link from "next/link";
 import WishButton from "./WishButton";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import VariantButton from "./VariatButton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,6 +12,8 @@ import { RootState } from "../redux/store";
 import { setUrlDetail, setVariant } from "../redux/slice/detailSlice";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { setCartItems } from "../redux/slice/cartSlice";
+import CountDetail from "./CountDetail";
 
 const GiftDetail = ({
   slug,
@@ -23,14 +24,10 @@ const GiftDetail = ({
 }) => {
   const dispatch = useDispatch();
   const pathname = usePathname();
-  const router = useRouter();
   const variant = useSelector((state: RootState) => state.detail.variant);
-  const {
-    data: detail,
-    isError,
-    error,
-    isLoading,
-  } = useQuery({
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const [countItem, setCountItem] = useState(1);
+  const { data: detail } = useQuery({
     queryKey: ["detail", `${slug}`],
     queryFn: async () => {
       const res = await axios.get(`api/detailgift?slug=${slug}`);
@@ -52,31 +49,47 @@ const GiftDetail = ({
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
-  function generateSlug(text: string) {
-    const sanitizedText = text.replace(/[^\w\s]/g, "");
-    const lowercaseText = sanitizedText.toLowerCase();
-    const slug = lowercaseText.replace(/\s+/g, "-");
-    return slug;
-  }
   useEffect(() => {
-    if (variant.variant_name) {
-      const url = `${pathname + "-" + generateSlug(variant.variant_name)}`;
-      // router.replace(url);
-    }
     dispatch(setUrlDetail(pathname));
-  }, [variant.variant_name, pathname, router, dispatch]);
+  }, [pathname, dispatch]);
 
   const handleAddToCart = () => {
-    if (detail.variants.length !== 0) {
-      if (variant.id !== 0) {
-        toast.success(
-          `${detail.item_gift_name} varian ${variant.variant_name} Masuk Keranjang`
-        );
+    if (countItem !== 0) {
+      if (detail.variants.length !== 0) {
+        if (variant.id !== 0) {
+          toast.success(
+            `${detail.item_gift_name} varian ${variant.variant_name} Masuk Keranjang`
+          );
+          dispatch(
+            setCartItems({
+              product_id: detail.id,
+              product_name: detail.item_gift_name,
+              product_image: mainImage,
+              varian_id: variant.id,
+              varian_name: variant.variant_name,
+              product_weight: detail.item_gift_weight,
+              product_quantity: countItem,
+              product_price: variant.variant_point,
+            })
+          );
+        } else {
+          toast.error("Mohon pilih varian");
+        }
       } else {
-        toast.error("Mohon pilih varian");
+        toast.success(`${detail.item_gift_name} Masuk Keranjang`);
+        dispatch(
+          setCartItems({
+            product_id: detail.id,
+            product_name: detail.item_gift_name,
+            product_image: mainImage,
+            product_weight: detail.item_gift_weight,
+            product_quantity: countItem,
+            product_price: detail.item_gift_point,
+          })
+        );
       }
     } else {
-      toast.success(`${detail.item_gift_name} Masuk Keranjang`);
+      toast.error("Mohon atur jumlah barang");
     }
   };
   return (
@@ -212,6 +225,7 @@ const GiftDetail = ({
                   </div>
                   <VariantButton
                     variants={detail.variants}
+                    filterDetail={filterDetail}
                     onVariantSelect={handleVariantSelect}
                   />
                 </div>
@@ -220,7 +234,7 @@ const GiftDetail = ({
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-sm">Jumlah</p>
-            <Count value={1} />
+            <CountDetail count={countItem} setCountItem={setCountItem} />
           </div>
           <div className="flex gap-3">
             <WishButton id={detail.id} isWishlist={detail.is_wishlist} />
@@ -237,71 +251,31 @@ const GiftDetail = ({
         </div>
       </div>
       <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
-        <div className="w-full border-b border-purple-500">
-          <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
-            Spesifikasi Produk
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="w-full md:w-1/2 flex flex-col gap-1 pt-1">
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Brand</p>
-              </div>
-              <div className="w-3/4">
-                <p>: Samsung</p>
+        {detail.item_gift_spesification.length > 0 ? (
+          <>
+            <div className="w-full border-b border-purple-500">
+              <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
+                Spesifikasi Produk
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
+                {detail.item_gift_spesification.map(
+                  (spec: any, idx: number) => (
+                    <Fragment key={idx}>
+                      <div className="w-full">
+                        <p className="font-medium uppercase">{spec.key}</p>
+                      </div>
+                      <div className="w-full">
+                        <p>: {spec.value}</p>
+                      </div>
+                    </Fragment>
+                  )
+                )}
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Model</p>
-              </div>
-              <div className="w-3/4">
-                <p>: Samsung Galaxy A21</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Chipset</p>
-              </div>
-              <div className="w-3/4">
-                <p>: Exynos 1xxx</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">RAM</p>
-              </div>
-              <div className="w-3/4">
-                <p>: 6GB</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Storage</p>
-              </div>
-              <div className="w-3/4">
-                <p>: 128GB</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Main Camera</p>
-              </div>
-              <div className="w-3/4">
-                <p>: 50 Mega Pixel</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-1/4">
-                <p className="font-medium uppercase">Front Camera</p>
-              </div>
-              <div className="w-3/4">
-                <p>: 15 Mega Pixel</p>
-              </div>
-            </div>
-          </div>
-        </div>
+          </>
+        ) : null}
         <div className="w-full border-b border-purple-500">
           <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
             Deskripsi Produk

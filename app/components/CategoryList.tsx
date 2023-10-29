@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAll } from "../redux/slice/filterSlice";
 import { RootState } from "../redux/store";
 import { useRouter } from "next/navigation";
 import { SkeletonCatCard } from "./Skeleton";
@@ -23,8 +22,6 @@ type catListType = {
 
 export default function CategoryList() {
   const router = useRouter();
-  const filter = useSelector((state: RootState) => state.filter.filters);
-  const sort = useSelector((state: RootState) => state.filter.sort);
   const dispatch = useDispatch();
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ["category"],

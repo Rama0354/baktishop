@@ -4,12 +4,18 @@ import WishButton from "./WishButton";
 import GiftRating from "./GiftRating";
 import { Gifts } from "../types/gifts";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const GiftCard = ({ gift }: { gift: Gifts }) => {
+  const router = useRouter();
   const priceText = gift.fitem_gift_point.split(" ~ ");
   const images = gift.item_gift_images.map(
     (image) => image.item_gift_image_url
   );
+  const handleClicked = () => {
+    router.push(gift.item_gift_slug);
+    router.refresh();
+  };
   return (
     <div className="relative group">
       <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border bg-white hover:border-purple-500 border-slate-200 rounded-md shadow-md">
@@ -21,11 +27,11 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
           height={250}
           className="w-auto h-36 object-contain"
         />
-        <Link href={`${gift.item_gift_slug}`}>
+        <div onClick={handleClicked} className=" cursor-pointer">
           <p className="font-semibold text-sm md:text-base line-clamp-2">
             {gift.item_gift_name}
           </p>
-        </Link>
+        </div>
         <div className="flex items-start gap-1">
           <div className="w-3/4 flex flex-col justify-between px-1 lg:px-3">
             <div className="w-full h-8 ">

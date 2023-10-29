@@ -1,7 +1,7 @@
 import React from "react";
 import type { RootState } from "../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setFilter, setSort, resetAll } from "../redux/slice/filterSlice";
+import { setFilter, setSort } from "../redux/slice/filterSlice";
 
 function MyNewFilter() {
   // const { filters, sort, setFilters, setSort, resetAll } = useFilterAndSort();
@@ -56,10 +56,6 @@ function MyNewFilter() {
     // setSort(newSort);
   };
 
-  const resetFilters = () => {
-    resetAll();
-  };
-
   return (
     <div className="">
       <div className="py-2 flex gap-3">
@@ -90,13 +86,6 @@ function MyNewFilter() {
             Harga (Tertinggi ke Terendah)
           </option>
         </select>
-
-        <button
-          className="py-1 px-2 bg-rose-500 hover:bg-rose-600 text-white hover:bg-my-darkred"
-          onClick={resetFilters}
-        >
-          Reset
-        </button>
       </div>
       <div className="flex gap-2 ">
         <button
