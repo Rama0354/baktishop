@@ -14,6 +14,17 @@ import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { setCartItems } from "../redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
+import ListReviewContainer from "./ListReviewContainer";
+
+type DetailImage = {
+  id: number;
+  item_gift_id: number;
+  variant_id: number | null;
+  item_gift_image: string;
+  item_gift_image_url: string;
+  item_gift_image_thumb_url: string;
+};
+type DetailImages = DetailImage[];
 
 const GiftDetail = ({
   slug,
@@ -37,14 +48,39 @@ const GiftDetail = ({
       console.log("Data not found");
     },
   });
-  const images = detail.item_gift_images.map(
-    (image: any) => image.item_gift_image_url
+  const images = detail.item_gift_images.map((image: DetailImage) => ({
+    variant_id: image.variant_id,
+    image_url: image.item_gift_image_url,
+  }));
+  const findIdxImage = images.findIndex(
+    (f: any) => f.variant_id === variant.id
   );
   const [mainImage, setMainImage] = useState(
-    images[0] !== undefined ? images[0] : "/assets/img/no-image.jpg"
+    images[0] !== undefined ? images[0].image_url : "/assets/img/no-image.jpg"
   );
+  const [selectedVariantImage, setSelectedVariantImage] = useState(
+    images[0] !== undefined ? images[0].image_url : "/assets/img/no-image.jpg"
+  );
+  const handleClickImage = (image: any) => {
+    setMainImage(
+      image.item_gift_image_url !== undefined
+        ? image.item_gift_image_url
+        : "/assets/img/no-image.jpg"
+    );
+    setSelectedVariantImage(
+      image.item_gift_image_url !== undefined
+        ? image.item_gift_image_url
+        : "/assets/img/no-image.jpg"
+    );
+  };
   const handleVariantSelect = (variant: any) => {
     dispatch(setVariant(variant));
+    const selectedVariant = images.find(
+      (image: any) => image.variant_id === variant.id
+    );
+    if (selectedVariant) {
+      setSelectedVariantImage(selectedVariant.image_url);
+    }
   };
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
@@ -102,7 +138,7 @@ const GiftDetail = ({
       <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
         <div className="md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
           <Image
-            src={mainImage}
+            src={selectedVariantImage}
             alt="product"
             width={500}
             height={500}
@@ -123,17 +159,11 @@ const GiftDetail = ({
                   width={500}
                   height={500}
                   className={`w-20 object-contain border-2 cursor-pointer rounded-md ${
-                    mainImage === image.item_gift_image_url
+                    selectedVariantImage === image.item_gift_image_url
                       ? "border-purple-500"
                       : "border-slate-300"
                   }`}
-                  onClick={() =>
-                    setMainImage(
-                      image.item_gift_image_url !== undefined
-                        ? image.item_gift_image_url
-                        : "/assets/img/no-image.jpg"
-                    )
-                  }
+                  onClick={() => handleClickImage(image)}
                 />
               ))}
             </div>
@@ -145,7 +175,7 @@ const GiftDetail = ({
               variant
                 ? variant.variant_name !== ""
                   ? detail.item_gift_name + " - " + variant.variant_name
-                  : filterDetail
+                  : filterDetail && filterDetail.variant_name !== ""
                   ? detail.item_gift_name + " - " + filterDetail.variant_name
                   : detail.item_gift_name
                 : detail.item_gift_name
@@ -155,6 +185,7 @@ const GiftDetail = ({
             <GiftRating
               stars={detail.total_rating}
               reviews={detail.total_reviews}
+              scale={2}
             />
             <div className="w-full">
               <p className="text-sm text-slate-400">
@@ -167,7 +198,7 @@ const GiftDetail = ({
               {variant
                 ? variant.variant_point !== 0
                   ? rupiahCurrency(variant.variant_point)
-                  : filterDetail
+                  : filterDetail && filterDetail.variant_point !== 0
                   ? rupiahCurrency(filterDetail.variant_point)
                   : detail.fitem_gift_point
                 : detail.fitem_gift_point}
@@ -209,7 +240,7 @@ const GiftDetail = ({
                 <p>
                   {variant.variant_quantity !== 0
                     ? variant.variant_quantity
-                    : filterDetail
+                    : filterDetail && filterDetail.variant_quantity !== 0
                     ? filterDetail.variant_quantity
                     : detail.item_gift_quantity > 0
                     ? detail.item_gift_quantity
@@ -252,13 +283,13 @@ const GiftDetail = ({
       </div>
       <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
         {detail.item_gift_spesification.length > 0 ? (
-          <>
+          <div className="relative w-full">
             <div className="w-full border-b border-purple-500">
               <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
                 Spesifikasi Produk
               </p>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 p-3">
               <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
                 {detail.item_gift_spesification.map(
                   (spec: any, idx: number) => (
@@ -274,16 +305,20 @@ const GiftDetail = ({
                 )}
               </div>
             </div>
-          </>
+          </div>
         ) : null}
-        <div className="w-full border-b border-purple-500">
-          <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
-            Deskripsi Produk
-          </p>
+
+        <div className="relative w-full">
+          <div className="w-full border-b border-purple-500">
+            <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
+              Deskripsi Produk
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 p-3">
+            <p>{detail.item_gift_description}</p>
+          </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <p>{detail.item_gift_description}</p>
-        </div>
+        <ListReviewContainer reviewers={detail.reviews} />
       </div>
     </section>
   );

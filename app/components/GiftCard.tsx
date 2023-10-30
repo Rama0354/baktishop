@@ -46,7 +46,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
                 ))}
             </div>
             <div className="w-full items-center flex justify-between gap-1">
-              <GiftRating stars={gift.total_rating} reviews={0} />
+              <GiftRating stars={gift.total_rating} reviews={0} scale={3} />
               <div className="w-full">
                 <p className="text-xs text-slate-400">({gift.total_reviews})</p>
               </div>

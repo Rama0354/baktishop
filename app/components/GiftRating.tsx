@@ -19,8 +19,8 @@ const GiftRating = ({ stars, reviews, scale }: GiftRating) => {
             alt={"rating"}
             width={20}
             height={20}
-            className={`w-8 h-8 object-contain ${
-              scale ? "scale-" + scale : ""
+            className={`object-contain ${
+              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
             }`}
           />
         ) : stars >= number ? (
@@ -29,8 +29,8 @@ const GiftRating = ({ stars, reviews, scale }: GiftRating) => {
             alt={"rating"}
             width={20}
             height={20}
-            className={`w-8 h-8 object-contain ${
-              scale ? "scale-" + scale : ""
+            className={`object-contain ${
+              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
             }`}
           />
         ) : (
@@ -39,8 +39,8 @@ const GiftRating = ({ stars, reviews, scale }: GiftRating) => {
             alt={"rating"}
             width={20}
             height={20}
-            className={`w-8 h-8 object-contain ${
-              scale ? "scale-" + scale : ""
+            className={`object-contain ${
+              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
             }`}
           />
         )}

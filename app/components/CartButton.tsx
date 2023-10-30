@@ -40,8 +40,8 @@ export default function CartButton() {
           <div className="w-full py-2 px-3">
             <ul>
               {cartItems.length > 0 ? (
-                cartItems.map((cart) => (
-                  <li key={cart.product_id} className="py-1">
+                cartItems.map((cart, idx) => (
+                  <li key={cart.product_id + idx} className="py-1">
                     <div className="w-full flex items-center gap-3">
                       <div className="w-12 h-12 flex-shrink-0 bg-purple-500 rounded-md">
                         <Image

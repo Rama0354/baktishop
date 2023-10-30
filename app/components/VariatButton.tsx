@@ -26,8 +26,8 @@ export default function VariantButton({
   const findidx = filterDetail
     ? variants.findIndex((f) => f.id === filterDetail.id)
     : 99;
-  const [variantselect, setVariantSelect] = useState<Variants | null>(
-    findidx !== -1 ? variants[findidx] : null
+  const [variantselect, setVariantSelect] = useState<Variants | string>(
+    findidx !== -1 ? variants[findidx] : "none"
   );
   const handleVariantSelection = (e: any) => {
     setVariantSelect(e);
@@ -37,7 +37,7 @@ export default function VariantButton({
   return (
     <div className="w-full mx-auto">
       <RadioGroup
-        value={variantselect}
+        value={variantselect ? variantselect : "none"}
         id="1"
         onChange={handleVariantSelection}
       >
@@ -45,6 +45,45 @@ export default function VariantButton({
           Rating
         </RadioGroup.Label>
         <div className="flex gap-3">
+          <RadioGroup.Option
+            id={`0`}
+            value={"none"}
+            disabled={true}
+            className={({ active, checked, disabled }) =>
+              `${
+                active
+                  ? "ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-purple-300"
+                  : ""
+              }
+              ${checked ? "bg-purple-900 bg-opacity-75 text-white" : ""}
+              ${
+                disabled
+                  ? "bg-slate-300 text-slate-500 border-transparent pointer-events-none select-none"
+                  : ""
+              }
+                  relative hidden cursor-pointer rounded-lg px-3 py-2 border border-purple-900 shadow-md focus:outline-none`
+            }
+          >
+            {({ active, checked }) => (
+              <>
+                <div className="flex w-full items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="text-sm">
+                      <RadioGroup.Label
+                        as="p"
+                        id={`0`}
+                        className={`font-medium line-clamp-1 ${
+                          checked ? "text-white" : "text-slate-700"
+                        }`}
+                      >
+                        none
+                      </RadioGroup.Label>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </RadioGroup.Option>
           {variants.map((variant, rateIndex) => (
             <RadioGroup.Option
               key={variant.id}
