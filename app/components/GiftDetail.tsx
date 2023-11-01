@@ -10,11 +10,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setUrlDetail, setVariant } from "../redux/slice/detailSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { setCartItems } from "../redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
-import ListReviewContainer from "./ListReviewContainer";
+import GiftsReviewContainer from "./GiftsReviewContainer";
 
 type DetailImage = {
   id: number;
@@ -41,7 +41,7 @@ const GiftDetail = ({
   const { data: detail } = useQuery({
     queryKey: ["detail", `${slug}`],
     queryFn: async () => {
-      const res = await axios.get(`api/detailgift?slug=${slug}`);
+      const res = await axios.get(`api/detailgift/${slug}`);
       return res.data.data;
     },
     onError: (error) => {
@@ -52,9 +52,7 @@ const GiftDetail = ({
     variant_id: image.variant_id,
     image_url: image.item_gift_image_url,
   }));
-  const findIdxImage = images.findIndex(
-    (f: any) => f.variant_id === variant.id
-  );
+  const findVarImage = images.find((f: any) => f.variant_id === variant.id);
   const [mainImage, setMainImage] = useState(
     images[0] !== undefined ? images[0].image_url : "/assets/img/no-image.jpg"
   );
@@ -100,10 +98,11 @@ const GiftDetail = ({
             setCartItems({
               product_id: detail.id,
               product_name: detail.item_gift_name,
-              product_image: mainImage,
+              product_image:
+                findVarImage !== undefined ? findVarImage.image_url : mainImage,
               varian_id: variant.id,
               varian_name: variant.variant_name,
-              product_weight: detail.item_gift_weight,
+              product_weight: variant.variant_weight,
               product_quantity: countItem,
               product_price: variant.variant_point,
             })
@@ -228,7 +227,11 @@ const GiftDetail = ({
                   <p className="font-medium uppercase">Berat</p>
                 </div>
                 <p>
-                  {detail.fitem_gift_weight
+                  {variant.variant_weight !== 0
+                    ? variant.fvariant_weight
+                    : filterDetail && filterDetail.fvariant_weight !== 0
+                    ? filterDetail.fvariant_weight
+                    : detail.fitem_gift_weight
                     ? detail.fitem_gift_weight
                     : "0 Gram"}
                 </p>
@@ -318,7 +321,7 @@ const GiftDetail = ({
             <p>{detail.item_gift_description}</p>
           </div>
         </div>
-        <ListReviewContainer reviewers={detail.reviews} />
+        <GiftsReviewContainer productId={detail.id} />
       </div>
     </section>
   );

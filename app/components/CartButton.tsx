@@ -1,20 +1,26 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
 import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
+import { removeCartItem } from "../redux/slice/cartSlice";
 
 export default function CartButton() {
   const [cartBtn, setCartBtn] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const dispatch = useDispatch();
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
   const totalCartQty = cartItems.reduce((sum: number, item) => {
     return sum + item.product_quantity;
   }, 0);
+
+  const handleDeleteCart = (item: any) => {
+    dispatch(removeCartItem(item));
+  };
 
   return (
     <div className=" group relative">
@@ -32,17 +38,17 @@ export default function CartButton() {
         </button>
       </Link>
       <div className="absolute right-0 top-9 group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
-        <div className="w-72 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">
+        <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">
           <div className="w-full py-2 px-3 border-b-2 border-slate-100">
             <h2 className="text-slate-600 text-xl font-semibold">Keranjang</h2>
           </div>
 
           <div className="w-full py-2 px-3">
-            <ul>
+            <ul className="max-h-72 overflow-y-auto">
               {cartItems.length > 0 ? (
                 cartItems.map((cart, idx) => (
-                  <li key={cart.product_id + idx} className="py-1">
-                    <div className="w-full flex items-center gap-3">
+                  <li key={idx} className="py-1">
+                    <div className="w-full flex items-start justify-between gap-3">
                       <div className="w-12 h-12 flex-shrink-0 bg-purple-500 rounded-md">
                         <Image
                           src={
@@ -74,12 +80,28 @@ export default function CartButton() {
                           </p>
                         </span>
                       </div>
+                      <div>
+                        <button
+                          onClick={() => handleDeleteCart(cart)}
+                          className="py-2 px-3 flex gap-1 items-center bg-rose-100 sm:bg-white hover:bg-rose-100 rounded-md"
+                        >
+                          <AiOutlineDelete
+                            className={"text-rose-500 stroke-2 w-6 h-6"}
+                          />
+                        </button>
+                      </div>
                     </div>
                   </li>
                 ))
               ) : (
                 <li className="py-1">
-                  <div className="w-full flex items-center gap-3">
+                  <div className="w-full flex flex-col items-center justify-center">
+                    <Image
+                      src={"/assets/img/empty-cart.png"}
+                      width={100}
+                      height={100}
+                      alt="empty-cart"
+                    />
                     <p className="text-center text-slate-700">
                       tidak ada barang
                     </p>
@@ -87,14 +109,16 @@ export default function CartButton() {
                 </li>
               )}
             </ul>
-          </div>
-          <div className="w-full py-1 px-3 border-t-2 border-slate-100">
-            <Link
-              href={"/cart"}
-              className="text-purple-500 text-sm font-semibold text-center"
-            >
-              Lihat semua
-            </Link>
+            {cartItems.length > 0 && (
+              <div className="w-full border-t border-slate-100">
+                <Link
+                  href={"/cart"}
+                  className="block pt-2 px-3 font-medium text-center text-sm text-purple-500"
+                >
+                  Lihat semua
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

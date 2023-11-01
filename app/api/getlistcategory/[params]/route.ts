@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import axios from "axios";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest,{params}:{params:{params:string}}, res: NextResponse) {
+  const allparams = params.params
   try {
       const res = await axios.get(
-        `${process.env.BACKEND_API}/brand`
+        `${process.env.BACKEND_API}/category?${allparams}`
       );
 
       return NextResponse.json(res.data);

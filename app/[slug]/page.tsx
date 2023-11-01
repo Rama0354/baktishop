@@ -1,5 +1,4 @@
 import React from "react";
-import ClientLayout from "../components/layouts/ClientLayout";
 import GiftDetail from "../components/GiftDetail";
 import axios from "axios";
 import { getQueryClient } from "../lib/getQueryClient";
@@ -10,6 +9,17 @@ import Hydrate from "../lib/Hydrate";
 import GiftList from "../components/GiftList";
 import CatAndBrLayout from "../components/layouts/CatAndBrLayout";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+
+export const dynamicParams = false;
+export async function generateStaticParams() {
+  const res = await axios
+    .get(`${process.env.BACKEND_API}/gifts`)
+    .then((res) => res.data);
+  return res.data.map((data: any) => ({
+    slug: data.item_gift_slug,
+  }));
+}
 
 async function getDetail(slug: string) {
   const session = await getServerSession(options);
@@ -97,7 +107,6 @@ export default async function SlugPage({
   const filterDetail = getFiltersortDetail
     ? JSON.parse(getFiltersortDetail?.value as any)
     : "";
-
   const slug = params.slug;
 
   const queryClient = getQueryClient();
@@ -125,26 +134,24 @@ export default async function SlugPage({
   }
   const dehydratedState = dehydrate(queryClient);
   return (
-    <ClientLayout>
-      <Hydrate state={dehydratedState}>
-        {slug.split(".")[0] === "cat" ? (
-          <CatAndBrLayout layoutType="cat">
-            <GiftList
-              pType={`${slug.split(".")[0]}`}
-              sType={`${slug.split(".")[1]}`}
-            />
-          </CatAndBrLayout>
-        ) : slug.split(".")[0] === "b" ? (
-          <CatAndBrLayout layoutType="b">
-            <GiftList
-              pType={`${slug.split(".")[0]}`}
-              sType={`${slug.split(".")[1]}`}
-            />
-          </CatAndBrLayout>
-        ) : (
-          <GiftDetail slug={slug} filterDetail={filterDetail.variant} />
-        )}
-      </Hydrate>
-    </ClientLayout>
+    <Hydrate state={dehydratedState}>
+      {slug.split(".")[0] === "cat" ? (
+        <CatAndBrLayout layoutType="cat">
+          <GiftList
+            pType={`${slug.split(".")[0]}`}
+            sType={`${slug.split(".")[1]}`}
+          />
+        </CatAndBrLayout>
+      ) : slug.split(".")[0] === "b" ? (
+        <CatAndBrLayout layoutType="b">
+          <GiftList
+            pType={`${slug.split(".")[0]}`}
+            sType={`${slug.split(".")[1]}`}
+          />
+        </CatAndBrLayout>
+      ) : (
+        <GiftDetail slug={slug} filterDetail={filterDetail.variant} />
+      )}
+    </Hydrate>
   );
 }

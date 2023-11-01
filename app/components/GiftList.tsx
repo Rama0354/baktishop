@@ -139,16 +139,16 @@ const GiftList = ({ pType, sType }: GiftListProps) => {
     queryFn: async () => {
       if (pType === "cat") {
         const res = await axios.get(
-          `api/getproductscategory?${sType}.` + querys !== "" ? querys : ""
+          `api/getproductscategory/${sType}/` + querys !== "" ? querys : ""
         );
         return res.data.data;
       } else if (pType === "b") {
         const res = await axios.get(
-          `api/getproductsbrand?${sType}.` + querys !== "" ? querys : ""
+          `api/getproductsbrand/${sType}/` + querys !== "" ? querys : ""
         );
         return res.data.data;
       } else {
-        const res = await axios.get(`api/itemgift?` + querys);
+        const res = await axios.get(`api/itemgift/` + querys);
         return res.data.data;
       }
     },

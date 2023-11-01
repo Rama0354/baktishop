@@ -1,6 +1,9 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import GiftRating from "./GiftRating";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type Reviews = {
   id: number;
@@ -20,11 +23,15 @@ type Reviews = {
 };
 type ReviewsProps = Reviews[];
 
-export default function ListReviewContainer({
-  reviewers,
+export default function GiftsReviewContainer({
+  productId,
 }: {
-  reviewers: ReviewsProps;
+  productId: number;
 }) {
+  const { data: reviews } = useQuery(["review"], async () => {
+    const res = await axios.get(`api/giftreviews/${productId}`);
+    return res.data;
+  });
   return (
     <section className="w-full">
       <div className="w-full border-b border-purple-500">
@@ -233,48 +240,48 @@ export default function ListReviewContainer({
             </ul>
           </div>
           <div className="w-full p-3">
-            <article>
-              <div className="flex items-center mb-4 space-x-4">
-                <Image
-                  width={80}
-                  height={80}
-                  className="w-10 h-10 rounded-full"
-                  src="/assets/img/no-image.jpg"
-                  alt="avatar"
-                />
-                <div className="space-y-1 font-medium">
-                  <p>
-                    Jese Leos{" "}
-                    <time
-                      dateTime="2014-08-16 19:00"
-                      className="block text-sm text-gray-500"
-                    >
-                      @Jese1230
-                    </time>
+            {reviews && reviews.data ? (
+              reviews.data.map((review: Reviews, idx: number) => (
+                <article key={idx}>
+                  <div className="flex items-center mb-4 space-x-4">
+                    <Image
+                      width={80}
+                      height={80}
+                      className="w-10 h-10 rounded-full"
+                      src={
+                        review.users.profile.avatar_url !== null
+                          ? review.users.profile.avatar_url
+                          : "/assets/img/no-image.jpg"
+                      }
+                      alt="avatar"
+                    />
+                    <div className="space-y-1 font-medium">
+                      <p>{review.users.name}</p>
+                      <p>@{review.users.username}</p>
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <GiftRating
+                      stars={review.review_rating}
+                      reviews={0}
+                      scale={1}
+                    />
+                  </div>
+                  <footer className="mb-3 text-sm text-gray-500">
+                    <p className="text-sm">{review.freview_date}</p>
+                  </footer>
+                  <p className="mb-2 text-gray-500 py-2 px-3 rounded-lg bg-slate-100 border-l-2 border-purple-500">
+                    {review.review_text}
                   </p>
-                </div>
-              </div>
-              <div className="flex">
-                <GiftRating stars={3.5} reviews={0} scale={1} />
-              </div>
-              <footer className="mb-5 text-sm text-gray-500">
-                <p>
-                  <time dateTime="2017-03-03 19:00">March 3, 2017</time>
+                </article>
+              ))
+            ) : (
+              <div className="w-full ">
+                <p className="font-medium italic text-slate-700">
+                  Belum ada penilaian
                 </p>
-              </footer>
-              <p className="mb-2 text-gray-500">
-                This is my third Invicta Pro Diver. They are just fantastic
-                value for money. This one arrived yesterday and the first thing
-                I did was set the time, popped on an identical strap from
-                another Invicta and went in the shower with it to test the
-                waterproofing.... No problems.
-              </p>
-              <p className="mb-3 text-gray-500">
-                It is obviously not the same build quality as those very
-                expensive watches. But that is like comparing a Citroën to a
-                Ferrari. This watch was well under £100! An absolute bargain.
-              </p>
-            </article>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { AiOutlineUser } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import ProgressBar from "./Progressbar";
+import Image from "next/image";
 import NProgress from "nprogress";
 import "../nprogress.css";
 
@@ -64,7 +64,20 @@ const SigninButton = () => {
               onClick={status === "authenticated" ? handleMenu : () => signIn()}
               className="p-2 object-contain hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full"
             >
-              <AiOutlineUser className="text-white stroke-2 w-6 h-6" />
+              <div className="w-6 h-6 shrink-0 flex justify-center items-start bg-purple-500 rounded-full overflow-hidden">
+                {session.user.avatar_url !== null ? (
+                  <Image
+                    src={session.user.avatar_url}
+                    width={100}
+                    height={100}
+                    alt={session.user.username}
+                  />
+                ) : (
+                  <p className="text-white font-medium text-xl">
+                    {session.user.name.charAt(0)}
+                  </p>
+                )}
+              </div>
             </button>
             <div
               onMouseLeave={handleMenu}
@@ -74,29 +87,24 @@ const SigninButton = () => {
                   : "invisible opacity-0 pointer-events-none"
               } absolute right-0 top-12 min-w-64 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md transition-all duration-200 ease`}
             >
-              <div className="w-full py-1 text-slate-700 flex items-center gap-3">
-                <div className="w-9 h-9 shrink-0 flex justify-center items-center bg-purple-500 rounded-full">
-                  <p className="text-white font-medium text-xl">
-                    {session.user.name.charAt(0)}
-                  </p>
+              <div className="w-72 py-2 px-3 text-slate-700 flex items-start gap-3">
+                <div className="w-9 h-9 mt-1 shrink-0 flex justify-center items-start bg-purple-500 rounded-full overflow-hidden">
+                  {session.user.avatar_url !== null ? (
+                    <Image
+                      src={session.user.avatar_url}
+                      width={100}
+                      height={100}
+                      alt={session.user.username}
+                    />
+                  ) : (
+                    <p className="text-white font-medium text-xl">
+                      {session.user.name.charAt(0)}
+                    </p>
+                  )}
                 </div>
-                <div className="w-full pb-3">
+                <div className="w-full">
                   <h2 className="text-lg font-semibold">{session.user.name}</h2>
-                  <div className="flex gap-1">
-                    {session.user.roles.map((role, index) => (
-                      <p
-                        key={index}
-                        className={`${
-                          index === 1
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-emerald-100 text-emerald-600"
-                        } text-xs font-medium uppercase py-1 px-2 rounded-md`}
-                      >
-                        {role}
-                      </p>
-                    ))}
-                  </div>
-                  <p className=" text-sm">{session.user.email}</p>
+                  <p className=" text-sm">@{session.user.username}</p>
                 </div>
               </div>
               <div className="w-full py-1 flex justify-around border-t border-slate-300">

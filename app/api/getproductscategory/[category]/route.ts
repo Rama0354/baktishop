@@ -2,16 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import axios from "axios";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest,{params}:{params:{category:string}}, res: NextResponse) {
   const secret = process.env.NEXTAUTH_SECRET;
-  const searchparams = req.nextUrl.searchParams.toString();
-  const cat = searchparams.split('.')[0]
-  const filters = searchparams.split('.')[1]
+  const cat = params.category
   try {
     const token = await getToken({ req, secret });
     if (token) {
       const res = await axios.get(
-        `${process.env.BACKEND_API}/gifts/category/${cat}?${filters === '=' ? '' : filters}`,
+        `${process.env.BACKEND_API}/gifts/category/${cat}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -23,7 +21,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return NextResponse.json(res.data);
     } else {
       const res = await axios.get(
-        `${process.env.BACKEND_API}/gifts/category/${cat}?${filters === '=' ? '' : filters}`,
+        `${process.env.BACKEND_API}/gifts/category/${cat}`,
         {
           headers: {
             "Content-Type": "application/json",

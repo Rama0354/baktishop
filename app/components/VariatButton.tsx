@@ -6,8 +6,11 @@ import { RootState } from "../redux/store";
 type Variants = {
   id: number;
   variant_name: string;
-  variant_point: number;
   variant_quantity: number;
+  variant_point: number;
+  fvariant_point: string;
+  variant_weight: number;
+  fvariant_weight: string;
 };
 interface VariantButtonProps {
   variants: Variants[];

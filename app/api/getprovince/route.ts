@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import axios from "axios";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest, res: NextResponse) {
   const secret = process.env.NEXTAUTH_SECRET;
 

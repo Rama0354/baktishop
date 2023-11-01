@@ -7,8 +7,10 @@ declare module "next-auth" {
     user: {
       id: string;
       name: string;
+      username: string;
       email: string;
       roles: string[];
+      avatar_url:string;
     } & DefaultSession;
   }
 
@@ -18,9 +20,13 @@ declare module "next-auth" {
       users: {
         user_id: string;
         name: string;
+        username: string;
         email: string;
         access_token: string;
         roles: string[];
+        profile:{
+          avatar_url:string;
+        }
       };
       expires_at: number;
       expires_in: number;
@@ -34,7 +40,9 @@ declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     user_id: string;
     name: string;
+    username: string;
     roles: string[];
+    avatar_url:string;
     access_token: string;
     refresh_token: string;
     expires_in: number;

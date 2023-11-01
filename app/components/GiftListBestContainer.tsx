@@ -11,7 +11,7 @@ export default function GiftListBestContainer() {
     queryKey: [`ListBest`],
     queryFn: async () => {
       const res = await axios.get(
-        `api/itemgift?page=1&per_page=10&sort_column[0]=total_redeem&sort_type[0]=desc`
+        `api/itemgift/page=1&per_page=10&sort_column[0]=total_redeem&sort_type[0]=desc`
       );
       return res.data.data;
     },

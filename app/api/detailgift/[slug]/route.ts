@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import axios from "axios";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export const dynamic = 'auto';
+export async function GET(req: NextRequest,{params}:{params:{slug:string}}, res: NextResponse) {
   const secret = process.env.NEXTAUTH_SECRET;
-  const searchparams = req.nextUrl.searchParams
-  const slug = searchparams.get('slug')
+  const slug = params.slug
   try {
     const token = await getToken({ req, secret });
     if (token) {
@@ -18,7 +18,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
           },
         }
       );
-
       return NextResponse.json(res.data);
     } else {
       const res = await axios.get(
@@ -29,7 +28,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
           },
         }
       );
-
       return NextResponse.json(res.data);
     }
   } catch (error) {

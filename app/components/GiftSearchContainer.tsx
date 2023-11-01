@@ -109,7 +109,7 @@ export default function GiftSearchContainer() {
   const { data, isError, error, isLoading } = useQuery({
     queryKey: [`search`, urls],
     queryFn: async () => {
-      const res = await axios.get(`api/itemgift?` + querys);
+      const res = await axios.get(`api/itemgift/` + querys);
       return res.data.data;
     },
     onError: (error) => {

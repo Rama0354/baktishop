@@ -50,7 +50,9 @@ export const options: NextAuthOptions = {
       if (user) {
         token.user_id = user.data.users.user_id;
         token.name = user.data.users.name;
+        token.username = user.data.users.username;
         token.email = user.data.users.email;
+        token.avatar_url = user.data.users.profile.avatar_url;
         token.roles = user.data.users.roles;
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
@@ -65,7 +67,9 @@ export const options: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.name = token.name;
+        session.user.username = token.username;
         session.user.email = token.email!;
+        session.user.avatar_url = token.avatar_url!;
         session.user.roles = token.roles;
         session.accessToken = token.access_token;
       }
