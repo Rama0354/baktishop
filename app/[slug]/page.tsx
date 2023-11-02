@@ -9,9 +9,7 @@ import Hydrate from "../lib/Hydrate";
 import GiftList from "../components/GiftList";
 import CatAndBrLayout from "../components/layouts/CatAndBrLayout";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 
-export const dynamicParams = false;
 export async function generateStaticParams() {
   const res = await axios
     .get(`${process.env.BACKEND_API}/gifts`)
