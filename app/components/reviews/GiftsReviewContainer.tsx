@@ -1,20 +1,22 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect } from "react";
-import GiftRating from "./GiftRating";
+import GiftRating from "../GiftRating";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useRouter } from "next/navigation";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 import {
   setReviewFilter,
   setReviewQuery,
   setReviewSort,
   setReviewUrls,
-} from "../redux/slice/detailSlice";
-import ReviewsFilter from "./reviews/ReviewsFilter";
-import ReviewsSort from "./reviews/ReviewsSort";
+} from "../../redux/slice/detailSlice";
+import ReviewsFilter from "./ReviewsFilter";
+import ReviewsSort from "./ReviewsSort";
+import ReviewsPagination from "./ReviewsPagination";
+import { SkeletonComments } from "../Skeleton";
 
 type Reviews = {
   id: number;
@@ -46,6 +48,9 @@ export default function GiftsReviewContainer({
   const filter = useSelector(
     (state: RootState) => state.detail.reviewfiter.filters
   );
+  const pages = useSelector(
+    (state: RootState) => state.detail.reviewpagination
+  );
   const urls = useSelector((state: RootState) => state.detail.reviewfiter.urls);
   const querys = useSelector(
     (state: RootState) => state.detail.reviewfiter.querys
@@ -65,14 +70,20 @@ export default function GiftsReviewContainer({
           },
         ]
       : [];
+    const pageParams = pages
+      ? {
+          page: pages.page,
+          per_page: pages.per_page,
+        }
+      : {
+          page: 1,
+          per_page: 5,
+        };
     const queryFilter = [...filterParams];
     const querySort = [...sortParams];
     const filters = queryFilter
       .map((filters, index) => {
-        const newFilter =
-          filters.search_column === "item_gift_slug"
-            ? `search_column[${index}]=${filters.search_column}&search_text[${index}]=${filters.search_text}`
-            : `search_column[${index}]=${filters.search_column}&search_text[${index}]=${filters.search_text}&search_operator[${index}]=${filters.search_operator}`;
+        const newFilter = `search_column[${index}]=${filters.search_column}&search_text[${index}]=${filters.search_text}&search_operator[${index}]=${filters.search_operator}`;
         return newFilter;
       })
       .join("&");
@@ -82,15 +93,19 @@ export default function GiftsReviewContainer({
         return newFilter;
       })
       .join("&");
-    const allQuery =
-      filters && sorts ? [filters, sorts].join("&") : filters ? filters : sorts;
+    const paginate = `page=${pageParams.page}&per_page=${pageParams.per_page}`;
+    const allQuery = paginate
+      ? filters && sorts
+        ? [paginate, filters, sorts].join("&")
+        : filters
+        ? [paginate, filters].join("&")
+        : [paginate, sorts].join("&")
+      : paginate;
 
     const urlfilters = queryFilter
       .map((filters, index) => {
         const newFilter =
-          filters.search_column === "page"
-            ? `page=${filters.search_text}`
-            : "" + filters.search_column === "review_rating"
+          filters.search_column === "review_rating"
             ? `ratingFilter=${filters.init}`
             : "";
         return newFilter;
@@ -105,24 +120,28 @@ export default function GiftsReviewContainer({
         return newFilter;
       })
       .join("&");
-    const allUrlQuery =
-      urlfilters && urlsorts
-        ? [urlfilters, urlsorts].join("&")
+    const urlPages = `page=${pageParams.page}`;
+    const allUrlQuery = urlPages
+      ? urlfilters && urlsorts
+        ? [urlPages, urlfilters, urlsorts].join("&")
         : urlfilters
-        ? urlfilters
-        : urlsorts;
+        ? [urlPages, urlfilters].join("&")
+        : [urlPages, urlsorts].join("&")
+      : urlPages;
     dispatch(setReviewQuery(allQuery));
     dispatch(setReviewUrls(allUrlQuery));
-  }, [filter, sort, searchParams, dispatch]);
+  }, [pages, filter, sort, searchParams, dispatch]);
   const { data: reviews, isLoading } = useQuery(
     ["review", urls !== "" ? urls : ""],
     async () => {
       const res = await axios.get(
-        `api/giftreviews/${productId}${querys !== "" ? "/" + querys : ""}`
+        `api/giftreviews/${productId}/${querys !== "" ? querys : ""}`
       );
       return res.data;
     }
   );
+
+  const revSk = [...Array(3)];
   return (
     <section className="w-full">
       <div className="w-full border-b border-purple-500">
@@ -138,7 +157,7 @@ export default function GiftsReviewContainer({
           <ReviewsFilter />
           <div className="w-full p-3">
             {isLoading ? (
-              <>Loading...</>
+              revSk.map((_, id) => <SkeletonComments key={id} />)
             ) : reviews && reviews.data ? (
               reviews.data.map((review: Reviews, idx: number) => (
                 <article key={idx}>
@@ -148,7 +167,7 @@ export default function GiftsReviewContainer({
                       height={80}
                       className="w-10 h-10 rounded-full"
                       src={
-                        review.users.profile.avatar_url !== null
+                        review.users.profile !== null
                           ? review.users.profile.avatar_url
                           : "/assets/img/no-image.jpg"
                       }
@@ -182,6 +201,15 @@ export default function GiftsReviewContainer({
               </div>
             )}
           </div>
+          {reviews ? (
+            reviews.data && reviews.data.length >= 1 ? (
+              <ReviewsPagination reviewsMeta={reviews.meta} />
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </section>

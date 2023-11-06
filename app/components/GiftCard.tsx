@@ -18,7 +18,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
   };
   return (
     <div className="relative group">
-      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border bg-white hover:border-purple-500 border-slate-200 rounded-md shadow-md">
+      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-purple-300 hover:border-purple-500 rounded-md sm:rounded-lg hover:shadow-md">
         {/* content */}
         <Image
           src={images[0] !== undefined ? images[0] : "/assets/img/no-image.jpg"}

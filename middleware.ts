@@ -12,6 +12,7 @@ export default withAuth(
           return token?.roles[0] === "admin";
         }
         // `/account` only requires the user to be logged in
+        // return !!token;
         return !!token;
       },
     },

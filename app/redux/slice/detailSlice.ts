@@ -18,12 +18,16 @@ type initialStateType = {
     fvariant_point: string;
     variant_weight: number;
     fvariant_weight: string;
-  };
+  },
   reviewfiter:{
     filters: Filter[],
     querys: string,
     urls:string,
     sort: any,
+  },
+  reviewpagination:{
+    page:number,
+    per_page:number,
   },
   urldetail: string;
 };
@@ -45,6 +49,10 @@ const initialState: initialStateType = Cookies.get("filtersort_detail")
         querys: "",
         urls:"",
         sort: null,
+      },
+      reviewpagination:{
+        page:1,
+        per_page:1,
       },
       urldetail: "",
     };
@@ -74,15 +82,18 @@ const detailSlice = createSlice({
           text: action.payload.text,
           operator: action.payload.operator,
         };
-        if (action.payload.text === "" || action.payload.text === 0) {
+        if (action.payload.text === "" || action.payload.text === 0 || action.payload.text === null) {
           state.reviewfiter.filters = [];
+          state.reviewpagination.page = 1
           Cookies.set('filtersort_detail', JSON.stringify(state));
         } else {
           state.reviewfiter.filters = updatedFilters
+          state.reviewpagination.page = 1
           Cookies.set('filtersort_detail', JSON.stringify(state))
         }
       } else {
         state.reviewfiter.filters = [...state.reviewfiter.filters, action.payload]
+        state.reviewpagination.page = 1
         Cookies.set('filtersort_detail', JSON.stringify(state))
       }
     },
@@ -93,9 +104,11 @@ const detailSlice = createSlice({
         }else{
           state.reviewfiter.sort = null
         }
+        state.reviewpagination.page = 1;
         Cookies.set('filtersort_detail', JSON.stringify(state))
       } else {
         state.reviewfiter.sort = null
+        state.reviewpagination.page = 1;
         Cookies.set('filtersort_detail', JSON.stringify(state))
       }
     },
@@ -105,6 +118,10 @@ const detailSlice = createSlice({
     },
     setReviewUrls: (state, action: PayloadAction<string>) => {
       state.reviewfiter.urls = action.payload;
+      Cookies.set('filtersort_detail', JSON.stringify(state))
+    },
+    setReviewPage: (state, action: PayloadAction<number>) => {
+      state.reviewpagination.page = action.payload;
       Cookies.set('filtersort_detail', JSON.stringify(state))
     },
     resetDetail: (state) => {
@@ -124,12 +141,16 @@ const detailSlice = createSlice({
         urls:"",
         sort: null,
       },
+      state.reviewpagination={
+        page:1,
+        per_page:1,
+      }
       state.urldetail = "";
-      Cookies.remove("filtersort_detail");
+      Cookies.set('filtersort_detail', JSON.stringify(state))
     },
   },
 });
 
-export const { setVariant, setUrlDetail,setReviewFilter,setReviewSort,setReviewQuery,setReviewUrls, resetDetail } = detailSlice.actions;
+export const { setVariant, setUrlDetail, setReviewFilter, setReviewSort, setReviewQuery, setReviewUrls, setReviewPage, resetDetail } = detailSlice.actions;
 
 export default detailSlice.reducer;

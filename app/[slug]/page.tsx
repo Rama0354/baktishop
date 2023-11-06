@@ -6,10 +6,10 @@ import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "../lib/Hydrate";
-import GiftList from "../components/GiftList";
-import CatAndBrLayout from "../components/layouts/CatAndBrLayout";
-import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+import ClientLayout from "../components/layouts/ClientLayout";
 
+export const dynamicParams = true;
 export async function generateStaticParams() {
   const res = await axios
     .get(`${process.env.BACKEND_API}/gifts`)
@@ -18,81 +18,45 @@ export async function generateStaticParams() {
     slug: data.item_gift_slug,
   }));
 }
-
 async function getDetail(slug: string) {
   const session = await getServerSession(options);
   if (session) {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/slug/${slug}`,
-      {
+    const res = await axios
+      .get(`${process.env.BACKEND_API}/gifts/slug/${slug}`, {
         headers: {
           "Content-Type": "Application/json",
           Authorization: `Bearer ${session?.accessToken}`,
         },
-      }
-    );
-    return res.data;
+      })
+      .then((res) => res.data)
+      .catch((error) => notFound());
+    return res;
   } else {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/slug/${slug}`,
-      {
+    const res = await axios
+      .get(`${process.env.BACKEND_API}/gifts/slug/${slug}`, {
         headers: {
           "Content-Type": "Application/json",
         },
-      }
-    );
-    return res.data;
+      })
+      .then((res) => res.data)
+      .catch((error) => notFound());
+    return res;
   }
 }
-async function getListByCat(category: string) {
-  const session = await getServerSession(options);
-  if (session) {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/category/${category}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-      }
-    );
-    return res.data;
-  } else {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/category/${category}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-        },
-      }
-    );
-    return res.data;
-  }
-}
-async function getListByBrand(brand: string) {
-  const session = await getServerSession(options);
-  if (session) {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/brand/${brand}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-      }
-    );
-    return res.data;
-  } else {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/gifts/brand/${brand}`,
-      {
-        headers: {
-          "Content-Type": "Application/json",
-        },
-      }
-    );
-    return res.data;
-  }
+
+export async function generateMetadata({
+  params: { slug },
+}: {
+  params: { slug: string };
+}) {
+  const res = await axios
+    .get(`${process.env.BACKEND_API}/gifts/slug/${slug}`)
+    .then((res) => res.data)
+    .catch(() => "not-found");
+  if (res === "not-found") notFound();
+  return {
+    title: res.data.item_gift_name,
+  };
 }
 
 export default async function SlugPage({
@@ -100,56 +64,19 @@ export default async function SlugPage({
 }: {
   params: { slug: string };
 }) {
-  const cookie = cookies();
-  const getFiltersortDetail = cookie.get("filtersort_detail");
-  const filterDetail = getFiltersortDetail
-    ? JSON.parse(getFiltersortDetail?.value as any)
-    : "";
   const slug = params.slug;
-
   const queryClient = getQueryClient();
-  if (slug.split(".")[0] === "cat") {
-    await queryClient.prefetchQuery(
-      [`cat-${slug.split(".")[1]}`, ``],
-      async () => {
-        const res = await getListByCat(`${slug.split(".")[1]}`);
-        return res.data;
-      }
-    );
-  } else if (slug.split(".")[0] === "b") {
-    await queryClient.prefetchQuery(
-      [`b-${slug.split(".")[1]}`, ``],
-      async () => {
-        const res = await getListByBrand(`${slug.split(".")[1]}`);
-        return res.data;
-      }
-    );
-  } else {
-    await queryClient.prefetchQuery(["detail", `${slug}`], async () => {
-      const res = await getDetail(slug);
-      return res.data;
-    });
-  }
+
+  await queryClient.prefetchQuery(["detail", `${slug}`], async () => {
+    const res = await getDetail(slug);
+    return res.data;
+  });
   const dehydratedState = dehydrate(queryClient);
   return (
-    <Hydrate state={dehydratedState}>
-      {slug.split(".")[0] === "cat" ? (
-        <CatAndBrLayout layoutType="cat">
-          <GiftList
-            pType={`${slug.split(".")[0]}`}
-            sType={`${slug.split(".")[1]}`}
-          />
-        </CatAndBrLayout>
-      ) : slug.split(".")[0] === "b" ? (
-        <CatAndBrLayout layoutType="b">
-          <GiftList
-            pType={`${slug.split(".")[0]}`}
-            sType={`${slug.split(".")[1]}`}
-          />
-        </CatAndBrLayout>
-      ) : (
-        <GiftDetail slug={slug} filterDetail={filterDetail.variant} />
-      )}
-    </Hydrate>
+    <ClientLayout>
+      <Hydrate state={dehydratedState}>
+        <GiftDetail slug={slug} />
+      </Hydrate>
+    </ClientLayout>
   );
 }

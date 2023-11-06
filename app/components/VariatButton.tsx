@@ -27,8 +27,10 @@ export default function VariantButton({
     (state: RootState) => state.detail.variant
   );
   const findidx = filterDetail
-    ? variants.findIndex((f) => f.id === filterDetail.id)
-    : 99;
+    ? filterDetail
+      ? variants.findIndex((f) => f.id === filterDetail.id)
+      : 99
+    : -1;
   const [variantselect, setVariantSelect] = useState<Variants | string>(
     findidx !== -1 ? variants[findidx] : "none"
   );
@@ -87,18 +89,19 @@ export default function VariantButton({
               </>
             )}
           </RadioGroup.Option>
-          {variants.map((variant, rateIndex) => (
-            <RadioGroup.Option
-              key={variant.id}
-              id={`${variant.id}`}
-              value={variant}
-              disabled={variant.variant_quantity < 1}
-              className={({ active, checked, disabled }) =>
-                `${
-                  active
-                    ? "ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-purple-300"
-                    : ""
-                }
+          {variants &&
+            variants.map((variant, rateIndex) => (
+              <RadioGroup.Option
+                key={variant.id}
+                id={`${variant.id}`}
+                value={variant}
+                disabled={variant.variant_quantity < 1}
+                className={({ active, checked, disabled }) =>
+                  `${
+                    active
+                      ? "ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-purple-300"
+                      : ""
+                  }
               ${checked ? "bg-purple-900 bg-opacity-75 text-white" : ""}
               ${
                 disabled
@@ -106,29 +109,29 @@ export default function VariantButton({
                   : ""
               }
                   relative flex cursor-pointer rounded-lg px-3 py-2 border border-purple-900 shadow-md focus:outline-none`
-              }
-            >
-              {({ active, checked }) => (
-                <>
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="text-sm">
-                        <RadioGroup.Label
-                          as="p"
-                          id={`${variant.id}`}
-                          className={`font-medium line-clamp-1 ${
-                            checked ? "text-white" : "text-slate-700"
-                          }`}
-                        >
-                          {variant.variant_name}
-                        </RadioGroup.Label>
+                }
+              >
+                {({ active, checked }) => (
+                  <>
+                    <div className="flex w-full items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="text-sm">
+                          <RadioGroup.Label
+                            as="p"
+                            id={`${variant.id}`}
+                            className={`font-medium line-clamp-1 ${
+                              checked ? "text-white" : "text-slate-700"
+                            }`}
+                          >
+                            {variant.variant_name}
+                          </RadioGroup.Label>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              )}
-            </RadioGroup.Option>
-          ))}
+                  </>
+                )}
+              </RadioGroup.Option>
+            ))}
         </div>
       </RadioGroup>
     </div>

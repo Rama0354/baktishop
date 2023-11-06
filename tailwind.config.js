@@ -7,6 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        fadeIn: 'fadeIn 1s ease-in',
+      },
+      keyframes: {
+        fadeIn:{
+          '0%':{opacity:0, transform:'translate(0,30px)'},
+          '100%':{opacity:1,transform:'translate(0,0)'},
+        }
+      },
       colors: {
         "my-green": "#74B71B",
         "my-lightgreen": "#D5E8C6",

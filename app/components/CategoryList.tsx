@@ -35,15 +35,15 @@ export default function CategoryList() {
   });
   const catSk = [...Array(5)];
   return (
-    <div className="w-full flex shrink gap-3 py-6">
+    <div className="w-full flex shrink gap-3 py-6 fadein">
       {isLoading
         ? catSk.map((_, id) => <SkeletonCatCard key={id} />)
         : data &&
-          data.map((cat: catListType) => (
+          data.map((cat: catListType, idx: number) => (
             <Link
               key={cat.id}
-              href={`cat.${cat.category_slug}`}
-              className="w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md"
+              href={`/category/${cat.category_slug}`}
+              className={`fadechild w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md`}
             >
               <Image
                 src={

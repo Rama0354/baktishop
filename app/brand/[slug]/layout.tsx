@@ -1,6 +1,6 @@
-import ClientLayout from "../components/layouts/ClientLayout";
+import ClientLayout from "../../components/layouts/ClientLayout";
 
-export default function SlugLayout({
+export default function BrandLayout({
   children,
 }: {
   children: React.ReactNode;

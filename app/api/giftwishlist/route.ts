@@ -7,23 +7,16 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const token = await getToken({ req, secret });
     if (token) {
-      const res = await fetch(`${process.env.BACKEND_API}/gifts`,{cache:"no-store",headers:{
+      const res = await fetch(`${process.env.BACKEND_API}/gifts/wishlist`,{cache:"no-store",headers:{
         "Content-Type": "application/json",
             Authorization: `Bearer ${token.access_token}`,
       }})
       const data = await res.json()
       return NextResponse.json(data);
     } else {
-      const res = await axios.get(
-        `${process.env.BACKEND_API}/gifts`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      return NextResponse.json(res.data);
+        const res = await fetch(`${process.env.BACKEND_API}/gifts/wishlist`,{cache:"no-store"})
+          const data = await res.json()
+          return NextResponse.json(data);
     }
   } catch (error) {
     console.error("Error while processing the request:", error);
