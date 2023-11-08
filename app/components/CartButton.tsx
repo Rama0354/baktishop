@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
-import { removeCartItem } from "../redux/slice/cartSlice";
+import { getCart, removeCartItem } from "../redux/slice/cartSlice";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function CartButton() {
   const [cartBtn, setCartBtn] = useState(false);
@@ -18,9 +21,35 @@ export default function CartButton() {
     return sum + item.product_quantity;
   }, 0);
 
+  const mutation = useMutation({
+    mutationFn: async ({ cart_id }: { cart_id: string }) => {
+      return await axios
+        .delete(`api/cart/${cart_id}`)
+        .then((res) => {
+          if (res.data.status !== 500) {
+            if (res.data.error === 0) {
+              toast.success("Produk telah dihapus dari Keranjang");
+            } else {
+              toast.error(res.data.error.message);
+            }
+          } else {
+            toast.error(`Error ${res.data.status}`);
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    onSuccess: () => {
+      dispatch(getCart() as any);
+    },
+  });
+
   const handleDeleteCart = (item: any) => {
-    dispatch(removeCartItem(item));
+    mutation.mutate({ cart_id: item.cart_id });
   };
+
+  useEffect(() => {
+    dispatch(getCart() as any);
+  }, [dispatch]);
 
   return (
     <div className=" group relative">

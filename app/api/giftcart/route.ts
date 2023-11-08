@@ -6,13 +6,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const secret = process.env.NEXTAUTH_SECRET;
   const token = await getToken({ req, secret });
   try {
-      const res = await axios.get(`${process.env.BACKEND_API}/gifts`,{
+      const res = await axios.get(`${process.env.BACKEND_API}/carts`,{
         headers:{
         "Content-Type": "application/json",
             Authorization: `Bearer ${token?.access_token}`,
       }})
-
-      return NextResponse.json(res.data);
+      return NextResponse.json(res);
   } catch (error) {
     console.error("Error while processing the request:", error);
     return NextResponse.json({ error,status: 500 });

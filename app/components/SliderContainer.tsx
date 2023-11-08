@@ -30,46 +30,46 @@ export default function SliderContainer() {
       //   onSlideChange={() => console.log("slide change")}
     >
       <SwiperSlide>
-        <div className="w-full max-h-56 sm:max-h-72 md:max-h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-1.jpg"}
-            width={400}
-            height={200}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
             alt="banner"
-            className="w-full object-cover"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="w-full max-h-56 sm:max-h-72 md:max-h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-2.jpg"}
-            width={800}
-            height={400}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
             alt="banner"
-            className="w-full object-cover"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="w-full max-h-56 sm:max-h-72 md:max-h-[480px] flex items-center overflow-hidden">
+        <div className="relaive w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-3.jpg"}
-            width={400}
-            height={200}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
             alt="banner"
-            className="w-full object-cover"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="w-full max-h-56 sm:max-h-72 md:max-h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-4.jpg"}
-            width={400}
-            height={200}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
             alt="banner"
-            className="w-full object-cover"
           />
         </div>
       </SwiperSlide>

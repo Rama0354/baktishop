@@ -6,19 +6,81 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import Image from "next/image";
-import { changeCartItems, removeCartItem } from "../redux/slice/cartSlice";
+import {
+  changeCartItems,
+  getCart,
+  removeCartItem,
+} from "../redux/slice/cartSlice";
 import { CartType } from "../types/cart";
 import CountCart from "../components/CountCart";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function CartPage() {
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const changeQty = useMutation({
+    mutationFn: async ({
+      cart_id,
+      cart_quantity,
+    }: {
+      cart_id: string;
+      cart_quantity: number;
+    }) => {
+      return await axios
+        .put(`api/cart/${cart_id}`, {
+          cart_quantity,
+        })
+        .then((res) => {
+          if (res.data.status !== 500) {
+            if (res.status === 200) {
+              toast.success(`Jumlah berubah menjadi ${cart_quantity}`);
+            } else if (res.data.status === 400) {
+              toast.error("Maaf, Jumlah yang anda masukkan melebihi stok!");
+            } else {
+              toast.error(res.data.error.message);
+            }
+          } else {
+            toast.error(`Error ${res.data.status}`);
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    onSuccess: () => {
+      dispatch(getCart() as any);
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: async ({ cart_id }: { cart_id: string }) => {
+      return await axios
+        .delete(`api/cart/${cart_id}`)
+        .then((res) => {
+          if (res.data.status !== 500) {
+            if (res.data.error === 0) {
+              toast.success("Produk telah dihapus dari Keranjang");
+            } else {
+              toast.error(res.data.error.message);
+            }
+          } else {
+            toast.error(`Error ${res.data.status}`);
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    onSuccess: () => {
+      dispatch(getCart() as any);
+    },
+  });
+
   const handleDeleteCart = (item: any) => {
-    dispatch(removeCartItem(item));
+    mutation.mutate({ cart_id: item.cart_id });
   };
+
   const totalQty = cartItems.reduce(
     (sum, item) => sum + item.product_quantity,
     0
@@ -97,9 +159,14 @@ export default function CartPage() {
                                     return item;
                                   }
                                 );
-                                dispatch(
-                                  changeCartItems(updatedCartItems[idx])
-                                );
+                                changeQty.mutate({
+                                  cart_id: updatedCartItems[idx].cart_id,
+                                  cart_quantity:
+                                    updatedCartItems[idx].product_quantity,
+                                });
+                                // dispatch(
+                                //   changeCartItems(updatedCartItems[idx])
+                                // );
                               }}
                             />
                           </div>

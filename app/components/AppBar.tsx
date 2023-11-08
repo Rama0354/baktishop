@@ -15,13 +15,16 @@ const AppBar = () => {
         <div className="w-full flex gap-3 justify-between items-center">
           <div className="relative lg:w-full flex shrink-0 lg:shrink">
             <Link href={"/"} className="flex object-contain lg:items-end px-1">
-              <Image
-                src={"/assets/img/logo2.png"}
-                alt="logo"
-                width={80}
-                height={80}
-                className="object-contain w-12 lg:w-16 brightness-0 invert"
-              />
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16">
+                <Image
+                  src={"/assets/img/logo2.png"}
+                  alt="logo"
+                  layout="fill"
+                  objectFit="contain"
+                  objectPosition="center"
+                  className="brightness-0 invert"
+                />
+              </div>
               <h1 className="hidden lg:block font-semibold text-2xl py-1">
                 Shop
               </h1>

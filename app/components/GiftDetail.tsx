@@ -5,16 +5,17 @@ import Link from "next/link";
 import WishButton from "./WishButton";
 import { Fragment, useEffect, useState } from "react";
 import VariantButton from "./VariatButton";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setUrlDetail, setVariant } from "../redux/slice/detailSlice";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { setCartItems } from "../redux/slice/cartSlice";
+import { getCart } from "../redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
+import { signIn, useSession } from "next-auth/react";
 
 type DetailImage = {
   id: number;
@@ -33,6 +34,7 @@ const GiftDetail = ({
   slug: string;
   filterDetail?: any;
 }) => {
+  const { status: loginStatus } = useSession();
   const dispatch = useDispatch();
   const pathname = usePathname();
   const variant = useSelector((state: RootState) => state.detail.variant);
@@ -89,44 +91,114 @@ const GiftDetail = ({
     dispatch(setUrlDetail(pathname));
   }, [pathname, dispatch]);
 
+  const mutation = useMutation({
+    mutationFn: async ({
+      item_gift_id,
+      variant_id,
+      cart_quantity,
+    }: {
+      item_gift_id: number;
+      variant_id?: number;
+      cart_quantity: number;
+    }) => {
+      if (variant_id !== undefined) {
+        return await axios
+          .post(`api/cart`, {
+            item_gift_id,
+            variant_id,
+            cart_quantity,
+          })
+          .then((res) => {
+            if (res.data.status !== 500) {
+              if (res.data.error === 0) {
+                toast.success(res.data.message);
+              } else if (res.data.status === 400) {
+                toast.error("Maaf, Jumlah yang anda masukkan melebihi stok!");
+              } else {
+                toast.error(res.data.error.message);
+              }
+            } else {
+              toast.error(`Error ${res.data.status}`);
+            }
+          })
+          .catch((err) => console.log(err));
+      } else {
+        return await axios
+          .post(`api/cart`, {
+            item_gift_id,
+            cart_quantity,
+          })
+          .then((res) => {
+            if (res.data.status !== 500) {
+              if (res.data.error === 0) {
+                toast.success(res.data.message);
+              } else if (res.data.status === 400) {
+                toast.error("Maaf, Jumlah yang anda masukkan melebihi stok!");
+              } else {
+                toast.error(res.data.error.message);
+              }
+            } else {
+              toast.error(`Error ${res.data.status}`);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    },
+    onSuccess: () => {
+      dispatch(getCart() as any);
+    },
+  });
   const handleAddToCart = () => {
-    if (countItem !== 0) {
-      if (detail.variants.length !== 0) {
-        if (variant.id !== 0) {
-          toast.success(
-            `${detail.item_gift_name} varian ${variant.variant_name} Masuk Keranjang`
-          );
-          dispatch(
-            setCartItems({
-              product_id: detail.id,
-              product_name: detail.item_gift_name,
-              product_image:
-                findVarImage !== undefined ? findVarImage.image_url : mainImage,
-              varian_id: variant.id,
-              varian_name: variant.variant_name,
-              product_weight: variant.variant_weight,
-              product_quantity: countItem,
-              product_price: variant.variant_point,
-            })
-          );
+    if (loginStatus === "unauthenticated") {
+      signIn();
+    } else {
+      if (countItem !== 0) {
+        if (detail.variants.length !== 0) {
+          if (variant.id !== 0) {
+            // toast.success(
+            //   `${detail.item_gift_name} varian ${variant.variant_name} Masuk Keranjang`
+            // );
+            // dispatch(
+            //   setCartItems({
+            //     product_id: detail.id,
+            //     product_name: detail.item_gift_name,
+            //     product_image:
+            //       findVarImage !== undefined ? findVarImage.image_url : mainImage,
+            //     varian_id: variant.id,
+            //     varian_name: variant.variant_name,
+            //     product_weight: variant.variant_weight,
+            //     product_quantity: countItem,
+            //     product_price: variant.variant_point,
+            //   })
+            // );
+            mutation.mutate({
+              item_gift_id: detail.id,
+              variant_id: variant.id,
+              cart_quantity: countItem,
+            });
+          } else {
+            toast.error("Mohon pilih varian");
+          }
         } else {
-          toast.error("Mohon pilih varian");
+          // toast.success(`${detail.item_gift_name} Masuk Keranjang`);
+          // dispatch(
+          //   setCartItems({
+          //     product_id: detail.id,
+          //     product_name: detail.item_gift_name,
+          //     product_image: mainImage,
+          //     product_weight: detail.item_gift_weight,
+          //     product_quantity: countItem,
+          //     product_price: detail.item_gift_point,
+          //   })
+          // );
+          mutation.mutate({
+            item_gift_id: detail.id,
+            cart_quantity: countItem,
+          });
         }
       } else {
-        toast.success(`${detail.item_gift_name} Masuk Keranjang`);
-        dispatch(
-          setCartItems({
-            product_id: detail.id,
-            product_name: detail.item_gift_name,
-            product_image: mainImage,
-            product_weight: detail.item_gift_weight,
-            product_quantity: countItem,
-            product_price: detail.item_gift_point,
-          })
-        );
+        toast.error("Mohon atur jumlah barang");
       }
-    } else {
-      toast.error("Mohon atur jumlah barang");
     }
   };
   return (

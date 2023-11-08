@@ -34,14 +34,6 @@ export default function CheckoutPage() {
   const [selectedProvinceId, setSelectedProvinceId] = useState("");
   const [selectedCityId, setSelectedCityId] = useState("");
   const [selectedSubdistrictId, setSelectedSubdistrictId] = useState("");
-  console.log(
-    "provinsi: " +
-      selectedProvinceId +
-      " kota: " +
-      selectedCityId +
-      " kecamatan: " +
-      selectedSubdistrictId
-  );
 
   const handleProvinceChange = (provinceId: string) => {
     setSelectedProvinceId(provinceId);

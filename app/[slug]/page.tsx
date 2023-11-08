@@ -9,7 +9,6 @@ import Hydrate from "../lib/Hydrate";
 import { notFound } from "next/navigation";
 import ClientLayout from "../components/layouts/ClientLayout";
 
-export const dynamicParams = true;
 export async function generateStaticParams() {
   const res = await axios
     .get(`${process.env.BACKEND_API}/gifts`)

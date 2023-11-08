@@ -9,7 +9,6 @@ import {
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
-import NextProgressbar from "../NextProgressbar";
 
 export default function ClientLayout({
   children,
