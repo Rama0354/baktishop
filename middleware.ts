@@ -1,8 +1,9 @@
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
+import { NextRequest } from "next/server";
 
 export default withAuth(
-  function middleware(request: NextRequestWithAuth) {
-    // console.log(request.nextUrl.pathname);
+  function middleware(request: NextRequest) {
+    console.log(request.headers);
   },
   {
     callbacks: {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setReviewFilter } from "@/app/redux/slice/detailSlice";
 import { AiFillStar } from "react-icons/ai";
 import { Rating } from "@/app/types/details";
@@ -28,7 +28,7 @@ export default function ReviewsFilter() {
     dispatch(setReviewFilter(newFilter));
   };
   return (
-    <div className="w-max px-6">
+    <div className="w-full sm:w-max px-6">
       <div className="mx-auto w-full max-w-md">
         <RadioGroup
           value={selected}
@@ -38,7 +38,7 @@ export default function ReviewsFilter() {
           <RadioGroup.Label id="reviewfilter" className="sr-only">
             Reviews Sort
           </RadioGroup.Label>
-          <div className="flex gap-3 py-3">
+          <div className="flex flex-wrap sm:flex-nowrap gap-3 py-3">
             {ratings &&
               ratings
                 .map((rating, idx) => (

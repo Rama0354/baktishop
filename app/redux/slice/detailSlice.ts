@@ -31,9 +31,7 @@ type initialStateType = {
   },
   urldetail: string;
 };
-const initialState: initialStateType = Cookies.get("filtersort_detail")
-  ? { ...JSON.parse(Cookies.get("filtersort_detail") as any) }
-  : {
+const initialState: initialStateType = {
       variant: {
         id: 0,
         item_gift_id: 0,
@@ -63,11 +61,9 @@ const detailSlice = createSlice({
   reducers: {
     setVariant: (state, action: PayloadAction<any>) => {
       state.variant = action.payload;
-      Cookies.set("filtersort_detail", JSON.stringify(state));
     },
     setUrlDetail: (state, action: PayloadAction<any>) => {
       state.urldetail = action.payload;
-      Cookies.set("filtersort_detail", JSON.stringify(state));
     },
     setReviewFilter: (state, action: PayloadAction<Filter>) => {
       const indexFilter = state.reviewfiter.filters.findIndex(
@@ -85,16 +81,13 @@ const detailSlice = createSlice({
         if (action.payload.text === "" || action.payload.text === 0 || action.payload.text === null) {
           state.reviewfiter.filters = [];
           state.reviewpagination.page = 1
-          Cookies.set('filtersort_detail', JSON.stringify(state));
         } else {
           state.reviewfiter.filters = updatedFilters
           state.reviewpagination.page = 1
-          Cookies.set('filtersort_detail', JSON.stringify(state))
         }
       } else {
         state.reviewfiter.filters = [...state.reviewfiter.filters, action.payload]
         state.reviewpagination.page = 1
-        Cookies.set('filtersort_detail', JSON.stringify(state))
       }
     },
     setReviewSort: (state, action: PayloadAction<any>) => {
@@ -105,24 +98,19 @@ const detailSlice = createSlice({
           state.reviewfiter.sort = null
         }
         state.reviewpagination.page = 1;
-        Cookies.set('filtersort_detail', JSON.stringify(state))
       } else {
         state.reviewfiter.sort = null
         state.reviewpagination.page = 1;
-        Cookies.set('filtersort_detail', JSON.stringify(state))
       }
     },
     setReviewQuery: (state, action: PayloadAction<string>) => {
       state.reviewfiter.querys = action.payload;
-      Cookies.set('filtersort_detail', JSON.stringify(state))
     },
     setReviewUrls: (state, action: PayloadAction<string>) => {
       state.reviewfiter.urls = action.payload;
-      Cookies.set('filtersort_detail', JSON.stringify(state))
     },
     setReviewPage: (state, action: PayloadAction<number>) => {
       state.reviewpagination.page = action.payload;
-      Cookies.set('filtersort_detail', JSON.stringify(state))
     },
     resetDetail: (state) => {
       state.variant = {
@@ -146,7 +134,6 @@ const detailSlice = createSlice({
         per_page:1,
       }
       state.urldetail = "";
-      Cookies.set('filtersort_detail', JSON.stringify(state))
     },
   },
 });

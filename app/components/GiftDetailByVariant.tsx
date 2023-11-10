@@ -4,7 +4,6 @@ import GiftRating from "./GiftRating";
 import Link from "next/link";
 import WishButton from "./WishButton";
 import { Fragment, useEffect, useState } from "react";
-import VariantButton from "./VariatButton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,15 +26,7 @@ type DetailImage = {
 };
 type DetailImages = DetailImage[];
 
-const GiftDetail = ({
-  slug,
-  filterDetail,
-  selectedVariants,
-}: {
-  slug: string;
-  filterDetail?: any;
-  selectedVariants?: any;
-}) => {
+const GiftDetailByVariant = ({ slug }: { slug: string }) => {
   const { status: loginStatus } = useSession();
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -45,7 +36,7 @@ const GiftDetail = ({
   const { data: detail } = useQuery({
     queryKey: ["detail", `${slug}`],
     queryFn: async () => {
-      const res = await axios.get(`api/detailgift/${slug}`);
+      const res = await axios.get(`api/detailgiftbyvariant/${slug}`);
       return res.data.data;
     },
     onError: (error) => {
@@ -53,17 +44,17 @@ const GiftDetail = ({
     },
   });
   const images = detail
-    ? detail.item_gift_images.map((image: DetailImage) => ({
+    ? detail.item_gifts.item_gift_images.map((image: DetailImage) => ({
         variant_id: image.variant_id,
         image_url: image.item_gift_image_url,
       }))
     : [];
   const findVarImage =
-    selectedVariants !== undefined
-      ? images.find((f: any) => f.variant_id === selectedVariants.id)
+    detail !== undefined
+      ? images.find((f: any) => f.variant_id === detail.id)
       : undefined;
   const [selectedVariantImage, setSelectedVariantImage] = useState(
-    selectedVariants && selectedVariants.id !== 0
+    detail && detail.item_gifts.id !== 0
       ? findVarImage !== undefined
         ? findVarImage.image_url
         : images[0].image_url
@@ -159,8 +150,16 @@ const GiftDetail = ({
       signIn();
     } else {
       if (countItem !== 0) {
-        if (detail.variants.length !== 0) {
-          toast.error("Mohon pilih varian");
+        if (detail.item_gifts.variants.length !== 0) {
+          if (detail.id !== 0) {
+            mutation.mutate({
+              item_gift_id: detail.item_gifts.id,
+              variant_id: detail.id,
+              cart_quantity: countItem,
+            });
+          } else {
+            toast.error("Mohon pilih varian");
+          }
         } else {
           mutation.mutate({
             item_gift_id: detail.id,
@@ -177,10 +176,14 @@ const GiftDetail = ({
       {/* breadcrumb */}
       <div className="w-full h-12 px-6 py-3 mb-3 border-b border-slate-200">
         <Link href={"/"}>Product</Link>
-        {` > ${detail ? detail.item_gift_name : ""}`}
+        {` > ${
+          detail
+            ? detail.item_gifts.item_gift_name + " - " + detail.variant_name
+            : ""
+        }`}
       </div>
       <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
-        <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
+        <div className="md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
           <div className="relative w-full h-72">
             <Image
               src={selectedVariantImage}
@@ -194,7 +197,7 @@ const GiftDetail = ({
             <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3">
               {/* gambar */}
               {detail &&
-                detail.item_gift_images.map((image: any) => (
+                detail.item_gifts.item_gift_images.map((image: any) => (
                   <div
                     key={image.id}
                     className={`relative w-16 h-16 shrink-0 border-2 rounded-md cursor-pointer overflow-hidden ${
@@ -224,35 +227,25 @@ const GiftDetail = ({
           <p className="font-bold text-2xl">
             {`${
               detail
-                ? selectedVariants !== undefined &&
-                  selectedVariants.variant_name !== ""
-                  ? detail.item_gift_name +
-                    " - " +
-                    selectedVariants.variant_name
-                  : detail.item_gift_name
+                ? detail.item_gifts.item_gift_name + " - " + detail.variant_name
                 : ""
             }`}
           </p>
           <div className="flex gap-3 items-center">
             <GiftRating
-              stars={detail ? detail.total_rating : 0}
-              reviews={detail ? detail.total_reviews : 0}
+              stars={detail ? detail.item_gifts.total_rating : 0}
+              reviews={detail ? detail.item_gifts.total_reviews : 0}
               scale={2}
             />
             <div className="w-full">
               <p className="text-sm text-slate-400">
-                {detail && detail.total_reviews} reviewers
+                {detail && detail.item_gifts.total_reviews} reviewers
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <p className="font-bold text-2xl text-purple-500">
-              {detail
-                ? selectedVariants !== undefined &&
-                  selectedVariants.variant_point !== 0
-                  ? rupiahCurrency(selectedVariants.variant_point)
-                  : detail.fitem_gift_point
-                : 0}
+              {detail ? rupiahCurrency(detail.variant_point) : 0}
             </p>
           </div>
           <div className="w-full">
@@ -265,7 +258,9 @@ const GiftDetail = ({
                   <p className="font-medium uppercase">Brand</p>
                 </div>
                 <p>
-                  {detail && detail.brand ? detail.brand.brand_name : "Unknown"}
+                  {detail && detail.item_gifts.brand
+                    ? detail.item_gifts.brand.brand_name
+                    : "Unknown"}
                 </p>
               </div>
               <div className="flex gap-3">
@@ -273,8 +268,8 @@ const GiftDetail = ({
                   <p className="font-medium uppercase">Kategori</p>
                 </div>
                 <p>
-                  {detail && detail.category
-                    ? detail.category.category_name
+                  {detail && detail.item_gifts.category
+                    ? detail.item_gifts.category.category_name
                     : "Unknown"}
                 </p>
               </div>
@@ -282,40 +277,28 @@ const GiftDetail = ({
                 <div className="w-20">
                   <p className="font-medium uppercase">Berat</p>
                 </div>
-                <p>
-                  {detail
-                    ? selectedVariants !== undefined &&
-                      selectedVariants.fvariant_weight !== 0
-                      ? selectedVariants.fvariant_weight
-                      : detail.fitem_gift_weight
-                    : "0 Gram"}
-                </p>
+                <p>{detail ? detail.fvariant_weight : "0 Gram"}</p>
               </div>
               <div className="flex gap-3">
                 <div className="w-20">
                   <p className="font-medium uppercase">Stok</p>
                 </div>
                 <p>
-                  {detail
-                    ? selectedVariants !== undefined &&
-                      selectedVariants.variant_quantity !== 0
-                      ? selectedVariants.variant_quantity
-                      : detail.item_gift_quantity > 0
-                      ? detail.item_gift_quantity
-                      : "Stok Habis"
-                    : 0}
+                  {detail && detail.variant_quantity > 0
+                    ? detail.variant_quantity
+                    : "Stok Habis"}
                 </p>
               </div>
-              {detail && detail.variants[0] === undefined ? (
+              {detail && detail.item_gifts.variants[0] === undefined ? (
                 ""
               ) : (
                 <div className="flex gap-3">
                   <div className="w-20">
                     <p className="font-medium uppercase">Varian</p>
                   </div>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex gap-3">
                     {detail &&
-                      detail.variants.map((v: any, idx: number) => {
+                      detail.item_gifts.variants.map((v: any, idx: number) => {
                         return v.variant_slug !== null ? (
                           <Link
                             key={idx}
@@ -324,30 +307,25 @@ const GiftDetail = ({
                               pathname === "/" + v.variant_slug
                                 ? "border-purple-500"
                                 : "border-purple-200"
-                            } py-1 px-3 shrink-0 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
+                            } py-1 px-3 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
                           >
                             {v.variant_name}
                           </Link>
                         ) : (
                           <Link
                             key={idx}
-                            href={`${detail.item_gift_slug}`}
+                            href={`${detail.item_gifts.item_gift_slug}`}
                             className={`${
                               pathname === "/" + v.variant_slug
                                 ? "border-purple-500"
                                 : "border-purple-200"
-                            } py-1 px-3 shrink-0 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
+                            } py-1 px-3 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
                           >
                             {v.variant_name}
                           </Link>
                         );
                       })}
                   </div>
-                  {/* <VariantButton
-                    variants={detail && detail.variants}
-                    filterDetail={selectedVariants}
-                    onVariantSelect={handleVariantSelect}
-                  /> */}
                 </div>
               )}
             </div>
@@ -359,7 +337,7 @@ const GiftDetail = ({
           <div className="flex gap-3">
             <WishButton
               id={detail && detail.id}
-              isWishlist={detail && detail.is_wishlist}
+              isWishlist={detail && detail.item_gifts.is_wishlist}
             />
             <button
               onClick={handleAddToCart}
@@ -374,7 +352,7 @@ const GiftDetail = ({
         </div>
       </div>
       <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
-        {detail && detail.item_gift_spesification.length > 0 ? (
+        {detail && detail.item_gifts.item_gift_spesification.length > 0 ? (
           <div className="relative w-full">
             <div className="w-full border-b border-purple-500">
               <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
@@ -383,7 +361,7 @@ const GiftDetail = ({
             </div>
             <div className="flex flex-col gap-3 p-3">
               <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
-                {detail.item_gift_spesification.map(
+                {detail.item_gifts.item_gift_spesification.map(
                   (spec: any, idx: number) => (
                     <Fragment key={idx}>
                       <div className="w-full">
@@ -407,13 +385,13 @@ const GiftDetail = ({
             </p>
           </div>
           <div className="flex flex-col gap-3 p-3">
-            <p>{detail && detail.item_gift_description}</p>
+            <p>{detail && detail.item_gifts.item_gift_description}</p>
           </div>
         </div>
-        <GiftsReviewContainer productId={detail && detail.id} />
+        <GiftsReviewContainer productId={detail && detail.item_gifts.id} />
       </div>
     </section>
   );
 };
 
-export default GiftDetail;
+export default GiftDetailByVariant;

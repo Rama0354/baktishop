@@ -7,12 +7,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useRouter } from "next/navigation";
 import { RootState } from "../../redux/store";
-import {
-  setReviewFilter,
-  setReviewQuery,
-  setReviewSort,
-  setReviewUrls,
-} from "../../redux/slice/detailSlice";
+import { setReviewQuery, setReviewUrls } from "../../redux/slice/detailSlice";
 import ReviewsFilter from "./ReviewsFilter";
 import ReviewsSort from "./ReviewsSort";
 import ReviewsPagination from "./ReviewsPagination";
