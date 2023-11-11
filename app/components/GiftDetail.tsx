@@ -181,13 +181,16 @@ const GiftDetail = ({
       </div>
       <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
         <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
-          <Image
-            src={selectedVariantImage}
-            alt="product"
-            width={650}
-            height={366}
-            className="h-72 max-h-72 object-contain"
-          />
+          <div className="h-72 object-contain mx-auto">
+            <Image
+              src={selectedVariantImage}
+              alt="product"
+              width={100}
+              height={100}
+              style={{ width: "auto", height: "100%" }}
+              sizes="(max-width: 425px) 50vw,75vw"
+            />
+          </div>
           <div className="relative mx-auto">
             <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3">
               {/* gambar */}

@@ -33,7 +33,10 @@ const AppBar = () => {
           <div className="w-full flex items-center gap-1 lg:gap-3">
             <SearchForm />
             <div className="lg:hidden">
-              <button className="p-2 hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full">
+              <button
+                aria-label="filter-pencarian"
+                className="p-2 hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full"
+              >
                 <AiOutlineFilter className="text-white stroke-2 w-6 h-6" />
               </button>
             </div>

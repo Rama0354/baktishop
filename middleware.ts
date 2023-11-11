@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export default withAuth(
   function middleware(request: NextRequest) {
-    console.log(request.headers);
+    // console.log(request.headers);
   },
   {
     callbacks: {

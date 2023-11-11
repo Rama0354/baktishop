@@ -43,20 +43,20 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
           </p>
         </div>
         <div className="flex items-start gap-1">
-          <div className="w-3/4 flex flex-col justify-between px-1 lg:px-3">
-            <div className="w-full h-8 ">
+          <div className="w-3/4 flex flex-col justify-between px-1">
+            <div className="w-full h-12 ">
               {priceText &&
                 priceText.map((price) => (
                   <p
                     key={price}
-                    className="text-xs md:text-sm font-medium text-amber-600 whitespace-nowrap"
+                    className="text-xs md:text-base font-semibold text-amber-600 whitespace-nowrap"
                   >
                     {price}
                   </p>
                 ))}
             </div>
-            <div className="w-full items-center flex justify-between gap-1">
-              <GiftRating stars={gift.total_rating} reviews={0} scale={3} />
+            <div className="w-full items-center flex justify-between gap-1 px-3">
+              <GiftRating stars={gift.total_rating} reviews={0} scale={20} />
               <div className="w-full">
                 <p className="text-xs text-slate-400">({gift.total_reviews})</p>
               </div>

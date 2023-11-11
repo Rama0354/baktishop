@@ -9,7 +9,7 @@ export default function MessageButton() {
         <span
           className={`${
             messages.length === 0 ? "hidden" : ""
-          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs rounded-full bg-white text-purple-500`}
+          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full bg-white text-purple-500`}
         >
           {messages.length}
         </span>

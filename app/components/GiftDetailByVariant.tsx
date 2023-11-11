@@ -184,13 +184,14 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
       </div>
       <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
         <div className="md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
-          <div className="relative w-full h-72">
+          <div className="h-72 object-contain mx-auto">
             <Image
               src={selectedVariantImage}
               alt="product"
-              layout="fill"
-              objectFit="contain"
-              objectPosition="center"
+              width={100}
+              height={100}
+              style={{ width: "auto", height: "100%" }}
+              sizes="(max-width: 425px) 50vw,75vw"
             />
           </div>
           <div className="relative mx-auto">
@@ -213,9 +214,9 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
                           : "/assets/img/no-image.jpg"
                       }
                       alt="product"
-                      layout="fill"
-                      objectFit="contain"
-                      objectPosition="center"
+                      width={64}
+                      height={64}
+                      className="object-contain"
                       onClick={() => handleClickImage(image)}
                     />
                   </div>
@@ -235,7 +236,7 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
             <GiftRating
               stars={detail ? detail.item_gifts.total_rating : 0}
               reviews={detail ? detail.item_gifts.total_reviews : 0}
-              scale={2}
+              scale={20}
             />
             <div className="w-full">
               <p className="text-sm text-slate-400">

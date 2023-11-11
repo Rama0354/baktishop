@@ -34,6 +34,8 @@ const CountDetail = ({ count, setCountItem, scale }: Props) => {
       <input
         type="text"
         value={count}
+        id="jumlah"
+        name="jumlah"
         readOnly
         className="appearance-none text-slate-600 text-center font-bold text-lg p-1 pointer-events-none"
       />

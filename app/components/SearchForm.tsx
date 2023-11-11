@@ -35,12 +35,16 @@ export default function SearchForm() {
       {/* search input */}
       <input
         type="text"
+        name="searchtext"
         value={inputValue}
         onChange={handleInputChange}
         className="w-full py-2 pl-6 pr-12 border-1 border-white text-slate-800 text-base tracking-wide outline-purple-500 rounded-full"
         placeholder="Cari..."
       />
       <button
+        type="submit"
+        aria-label="Search-Button"
+        id="searchbutton"
         name="searchbutton"
         className="absolute top-1 right-1 p-2 bg-purple-500 hover:bg-fuchsia-500 transition duration-300 ease-in-out rounded-full object-contain"
       >
