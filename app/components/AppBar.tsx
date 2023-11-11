@@ -19,10 +19,10 @@ const AppBar = () => {
                 <Image
                   src={"/assets/img/logo2.png"}
                   alt="logo"
-                  layout="fill"
-                  objectFit="contain"
-                  objectPosition="center"
+                  width={80}
+                  height={80}
                   className="brightness-0 invert"
+                  priority
                 />
               </div>
               <h1 className="hidden lg:block font-semibold text-2xl py-1">

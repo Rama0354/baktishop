@@ -45,16 +45,17 @@ export default function CategoryList() {
               href={`/category/${cat.category_slug}`}
               className={`fadechild w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md`}
             >
-              <div className="relative w-20 h-20">
+              <div className="relative w-20 h-20 mx-auto">
                 <Image
                   src={
                     cat.category_image_url
                       ? cat.category_image_url
                       : "/assets/img/no-image.jpg"
                   }
-                  layout="fill"
-                  objectFit="contain"
-                  objectPosition="center"
+                  width={100}
+                  height={100}
+                  style={{ width: "auto", height: "100%" }}
+                  sizes="(max-width: 425px) 50vw,75vw"
                   alt={`${cat.category_slug}-category`}
                 />
               </div>

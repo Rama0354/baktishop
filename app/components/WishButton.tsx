@@ -47,7 +47,7 @@ const WishButton = ({ id, isWishlist }: FavoriteProps) => {
         .catch((err) => console.log(err));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries()
+      queryClient.invalidateQueries();
     },
   });
   return (
@@ -64,7 +64,7 @@ const WishButton = ({ id, isWishlist }: FavoriteProps) => {
         width={54}
         height={32}
         onClick={handleCheckboxChange}
-        className="w-14 h-8 object-contain hover:cursor-pointer"
+        className=" object-contain hover:cursor-pointer"
       />
     </div>
   );

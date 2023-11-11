@@ -9,9 +9,7 @@ import { useRouter } from "next/navigation";
 const GiftCard = ({ gift }: { gift: Gifts }) => {
   const router = useRouter();
   const priceText = gift.fitem_gift_point.split(" ~ ");
-  const images = gift.item_gift_images.map(
-    (image) => image.item_gift_image_url
-  );
+  const images = gift.item_gift_images.map((image) => image);
   const handleClicked = () => {
     router.push(gift.item_gift_slug);
     router.refresh();
@@ -20,14 +18,22 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
     <div className="relative group">
       <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-purple-300 hover:border-purple-500 rounded-md sm:rounded-lg hover:shadow-md">
         {/* content */}
-        <div className="relative w-auto h-36 overflow-hidden">
+        <div className="flex items-center justify-center w-full h-40 overflow-hidden">
           <Image
             src={
-              images[0] !== undefined ? images[0] : "/assets/img/no-image.jpg"
+              images[0] !== undefined
+                ? images[0].item_gift_image_url
+                : "/assets/img/no-image.jpg"
             }
-            layout="fill"
-            objectFit="contain"
-            objectPosition="center"
+            blurDataURL={
+              images[0] !== undefined
+                ? images[0].item_gift_image_thumb_url
+                : "/assets/img/no-image.jpg"
+            }
+            placeholder="blur"
+            width={160}
+            height={160}
+            className="object-contain h-full w-auto"
             alt="product"
           />
         </div>

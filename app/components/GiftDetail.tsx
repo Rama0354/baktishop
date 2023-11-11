@@ -181,15 +181,13 @@ const GiftDetail = ({
       </div>
       <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
         <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
-          <div className="relative w-full h-72">
-            <Image
-              src={selectedVariantImage}
-              alt="product"
-              layout="fill"
-              objectFit="contain"
-              objectPosition="center"
-            />
-          </div>
+          <Image
+            src={selectedVariantImage}
+            alt="product"
+            width={650}
+            height={366}
+            className="h-72 max-h-72 object-contain"
+          />
           <div className="relative mx-auto">
             <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3">
               {/* gambar */}
@@ -210,9 +208,9 @@ const GiftDetail = ({
                           : "/assets/img/no-image.jpg"
                       }
                       alt="product"
-                      layout="fill"
-                      objectFit="contain"
-                      objectPosition="center"
+                      width={64}
+                      height={64}
+                      className="object-contain"
                       onClick={() => handleClickImage(image)}
                     />
                   </div>
@@ -237,7 +235,7 @@ const GiftDetail = ({
             <GiftRating
               stars={detail ? detail.total_rating : 0}
               reviews={detail ? detail.total_reviews : 0}
-              scale={2}
+              scale={20}
             />
             <div className="w-full">
               <p className="text-sm text-slate-400">

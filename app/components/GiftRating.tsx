@@ -17,31 +17,22 @@ const GiftRating = ({ stars, reviews, scale }: GiftRating) => {
           <Image
             src={"/assets/img/star100.svg"}
             alt={"rating"}
-            width={20}
-            height={20}
-            className={`object-contain ${
-              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
-            }`}
+            width={scale ? scale : 20}
+            height={scale ? scale : 20}
           />
         ) : stars >= number ? (
           <Image
             src={"/assets/img/star50.svg"}
             alt={"rating"}
-            width={20}
-            height={20}
-            className={`object-contain ${
-              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
-            }`}
+            width={scale ? scale : 20}
+            height={scale ? scale : 20}
           />
         ) : (
           <Image
             src={"/assets/img/star0.svg"}
             alt={"rating"}
-            width={20}
-            height={20}
-            className={`object-contain ${
-              scale ? "w-" + 3 * scale + " h-" + 3 * scale : "w-3 h-3"
-            }`}
+            width={scale ? scale : 20}
+            height={scale ? scale : 20}
           />
         )}
       </span>

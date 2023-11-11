@@ -24,6 +24,7 @@ export interface Gifts {
       id: number;
       item_gift_id: number;
       item_gift_image_url: string;
+      item_gift_image_thumb_url: string;
     }
   ];
   variants: [

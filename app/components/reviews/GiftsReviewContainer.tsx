@@ -177,7 +177,7 @@ export default function GiftsReviewContainer({
                     <GiftRating
                       stars={review.review_rating}
                       reviews={0}
-                      scale={1}
+                      scale={12}
                     />
                   </div>
                   <footer className="mb-3 text-sm text-gray-500">

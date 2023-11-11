@@ -7,7 +7,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
@@ -15,10 +14,9 @@ export default function SliderContainer() {
   return (
     <Swiper
       // install Swiper modules
-      modules={[Navigation, Autoplay, Scrollbar, A11y]}
+      modules={[Autoplay, Scrollbar, A11y]}
       spaceBetween={50}
       slidesPerView={1}
-      navigation
       autoplay={{
         delay: 2500,
         disableOnInteraction: false,
@@ -30,45 +28,49 @@ export default function SliderContainer() {
       //   onSlideChange={() => console.log("slide change")}
     >
       <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-1.jpg"}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            width={100}
+            height={100}
+            style={{ width: "100%", height: "auto" }}
+            sizes="(max-width: 425px) 50vw,75vw"
             alt="banner"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-2.jpg"}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            width={100}
+            height={100}
+            style={{ width: "100%", height: "auto" }}
+            sizes="(max-width: 425px) 50vw,75vw"
             alt="banner"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relaive w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
+        <div className="relaive w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-3.jpg"}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            width={100}
+            height={100}
+            style={{ width: "100%", height: "auto" }}
+            sizes="(max-width: 425px) 50vw,75vw"
             alt="banner"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 md:h-[480px] flex items-center overflow-hidden">
+        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
           <Image
             src={"/assets/img/banner-4.jpg"}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            width={100}
+            height={100}
+            style={{ width: "100%", height: "auto" }}
+            sizes="(max-width: 425px) 50vw,75vw"
             alt="banner"
           />
         </div>
