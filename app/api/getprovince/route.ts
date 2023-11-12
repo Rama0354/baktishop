@@ -16,6 +16,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
         }
       );
       return NextResponse.json(res.data);
+      // const res = await fetch(
+      //   `${process.env.BACKEND_API}/province?page=1&per_page=40`,{
+      //     headers:headers()
+      //   }
+      // );
+      // const data = await res.json()
+      // return NextResponse.json(data);
     } catch (error) {
       console.error("Error while processing the request:", error);
       return NextResponse.json({ status: 500 });

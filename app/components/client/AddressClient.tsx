@@ -7,7 +7,7 @@ import {
 
 export default function AddressClient() {
   return (
-    <>
+    <section className="w-full pb-6">
       <div className="w-full flex items-center gap-3 py-3 px-6 mb-3 border-b border-slate-200">
         <AiOutlineEnvironment className={"text-slate-700 stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg text-slate-700">Daftar Alamat</h2>
@@ -56,6 +56,6 @@ export default function AddressClient() {
           </li>
         </ul>
       </div>
-    </>
+    </section>
   );
 }

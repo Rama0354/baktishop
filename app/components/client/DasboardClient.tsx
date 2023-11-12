@@ -1,10 +1,13 @@
+"use client";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+import Link from "next/link";
 
-export default function DashboardClient() {
+export default function DashboardClient({ redeem }: any) {
   let [isOpen, setIsOpen] = useState(false);
-
+  const metapage = redeem ? redeem.meta : null;
+  const pNumber = [...Array(metapage.last_page)];
   function closeModal() {
     setIsOpen(false);
   }
@@ -13,7 +16,7 @@ export default function DashboardClient() {
     setIsOpen(true);
   }
   return (
-    <>
+    <section className="w-full pb-6">
       <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b border-slate-200">
         <AiOutlineSchedule className={"w-6 h-6 stroke-2 text-slate-700"} />
         <h2 className="font-semibold text-lg text-slate-700">
@@ -40,74 +43,108 @@ export default function DashboardClient() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b ">
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-              >
-                Apple MacBook Pro 17
-              </th>
-              <td className="px-6 py-4 whitespace-nowrap">Rabu, 5 Apr 2023</td>
-              <td className="px-6 py-4 text-right whitespace-nowrap">
-                Rp 23.999.000
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-                  Selesai
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <button
-                  type="button"
-                  onClick={openModal}
-                  className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                >
-                  Open dialog
-                </button>
-              </td>
-            </tr>
-            <tr className="bg-white border-b ">
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-              >
-                Build PC Ryzen 9 H series & Nvidia RTX 4080
-              </th>
-              <td className="px-6 py-4 whitespace-nowrap">
-                Senin, 18 Sep 2023
-              </td>
-              <td className="px-6 py-4 text-right whitespace-nowrap">
-                Rp 32.500.000
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>{" "}
-                  Pending
-                </div>
-              </td>
-            </tr>
-            <tr className="bg-white">
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-              >
-                Magic Mouse 2
-              </th>
-              <td className="px-6 py-4 whitespace-nowrap">Jumat, 7 Okt 2023</td>
-              <td className="px-6 py-4 text-right whitespace-nowrap">
-                Rp 430.000
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>{" "}
-                  Gagal
-                </div>
-              </td>
-            </tr>
+            {redeem && redeem.data.length !== 0 ? (
+              redeem.data.map((r: any, idx: number) => (
+                <tr key={idx} className="bg-white border-b ">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                  >
+                    {r.redeem_item_gifts &&
+                      r.redeem_item_gifts
+                        .map((rname: any) => rname.item_gifts.item_gift_name)
+                        .join(", ")}
+                  </th>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {r.fredeem_date}
+                  </td>
+                  <td className="px-6 py-4 text-right whitespace-nowrap">
+                    {r.total_amount}
+                  </td>
+                  <td className="px-6 py-4">
+                    {r.redeem_status === "success" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                        {r.redeem_status}
+                      </div>
+                    ) : r.redeem_status === "pending" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                        {r.redeem_status}
+                      </div>
+                    ) : r.redeem_status === "failure" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                        {r.redeem_status}
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
+                        Unknown
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      type="button"
+                      onClick={openModal}
+                      className="px-4 py-2 text-sm font-medium bg-white border-2 border-purple-500 text-purple-500 hover:bg-purple-100"
+                    >
+                      Bayar
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  <p className="w-full py-2 px-3 mx-auto text-center text-base font-semibold italic">
+                    Belum ada Pesanan
+                  </p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
+        {metapage && metapage.total > metapage.per_page ? (
+          <nav className="w-full py-2 px-3 flex gap-3">
+            <Link
+              className={`${
+                metapage.current_page === 1
+                  ? " pointer-events-none text-slate-300 border-slate-300"
+                  : ""
+              } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:shadow-mds`}
+              href={`?page=${metapage.current_page - 1}`}
+            >
+              Prev
+            </Link>
+            {pNumber.map((_, idx) => (
+              <Link
+                key={idx}
+                className={`${
+                  metapage.current_page === idx + 1
+                    ? "bg-purple-500 text-white hover:bg-purple-600"
+                    : ""
+                } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:bg-purple-100 hover:shadow-md`}
+                href={`?page=${idx + 1}`}
+              >
+                {idx + 1}
+              </Link>
+            ))}
+            <Link
+              className={`${
+                metapage.current_page === metapage.last_page
+                  ? " pointer-events-none text-slate-300 border-slate-300"
+                  : ""
+              } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:shadow-mds`}
+              href={`?page=${metapage.current_page + 1}`}
+            >
+              Next
+            </Link>
+          </nav>
+        ) : null}
       </div>
+
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -162,6 +199,6 @@ export default function DashboardClient() {
           </div>
         </Dialog>
       </Transition>
-    </>
+    </section>
   );
 }

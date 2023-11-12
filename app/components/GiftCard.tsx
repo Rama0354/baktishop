@@ -10,10 +10,6 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
   const router = useRouter();
   const priceText = gift.fitem_gift_point.split(" ~ ");
   const images = gift.item_gift_images.map((image) => image);
-  const handleClicked = () => {
-    router.push(gift.item_gift_slug);
-    router.refresh();
-  };
   return (
     <div className="relative group">
       <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-purple-300 hover:border-purple-500 rounded-md sm:rounded-lg hover:shadow-md">
@@ -37,11 +33,11 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
             alt="product"
           />
         </div>
-        <div onClick={handleClicked} className=" cursor-pointer">
+        <Link href={gift.item_gift_slug} scroll={false}>
           <p className="font-semibold text-sm md:text-base line-clamp-2">
             {gift.item_gift_name}
           </p>
-        </div>
+        </Link>
         <div className="flex items-start gap-1">
           <div className="w-3/4 flex flex-col justify-between px-1">
             <div className="w-full h-12 ">

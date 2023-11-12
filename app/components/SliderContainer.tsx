@@ -63,18 +63,6 @@ export default function SliderContainer() {
           />
         </div>
       </SwiperSlide>
-      <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
-          <Image
-            src={"/assets/img/banner-4.jpg"}
-            width={100}
-            height={100}
-            style={{ width: "100%", height: "auto" }}
-            sizes="(max-width: 425px) 50vw,75vw"
-            alt="banner"
-          />
-        </div>
-      </SwiperSlide>
     </Swiper>
   );
 }
