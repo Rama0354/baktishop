@@ -7,6 +7,7 @@ import CartButton from "./CartButton";
 import MessageButton from "./MessageButton";
 import NotificationButton from "./NotificationButton";
 import SearchForm from "./SearchForm";
+import ProgressBar from "./Progressbar";
 
 const AppBar = () => {
   return (
@@ -49,6 +50,7 @@ const AppBar = () => {
           </div>
         </div>
       </div>
+      <ProgressBar />
     </header>
   );
 };
