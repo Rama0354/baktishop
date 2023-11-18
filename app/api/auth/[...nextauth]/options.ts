@@ -49,15 +49,14 @@ export const options: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.user_id = user.data.users.id;
-        token.name = user.data.users.name;
         token.username = user.data.users.username;
         token.email = user.data.users.email;
+        token.name = user.data.users.profile.name;
         token.avatar_url = user.data.users.profile.avatar_url;
         token.roles = user.data.users.roles;
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
         token.expires_at = Math.floor((Date.now() / 1000)+ user.data.expires_in);
-
       }
       if(Date.now() < (token.expires_at * 1000)) {
         return token;

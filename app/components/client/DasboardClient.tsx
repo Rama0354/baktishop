@@ -1,6 +1,7 @@
 "use client";
 import { AiOutlineSchedule } from "react-icons/ai";
 import {
+  MdInfo,
   MdLocalShipping,
   MdMap,
   MdPaid,
@@ -29,6 +30,17 @@ export default function DashboardClient({ redeem }: any) {
   }
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
+  }
+  function transformText(inputText: string) {
+    // Mengganti underscore menjadi spasi
+    let stringWithSpaces = inputText.replace(/_/g, " ");
+
+    // Mengubah huruf awal menjadi kapital
+    let finalString = stringWithSpaces.replace(/\b\w/g, (match) =>
+      match.toUpperCase()
+    );
+
+    return finalString;
   }
   return (
     <section className="w-full pb-6">
@@ -74,23 +86,40 @@ export default function DashboardClient({ redeem }: any) {
                     {r.fredeem_date}
                   </td>
                   <td className="px-6 py-4 text-right whitespace-nowrap">
-                    {r.total_amount}
+                    {r.ftotal_amount}
                   </td>
                   <td className="px-6 py-4">
                     {r.redeem_status === "success" ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                        {r.redeem_status}
+                        Selesai
                       </div>
-                    ) : r.redeem_status === "pending" ? (
+                    ) : r.redeem_status === "shipped" ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                        {r.redeem_status}
+                        Dikirim
+                      </div>
+                    ) : r.redeem_status === "pending" &&
+                      r.payments.payment_status === "pending" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                        Belum Dibayar
+                      </div>
+                    ) : r.redeem_status === "pending" &&
+                      r.payments.payment_status === "settlement" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                        Proses
                       </div>
                     ) : r.redeem_status === "failure" ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                        {r.redeem_status}
+                        Gagal
+                      </div>
+                    ) : r.redeem_status === "canceled" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                        Dibatalkan
                       </div>
                     ) : (
                       <div className="flex items-center">
@@ -201,16 +230,36 @@ export default function DashboardClient({ redeem }: any) {
                     as="h3"
                     className="text-xl font-medium leading-6 text-gray-800 border-b border-slate-200 mb-1 py-2"
                   >
-                    Detail Pembelian
+                    Detail Pesanan
                   </Dialog.Title>
+                  <div className="mt-3">
+                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+                      <MdInfo /> No Pesanan
+                    </h2>
+                    <div className="w-full flex justify-between px-1">
+                      <p className="text-sm text-gray-500">
+                        {details &&
+                          details.redeem_code !== "" &&
+                          details.redeem_code}
+                      </p>
+                    </div>
+                  </div>
                   <div className="mt-3">
                     <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
                       <MdLocalShipping /> Info Pengiriman
                     </h2>
                     <div className="w-full flex justify-between px-1">
                       <p className="text-sm text-gray-500">Metode Pengiriman</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 flex gap-1">
+                        <span className="uppercase">
+                          {details &&
+                          details.shippings &&
+                          details.shippings.shipping_courier !== ""
+                            ? details.shippings.shipping_courier
+                            : "unknown"}
+                        </span>
                         {details &&
+                        details.shippings &&
                         details.shippings.shipping_description !== ""
                           ? details.shippings.shipping_description
                           : "unknown"}
@@ -365,8 +414,19 @@ export default function DashboardClient({ redeem }: any) {
                       <MdPayments /> Metode Pembayaran
                     </h2>
                     <div className="w-full flex justify-between items-center py-1 px-3">
-                      <p className="text-sm text-gray-500">Bank Mandiri</p>
-                      <p className="text-sm text-gray-500">Telah Dibayar</p>
+                      <p className="text-sm text-gray-500">
+                        {details &&
+                          transformText(details.payments.payment_type)}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {details &&
+                        details.payments.payment_status === "settlement"
+                          ? "Terbayar"
+                          : details &&
+                            details.payments.payment_status === "pending"
+                          ? "Belum Dibayar"
+                          : "Gagal Dibayar"}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-3">
@@ -375,7 +435,9 @@ export default function DashboardClient({ redeem }: any) {
                     </h2>
                     <div className="w-full flex justify-between items-center py-1 px-3">
                       <p className="text-sm text-gray-500">Sub Total</p>
-                      <p className="text-sm text-gray-500">Rp 500</p>
+                      <p className="text-sm text-gray-500">
+                        {details && details.ftotal_point}
+                      </p>
                     </div>
                     <div className="w-full flex justify-between items-center py-1 px-3">
                       <p className="text-sm text-gray-500">Diskon</p>
@@ -383,14 +445,16 @@ export default function DashboardClient({ redeem }: any) {
                     </div>
                     <div className="w-full flex justify-between items-center py-1 px-3">
                       <p className="text-sm text-gray-500">Pengiriman</p>
-                      <p className="text-sm text-gray-500">Rp 500</p>
+                      <p className="text-sm text-gray-500">
+                        {details && details.fshipping_fee}
+                      </p>
                     </div>
                     <div className="w-full flex justify-between items-center py-1 px-3 border-t border-slate-100">
                       <p className="text-base font-semibold text-gray-500">
                         Semua Total
                       </p>
                       <p className="text-base font-semibold text-gray-500">
-                        Rp 500
+                        {details && details.ftotal_amount}
                       </p>
                     </div>
                   </div>

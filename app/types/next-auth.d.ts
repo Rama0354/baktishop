@@ -19,12 +19,12 @@ declare module "next-auth" {
     data: {
       users: {
         id: string;
-        name: string;
         username: string;
         email: string;
         access_token: string;
         roles: string[];
         profile:{
+          name: string;
           avatar_url:string;
         }
       };

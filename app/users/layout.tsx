@@ -2,16 +2,15 @@ import React from "react";
 import ClientLayout from "../components/layouts/ClientLayout";
 import { AiOutlineUser } from "react-icons/ai";
 import UsersNavigation from "../components/client/UsersNavigation";
-import { getServerSession } from "next-auth";
-import { options } from "../api/auth/[...nextauth]/options";
 import Image from "next/image";
+import { getProfie } from "../utils/action/profileAction";
 
 export default async function UsersLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(options);
+  const profileData = await getProfie();
   return (
     <ClientLayout>
       <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md">
@@ -25,17 +24,17 @@ export default async function UsersLayout({
           <div className="w-full sm:w-1/4 md:px-3 shrink-0">
             <div className="w-full py-6 flex flex-col items-center">
               <div className="w-20 h-20 shrink-0 flex justify-center items-center bg-purple-500 rounded-full overflow-hidden ring-2 ring-purple-500">
-                {session ? (
-                  session.user.avatar_url !== "" ? (
+                {profileData ? (
+                  profileData.profile.avatar_url !== "" ? (
                     <Image
-                      src={session.user.avatar_url}
+                      src={profileData.profile.avatar_url}
                       width={100}
                       height={100}
-                      alt={`${session.user.username}-avatar`}
+                      alt={`${profileData.username}-avatar`}
                     />
                   ) : (
                     <p className="text-white font-medium text-xl">
-                      {session.user.name.charAt(0)}
+                      {profileData.profile.name.charAt(0)}
                     </p>
                   )
                 ) : (
@@ -43,8 +42,11 @@ export default async function UsersLayout({
                 )}
               </div>
               <h2 className="font-semibold text-slate-600">
-                {session ? session.user.name : "Guest"}
+                {profileData ? profileData.profile.name : "Guest"}
               </h2>
+              <p className="text-sm text-slate-600">
+                {profileData ? "@" + profileData.username : "@unknown"}
+              </p>
             </div>
             <UsersNavigation />
           </div>

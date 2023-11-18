@@ -34,7 +34,7 @@ const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
           />
         </div>
         <Link href={`/${wish.item_gifts.item_gift_slug}`} scroll={false}>
-          <p className="font-semibold text-sm md:text-base line-clamp-2">
+          <p className="font-semibold text-sm md:text-base line-clamp-1">
             {wish.item_gifts.item_gift_name}
           </p>
         </Link>
@@ -51,12 +51,18 @@ const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
                   </p>
                 ))}
             </div>
-            {/* <div className="w-full items-center flex justify-between gap-1 px-3">
-              <GiftRating stars={gift.total_rating} reviews={0} scale={20} />
+            <div className="w-full items-center flex justify-between gap-1 px-3">
+              <GiftRating
+                stars={wish.item_gifts.total_rating}
+                reviews={0}
+                scale={20}
+              />
               <div className="w-full">
-                <p className="text-xs text-slate-400">({wish.item_gifts.total_reviews})</p>
+                <p className="text-xs text-slate-400">
+                  ({wish.item_gifts.total_reviews})
+                </p>
               </div>
-            </div> */}
+            </div>
           </div>
           <button className="w-1/4">
             <WishButton

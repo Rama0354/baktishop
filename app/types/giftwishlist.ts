@@ -10,6 +10,8 @@ export type WishlistData = {
       fitem_gift_weight: string;
       item_gift_quantity: number;
       item_gift_status: string;
+      total_rating: number;
+      total_reviews: number;
       item_gift_images: [
         {
           item_gift_id: number;
