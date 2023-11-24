@@ -4,12 +4,12 @@ import { AiOutlineBell } from "react-icons/ai";
 export default function NotificationButton() {
   return (
     <div className="group relative">
-      <button className="relative p-2 group-hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full">
+      <button className="relative p-2 group-hover:bg-primary-light transition duration-300 ease-in-out rounded-full">
         <AiOutlineBell className="text-white stroke-2 w-6 h-6" />
         <span
           className={`${
             notifications.length === 0 ? "hidden" : ""
-          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full bg-white text-purple-500`}
+          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full bg-white text-primary-dark`}
         >
           {notifications.length}
         </span>

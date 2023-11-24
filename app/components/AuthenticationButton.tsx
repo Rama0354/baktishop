@@ -14,6 +14,7 @@ export default function AuthenticationhButton({ type }: { type: string }) {
   return type === "logout" ? (
     <button
       onClick={handleLogout}
+      aria-label="user button navigation to logout"
       className="text-rose-500 font-medium py-1 px-2 rounded-md hover:bg-rose-200"
     >
       Log Out
@@ -21,6 +22,7 @@ export default function AuthenticationhButton({ type }: { type: string }) {
   ) : (
     <button
       onClick={() => signIn()}
+      aria-label="user button navigation to login"
       className="p-2 object-contain hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full"
     >
       <AiOutlineUser className="text-white stroke-2 w-6 h-6" />

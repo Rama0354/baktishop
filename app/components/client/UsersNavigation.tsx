@@ -18,9 +18,9 @@ export default function UsersNavigation() {
             href={nav.urls}
             className={`${
               pathname === nav.urls
-                ? "bg-purple-500 text-white hover:bg-purple-600 hover:text-white"
-                : "bg-white text-slate-700"
-            } hover:bg-purple-100 hover:text-purple-500 block w-full py-2 px-3 font-medium rounded-md outline-none`}
+                ? "bg-primary-dark text-white hover:text-white"
+                : "bg-white text-primary-dark hover:bg-primary-light hover:text-primary-dark"
+            }  block w-full py-2 px-3 font-medium rounded-md outline-none`}
           >
             {nav.title}
           </Link>

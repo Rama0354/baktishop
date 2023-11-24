@@ -1,5 +1,5 @@
 import "./globals.css";
-// import "./nprogress.css";
+import "./nprogress.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import AuthProvider from "./context/AuthProviders";

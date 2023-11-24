@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { signOut } from "next-auth/react";
 
 type Token ={
   user_id: string;
@@ -99,6 +100,7 @@ const refreshTokenApiCall = async (token:any) => {
     }
   } catch (error) {
     console.error("Error refreshing access token", error);
+    signOut()
     return { ...token, error: "RefreshAccessTokenError" as const };
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 // import Swiper core and required modules
-import { Navigation, Autoplay, Scrollbar, A11y } from "swiper/modules";
+import { Autoplay, Scrollbar, A11y } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -28,37 +28,53 @@ export default function SliderContainer() {
       //   onSlideChange={() => console.log("slide change")}
     >
       <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
+        <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-1.jpg"}
             width={100}
             height={100}
-            style={{ width: "100%", height: "auto" }}
-            sizes="(max-width: 425px) 50vw,75vw"
+            sizes="(max-width: 425px) 30vw,80vw"
+            className="w-full sm:w-[80vw] md:w-[60vw] h-auto object-cover mx-auto"
+            quality={50}
             alt="banner"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
+        <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-2.jpg"}
             width={100}
             height={100}
-            style={{ width: "100%", height: "auto" }}
-            sizes="(max-width: 425px) 50vw,75vw"
+            sizes="(max-width: 425px) 30vw,80vw"
+            className="w-full sm:w-[80vw] md:w-[60vw] h-auto object-cover mx-auto"
+            quality={50}
             alt="banner"
           />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relaive w-full h-56 sm:h-72 lg:h-[480px] flex items-center overflow-hidden">
+        <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-3.jpg"}
             width={100}
             height={100}
-            style={{ width: "100%", height: "auto" }}
-            sizes="(max-width: 425px) 50vw,75vw"
+            sizes="(max-width: 425px) 30vw,80vw"
+            className="w-full sm:w-[80vw] md:w-[60vw] h-auto object-cover mx-auto"
+            quality={50}
+            alt="banner"
+          />
+        </div>
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="max-h-[480px]">
+          <Image
+            src={"/assets/img/banner-4.jpg"}
+            width={100}
+            height={100}
+            sizes="(max-width: 425px) 30vw,80vw"
+            className="w-full sm:w-[80vw] md:w-[60vw] h-auto object-cover mx-auto"
+            quality={50}
             alt="banner"
           />
         </div>

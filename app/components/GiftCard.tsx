@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import WishButton from "./WishButton";
@@ -12,7 +13,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
   const images = gift.item_gift_images.map((image) => image);
   return (
     <div className="relative group">
-      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-purple-300 hover:border-purple-500 rounded-md sm:rounded-lg hover:shadow-md">
+      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-primary-light hover:border-secondary-light rounded-md sm:rounded-lg hover:shadow-md">
         {/* content */}
         <div className="flex items-center justify-center w-full h-40 overflow-hidden">
           <Image
@@ -34,7 +35,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
           />
         </div>
         <Link href={gift.item_gift_slug} scroll={false}>
-          <p className="font-semibold text-sm md:text-base line-clamp-2">
+          <p className="font-semibold text-secondary-dark text-sm md:text-base line-clamp-2">
             {gift.item_gift_name}
           </p>
         </Link>
@@ -45,7 +46,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
                 priceText.map((price) => (
                   <p
                     key={price}
-                    className="text-xs md:text-base font-semibold text-amber-600 whitespace-nowrap"
+                    className="text-xs md:text-sm font-bold text-primary-dark whitespace-nowrap"
                   >
                     {price}
                   </p>
@@ -54,7 +55,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
             <div className="w-full items-center flex justify-between gap-1 px-3">
               <GiftRating stars={gift.total_rating} reviews={0} scale={20} />
               <div className="w-full">
-                <p className="text-xs text-slate-400">({gift.total_reviews})</p>
+                <p className="text-xs text-slate-700">({gift.total_reviews})</p>
               </div>
             </div>
           </div>

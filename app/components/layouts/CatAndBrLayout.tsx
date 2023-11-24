@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import CategoryListContainer from "../CategoryListContainer";
+import CategoryListContainer from "../category/CategoryListContainer";
 import Sidebar from "../Sidebar";
 import SelectSort from "../SelectSort";
 import BrandListContainer from "../BrandListContainer";

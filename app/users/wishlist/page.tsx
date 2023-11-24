@@ -1,22 +1,7 @@
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import WishlistClient from "@/app/components/client/WishlistClient";
-import axios from "axios";
-import { getServerSession } from "next-auth";
+import GiftCardWishlist from "@/app/components/GiftCardWishlist";
+import { getAllWishlist } from "@/app/utils/action/WishlistActions";
 import React from "react";
-
-async function getWishlist({ page }: { page: number }) {
-  const session = await getServerSession(options);
-  const res = await axios
-    .get(`${process.env.BACKEND_API}/gifts/wishlist?page=${page}&per_page=3`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken}`,
-      },
-    })
-    .then((res) => res.data)
-    .catch((err) => err.message);
-  return res;
-}
+import { AiOutlineHeart } from "react-icons/ai";
 
 export default async function WishlistPage({
   searchParams,
@@ -24,8 +9,22 @@ export default async function WishlistPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const searchPage = searchParams.page;
-  const wishlistData = await getWishlist({
-    page: searchPage ? parseInt(searchPage as string) : 1,
-  });
-  return <WishlistClient wishlist={wishlistData} />;
+  const wishlistData = await getAllWishlist();
+  return (
+    <section className="w-full pb-6">
+      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b border-slate-200">
+        <AiOutlineHeart className={"text-slate-700 stroke-2 w-6 h-6"} />
+        <h2 className="font-semibold text-lg text-slate-700">Barang Favorit</h2>
+      </div>
+      {wishlistData && !wishlistData.data.error ? (
+        <div className="relative overflow-x-auto grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {wishlistData.data.data.map((wish: any, idx: number) => (
+            <GiftCardWishlist key={idx} wish={wish} />
+          ))}
+        </div>
+      ) : (
+        <div>Anda Belum mempunyai Produk Favorit</div>
+      )}
+    </section>
+  );
 }

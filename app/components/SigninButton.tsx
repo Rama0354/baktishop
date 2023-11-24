@@ -14,7 +14,10 @@ const SigninButton = async () => {
       {userData ? (
         userData.profile && (
           <>
-            <button className="peer p-2 object-contain hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full">
+            <button
+              aria-label="user button navigation"
+              className="peer p-2 object-contain hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full"
+            >
               <div className="w-6 h-6 shrink-0 flex justify-center items-start bg-purple-500 rounded-full overflow-hidden">
                 {userData.profile.avatar_url !== null ? (
                   <Image

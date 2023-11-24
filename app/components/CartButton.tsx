@@ -53,18 +53,20 @@ export default function CartButton() {
 
   return (
     <div className=" group relative">
-      <Link href={"/cart"}>
-        <button className="p-2 group-hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full">
-          <AiOutlineShoppingCart className="text-white stroke-2 w-6 h-6" />
-          <span
-            className={`${
-              cartItems.length === 0 ? "hidden" : ""
-            } absolute top-0 right-0 flex shrink-0 justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full bg-white text-purple-500`}
-          >
-            {/* {totalAmount(cartItems)} */}
-            {totalCartQty}
-          </span>
-        </button>
+      <Link
+        href={"/cart"}
+        aria-label="button navigation to cart"
+        className="block p-2 group-hover:bg-primary-light transition duration-300 ease-in-out rounded-full"
+      >
+        <AiOutlineShoppingCart className="text-white stroke-2 w-6 h-6" />
+        <span
+          className={`${
+            cartItems.length === 0 ? "hidden" : ""
+          } absolute top-0 right-0 flex shrink-0 justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full text-primary-dark bg-white`}
+        >
+          {/* {totalAmount(cartItems)} */}
+          {totalCartQty}
+        </span>
       </Link>
       <div className="absolute right-0 top-9 group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
         <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">

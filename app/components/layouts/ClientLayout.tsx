@@ -18,11 +18,10 @@ export default function ClientLayout({
   return (
     <>
       <AppBar />
-      {/* <NextProgressbar /> */}
-      <main className="w-full min-h-screen flex flex-col items-center mx-auto bg-white">
+      <main className="w-full min-h-screen flex flex-col items-center mx-auto bg-primary-light">
         {children}
       </main>
-      <div className="md:hidden w-full py-2 px-3 border border-slate-200 flex justify-around bg-white fixed bottom-0">
+      <div className="md:hidden w-full py-2 px-3 border border-slate-200 flex justify-around bg-white sticky bottom-0 z-50">
         <Link
           href={"/"}
           className="w-full py-1 px-2 flex flex-col items-center cursor-pointer hover:bg-purple-100 font-medium text-sm hover:text-purple-500 rounded-md"

@@ -3,7 +3,7 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { getCarts } from "../utils/action/Cartactions";
 import Image from "next/image";
 import Link from "next/link";
-import CountCart from "../components/CountCart";
+import CountCart from "../components/cart/CountCart";
 import DeleteBtnCart from "../components/cart/DeleteBtnCart";
 import { CartDataType } from "../types/cart";
 
@@ -37,7 +37,7 @@ export default async function CartPage() {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
   return (
-    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md">
+    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-white border border-slate-300 rounded-md shadow-md">
       <div className="w-full flex items-center gap-3 border-b-2 border-slate-300 py-1 px-6 md:py-2">
         <MdOutlineShoppingCart className="text-slate-700 w-6 h-6" />
         <h1 className="py-2 font-semibold text-xl text-slate-700">Keranjang</h1>

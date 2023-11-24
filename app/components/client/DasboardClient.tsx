@@ -43,8 +43,8 @@ export default function DashboardClient({ redeem }: any) {
     return finalString;
   }
   return (
-    <section className="w-full pb-6">
-      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b border-slate-200">
+    <section className="w-full py-3">
+      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 border-slate-200">
         <AiOutlineSchedule className={"w-6 h-6 stroke-2 text-slate-700"} />
         <h2 className="font-semibold text-lg text-slate-700">
           Riwayat Pesanan

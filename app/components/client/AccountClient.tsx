@@ -25,13 +25,13 @@ export default function AccountClient({ userData }: { userData: UserData }) {
   const open = () => setModalOpen(true);
 
   return (
-    <section className="w-full pb-6 relative">
-      <div className="w-full flex items-center gap-3 py-3 px-6 mb-3 border-b border-slate-200">
+    <section className="w-full py-3 relative">
+      <div className="w-full flex items-center gap-3 py-3 px-6 mb-3 border-b-2 border-slate-200">
         <AiOutlineIdcard className={"text-slate-700 stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg text-slate-700">Akun</h2>
       </div>
       <div className="w-full">
-        <div className="w-full">
+        <div className="w-full px-6">
           <div className="w-full flex justify-between p-1">
             <h2 className="text-xl text-slate-700 font-semibold">Profile</h2>
             <button

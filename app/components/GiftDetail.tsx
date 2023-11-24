@@ -173,7 +173,7 @@ const GiftDetail = ({
     }
   };
   return (
-    <section id="maincontent" className="container text-slate-700">
+    <section id="maincontent" className="container text-slate-700 bg-white">
       {/* breadcrumb */}
       <div className="w-full h-12 px-6 py-3 mb-3 border-b border-slate-200">
         <Link href={"/"}>Product</Link>
@@ -192,7 +192,7 @@ const GiftDetail = ({
             />
           </div>
           <div className="relative mx-auto">
-            <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3">
+            <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3 scrollbar-style">
               {/* gambar */}
               {detail &&
                 detail.item_gift_images.map((image: any) => (

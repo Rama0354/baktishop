@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useOptimistic } from "react";
-import { decQty, incQty } from "../utils/action/Cartactions";
+import { decQty, incQty } from "../../utils/action/Cartactions";
 
 const CountCart = ({ scale, count, cartId }: any) => {
   const [isPending, startTransition] = useTransition();

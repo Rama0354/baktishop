@@ -17,10 +17,10 @@ module.exports = {
         }
       },
       colors: {
-        "my-green": "#74B71B",
-        "my-lightgreen": "#D5E8C6",
-        "my-darkgreen": "#006A4E",
-        "my-verydarkgreen": "#3C3C3F",
+        "primary-light": "#C3CEDA",
+        "secondary-light": "#738FA7",
+        "primary-dark": "#0C4160",
+        "secondary-dark": "#071330",
       },
       dropShadow: {
         lnl: [

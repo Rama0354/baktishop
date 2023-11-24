@@ -1,18 +1,16 @@
 import Image from "next/image";
 import React from "react";
-import WishButton from "./WishButton";
 import GiftRating from "./GiftRating";
-import { Gifts } from "../types/gifts";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { WishlistData } from "../types/giftwishlist";
+import WishBtn from "./gifts/WishBtn";
 
 const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
   const priceText = wish.item_gifts.fitem_gift_point.split(" ~ ");
   const images = wish.item_gifts.item_gift_images.map((image) => image);
   return (
     <div className="relative group">
-      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-purple-300 hover:border-purple-500 rounded-md sm:rounded-lg hover:shadow-md">
+      <div className="w-full flex flex-col justify-start gap-3 px-3 py-6 border-2 bg-white border-primary-light hover:border-secondary-light rounded-md sm:rounded-lg hover:shadow-md">
         {/* content */}
         <div className="flex items-center justify-center w-full h-40 overflow-hidden">
           <Image
@@ -65,10 +63,7 @@ const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
             </div>
           </div>
           <button className="w-1/4">
-            <WishButton
-              id={wish.item_gifts.id}
-              isWishlist={wish.id !== null ? 1 : 0}
-            />
+            <WishBtn giftId={wish.item_gifts.id} />
           </button>
         </div>
       </div>

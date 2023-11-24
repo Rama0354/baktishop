@@ -13,13 +13,7 @@ export default async function UsersLayout({
   const profileData = await getProfie();
   return (
     <ClientLayout>
-      <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md">
-        <div className="w-full flex items-center gap-3 border-b-2 border-slate-300 py-1 px-6 md:py-2">
-          <AiOutlineUser className="text-slate-700 stroke-2 w-6 h-6" />
-          <h1 className="py-2 font-semibold text-xl text-slate-700">
-            Info Akun
-          </h1>
-        </div>
+      <section className="container mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md bg-white">
         <div className="w-full flex flex-col sm:flex-row">
           <div className="w-full sm:w-1/4 md:px-3 shrink-0">
             <div className="w-full py-6 flex flex-col items-center">
