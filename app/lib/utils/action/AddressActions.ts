@@ -1,7 +1,7 @@
 'use server'
 
 import { options } from "@/app/api/auth/[...nextauth]/options"
-import { CityArray, FormEditAddress, ProvinceArray, SubdistrictArray } from "@/app/lib/types/address"
+import { CityArray, FormEditAddress, FullAddressArray, ProvinceArray, SubdistrictArray } from "@/app/lib/types/address"
 import axios from "axios"
 import { getServerSession } from "next-auth"
 import { revalidatePath } from "next/cache"
@@ -37,9 +37,26 @@ export const getAllSubdistrict =async (city_id:number):Promise<SubdistrictArray 
     }
 }
 
-export const editAddress =async (data:FormEditAddress) => {
-    const session = await getServerSession(options)
+export const getAddresses = async (): Promise<FullAddressArray | undefined> => {
     try {
+        const session = await getServerSession(options);
+      const res = await axios.get(`${process.env.BACKEND_API}/address`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+      const datas: FullAddressArray = await res.data.data;
+      const parseData = FullAddressArray.parse(datas);
+      return parseData;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+export const editAddress =async (data:FormEditAddress) => {
+    try {
+        const session = await getServerSession(options)
         const res = await axios.put(`${process.env.BACKEND_API}/address/${data.id}`,{
             person_name: data.person_name,
             person_phone: data.person_phone,

@@ -20,12 +20,11 @@ export const getAllGifts =async (params?:string) => {
     }
 }
 
- 
-export async function getCookieData() {
-  const cookieData = cookies().getAll()
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve(cookieData)
-    }, 1000)
-  )
-}
+// export async function getCookieData() {
+//   const cookieData = cookies().getAll()
+//   return new Promise((resolve) =>
+//     setTimeout(() => {
+//       resolve(cookieData)
+//     }, 1000)
+//   )
+// }

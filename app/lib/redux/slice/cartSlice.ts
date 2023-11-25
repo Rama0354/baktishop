@@ -1,6 +1,7 @@
 import { CartType } from "@/app/lib/types/cart";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getCarts } from "../../utils/action/Cartactions";
 
 interface initialStateProps {
     cartItems:CartType[],
@@ -42,15 +43,8 @@ type Cart ={
 
 
 export const getCart = createAsyncThunk('cart/get', async () => {
-  try {
-    const res = await axios.get('/api/cart')
-    return res.data.data
-  } catch (err:any) {
-    if (!err) {
-      throw err
-    }
-    return err.response.data
-  }
+  const res = await getCarts()
+  return res
 })
 
 const cartSlice = createSlice({

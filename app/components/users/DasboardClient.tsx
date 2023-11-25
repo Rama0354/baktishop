@@ -10,9 +10,11 @@ import {
   MdSpeakerNotes,
 } from "react-icons/md";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import ModalContent from "../ModalContent";
 
 export default function DashboardClient({ redeem }: any) {
   let [isOpen, setIsOpen] = useState(false);
@@ -26,20 +28,6 @@ export default function DashboardClient({ redeem }: any) {
   function openModal(data: any) {
     setDetails(data);
     setIsOpen(true);
-  }
-  function rupiahCurrency(x: number) {
-    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
-  }
-  function transformText(inputText: string) {
-    // Mengganti underscore menjadi spasi
-    let stringWithSpaces = inputText.replace(/_/g, " ");
-
-    // Mengubah huruf awal menjadi kapital
-    let finalString = stringWithSpaces.replace(/\b\w/g, (match) =>
-      match.toUpperCase()
-    );
-
-    return finalString;
   }
   return (
     <section className="w-full py-3">
@@ -199,280 +187,244 @@ export default function DashboardClient({ redeem }: any) {
         </nav>
       ) : null}
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-600"
-                enterFrom="opacity-0 translate-y-5 scale-30"
-                enterTo="opacity-100 translate-y-0 scale-100"
-                leave="ease-in duration-300"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-0"
-              >
-                <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-xl font-medium leading-6 text-gray-800 border-b border-slate-200 mb-1 py-2"
-                  >
-                    Detail Pesanan
-                  </Dialog.Title>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdInfo /> No Pesanan
-                    </h2>
-                    <div className="w-full flex justify-between px-1">
-                      <p className="text-sm text-gray-500">
-                        {details &&
-                          details.redeem_code !== "" &&
-                          details.redeem_code}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdLocalShipping /> Info Pengiriman
-                    </h2>
-                    <div className="w-full flex justify-between px-1">
-                      <p className="text-sm text-gray-500">Metode Pengiriman</p>
-                      <p className="text-sm text-gray-500 flex gap-1">
-                        <span className="uppercase">
-                          {details &&
-                          details.shippings &&
-                          details.shippings.shipping_courier !== ""
-                            ? details.shippings.shipping_courier
-                            : "unknown"}
-                        </span>
-                        {details &&
-                        details.shippings &&
-                        details.shippings.shipping_description !== ""
-                          ? details.shippings.shipping_description
-                          : "unknown"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdMap /> Alamat Pengiriman
-                    </h2>
-                    <p className="text-sm text-gray-500 px-1">
-                      <span className="font-semibold">Penerima : </span>
-                      {`${
-                        details !== null &&
-                        details.users.address.person_name !== ""
-                          ? details.users.address.person_name
-                          : ""
-                      }`}
-                    </p>
-                    <p className="text-sm text-gray-500 px-1">
-                      <span className="font-semibold">Nomor : </span>
-                      {`${
-                        details !== null &&
-                        details.users &&
-                        details.users.address.person_phone !== ""
-                          ? details.users.address.person_phone
-                          : ""
-                      }`}
-                    </p>
-                    <p className="text-sm text-gray-500 px-1">
-                      <span className="font-semibold">Alamat : </span>
-                      {`${
-                        details !== null && details.users.address.address !== ""
-                          ? details.users.address.address
-                          : ""
-                      }, 
-                          ${
-                            details !== null &&
-                            details.users.address.subdistrict
-                              .subdistrict_name !== ""
-                              ? details.users.address.subdistrict
-                                  .subdistrict_name
-                              : ""
-                          }, 
-                          ${
-                            details !== null &&
-                            details.users.address.city.city_name !== ""
-                              ? details.users.address.city.city_name
-                              : ""
-                          }, 
-                          ${
-                            details !== null &&
-                            details.users.address.province.province_name !== ""
-                              ? details.users.address.province.province_name
-                              : ""
-                          }, 
-                          ${
-                            details !== null &&
-                            details.users.address.postal_code !== 0
-                              ? details.users.address.postal_code
-                              : ""
-                          }`}
-                    </p>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdSpeakerNotes /> Catatan
-                    </h2>
-                    <div className="w-full px-1">
-                      <p className="text-sm text-gray-500">
-                        {details && details.note !== null
-                          ? details.note
-                          : "no note"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdShoppingBag /> Daftar Produk
-                    </h2>
-                    <ul className="border-2 border-slate-100">
-                      {details && details.redeem_item_gifts.length !== 0 ? (
-                        details.redeem_item_gifts.map((r: any, idx: number) => (
-                          <li key={idx} className="flex gap-1 py-1 px-3">
-                            <Image
-                              className="shrink-0"
-                              src={
-                                r.item_gifts &&
-                                r.item_gifts.item_gift_images.length !== 0
-                                  ? r.item_gifts.item_gift_images[0]
-                                      .item_gift_image_url
-                                  : "/assets/img/no-image.jpg"
-                              }
-                              width={100}
-                              height={100}
-                              alt="product"
-                            />
-                            <div className="w-full">
-                              <div className="w-full flex justify-between items-start text-slate-700">
-                                <p className="text-sm font-semibold">
-                                  {r.item_gifts &&
-                                  r.item_gifts.item_gift_name !== ""
-                                    ? r.item_gifts.item_gift_name
-                                    : "No Name"}
-                                </p>
-                                <p>
-                                  {r.redeem_quantity && r.redeem_quantity !== 0
-                                    ? r.redeem_quantity
-                                    : 0}
-                                  x
-                                </p>
-                              </div>
-                              {r.variants && (
-                                <p className="text-xs py-1 px-2 bg-slate-100 text-slate-700 rounded-md w-max">
-                                  {r.variants.variant_name !== ""
-                                    ? r.variants.variant_name
-                                    : ""}
-                                </p>
-                              )}
-                              <p className="font-semibold text-amber-500">
-                                {r.variants && r.variants.fvariant_point !== ""
-                                  ? r.variants.fvariant_point
-                                  : r.item_gifts &&
-                                    r.item_gifts.fitem_gift_point !== ""
-                                  ? r.item_gifts.fitem_gift_point
-                                  : ""}
-                              </p>
-                            </div>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="flex justify-center py-2">
-                          <p>Tidak ada Barang</p>
-                        </li>
-                      )}
-                      <li className="flex justify-between items-center gap-1 py-2 px-3 border-t border-slate-100">
-                        <p className="font-semibold text-sm text-slate-700">
-                          Subtotal Produk
-                        </p>
-                        <p className="font-bold text-base text-amber-500">
-                          {rupiahCurrency(
-                            details && details.total_point !== 0
-                              ? details.total_point
-                              : 0
-                          )}
-                        </p>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdPayments /> Metode Pembayaran
-                    </h2>
-                    <div className="w-full flex justify-between items-center py-1 px-3">
-                      <p className="text-sm text-gray-500">
-                        {details &&
-                          transformText(details.payments.payment_type)}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {details &&
-                        details.payments.payment_status === "settlement"
-                          ? "Terbayar"
-                          : details &&
-                            details.payments.payment_status === "pending"
-                          ? "Belum Dibayar"
-                          : "Gagal Dibayar"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-                      <MdPaid /> Total Pembayaran
-                    </h2>
-                    <div className="w-full flex justify-between items-center py-1 px-3">
-                      <p className="text-sm text-gray-500">Sub Total</p>
-                      <p className="text-sm text-gray-500">
-                        {details && details.ftotal_point}
-                      </p>
-                    </div>
-                    <div className="w-full flex justify-between items-center py-1 px-3">
-                      <p className="text-sm text-gray-500">Diskon</p>
-                      <p className="text-sm text-gray-500">Rp 0</p>
-                    </div>
-                    <div className="w-full flex justify-between items-center py-1 px-3">
-                      <p className="text-sm text-gray-500">Pengiriman</p>
-                      <p className="text-sm text-gray-500">
-                        {details && details.fshipping_fee}
-                      </p>
-                    </div>
-                    <div className="w-full flex justify-between items-center py-1 px-3 border-t border-slate-100">
-                      <p className="text-base font-semibold text-gray-500">
-                        Semua Total
-                      </p>
-                      <p className="text-base font-semibold text-gray-500">
-                        {details && details.ftotal_amount}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 border-t border-slate-200 py-1 px-3">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-rose-100 px-4 py-2 text-sm font-medium text-rose-900 hover:bg-rose-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Tutup
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
+      <AnimatePresence>
+        {isOpen && <CheckoutDetail closeModal={closeModal} details={details} />}
+      </AnimatePresence>
     </section>
   );
 }
+
+const CheckoutDetail = ({
+  details,
+  closeModal,
+}: {
+  details: any;
+  closeModal: () => void;
+}) => {
+  function transformText(inputText: string) {
+    // Mengganti underscore menjadi spasi
+    let stringWithSpaces = inputText.replace(/_/g, " ");
+
+    // Mengubah huruf awal menjadi kapital
+    let finalString = stringWithSpaces.replace(/\b\w/g, (match) =>
+      match.toUpperCase()
+    );
+
+    return finalString;
+  }
+  function rupiahCurrency(x: number) {
+    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
+  }
+  return (
+    <ModalContent closeModal={closeModal} title="Detail Pesanan">
+      <div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdInfo /> No Pesanan
+          </h2>
+          <div className="w-full flex justify-between px-1">
+            <p className="text-sm text-gray-500">
+              {details && details.redeem_code !== "" && details.redeem_code}
+            </p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdLocalShipping /> Info Pengiriman
+          </h2>
+          <div className="w-full flex justify-between px-1">
+            <p className="text-sm text-gray-500">Metode Pengiriman</p>
+            <p className="text-sm text-gray-500 flex gap-1">
+              <span className="uppercase">
+                {details &&
+                details.shippings &&
+                details.shippings.shipping_courier !== ""
+                  ? details.shippings.shipping_courier
+                  : "unknown"}
+              </span>
+              {details &&
+              details.shippings &&
+              details.shippings.shipping_description !== ""
+                ? details.shippings.shipping_description
+                : "unknown"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdMap /> Alamat Pengiriman
+          </h2>
+          <p className="text-sm text-gray-500 px-1">
+            <span className="font-semibold">Penerima : </span>
+            {`${
+              details !== null && details.users.address.person_name !== ""
+                ? details.users.address.person_name
+                : ""
+            }`}
+          </p>
+          <p className="text-sm text-gray-500 px-1">
+            <span className="font-semibold">Nomor : </span>
+            {`${
+              details !== null &&
+              details.users &&
+              details.users.address.person_phone !== ""
+                ? details.users.address.person_phone
+                : ""
+            }`}
+          </p>
+          <p className="text-sm text-gray-500 px-1">
+            <span className="font-semibold">Alamat : </span>
+            {`${
+              details !== null && details.users.address.address !== ""
+                ? details.users.address.address
+                : ""
+            }, 
+            ${
+              details !== null &&
+              details.users.address.subdistrict.subdistrict_name !== ""
+                ? details.users.address.subdistrict.subdistrict_name
+                : ""
+            }, 
+            ${
+              details !== null && details.users.address.city.city_name !== ""
+                ? details.users.address.city.city_name
+                : ""
+            }, 
+            ${
+              details !== null &&
+              details.users.address.province.province_name !== ""
+                ? details.users.address.province.province_name
+                : ""
+            }, 
+            ${
+              details !== null && details.users.address.postal_code !== 0
+                ? details.users.address.postal_code
+                : ""
+            }`}
+          </p>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdSpeakerNotes /> Catatan
+          </h2>
+          <div className="w-full px-1">
+            <p className="text-sm text-gray-500">
+              {details && details.note !== null ? details.note : "no note"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdShoppingBag /> Daftar Produk
+          </h2>
+          <ul className="border-2 border-slate-100">
+            {details && details.redeem_item_gifts.length !== 0 ? (
+              details.redeem_item_gifts.map((r: any, idx: number) => (
+                <li key={idx} className="flex gap-1 py-1 px-3">
+                  <Image
+                    className="shrink-0"
+                    src={
+                      r.item_gifts && r.item_gifts.item_gift_images.length !== 0
+                        ? r.item_gifts.item_gift_images[0].item_gift_image_url
+                        : "/assets/img/no-image.jpg"
+                    }
+                    width={100}
+                    height={100}
+                    alt="product"
+                  />
+                  <div className="w-full">
+                    <div className="w-full flex justify-between items-start text-slate-700">
+                      <p className="text-sm font-semibold">
+                        {r.item_gifts && r.item_gifts.item_gift_name !== ""
+                          ? r.item_gifts.item_gift_name
+                          : "No Name"}
+                      </p>
+                      <p>
+                        {r.redeem_quantity && r.redeem_quantity !== 0
+                          ? r.redeem_quantity
+                          : 0}
+                        x
+                      </p>
+                    </div>
+                    {r.variants && (
+                      <p className="text-xs py-1 px-2 bg-slate-100 text-slate-700 rounded-md w-max">
+                        {r.variants.variant_name !== ""
+                          ? r.variants.variant_name
+                          : ""}
+                      </p>
+                    )}
+                    <p className="font-semibold text-amber-500">
+                      {r.variants && r.variants.fvariant_point !== ""
+                        ? r.variants.fvariant_point
+                        : r.item_gifts && r.item_gifts.fitem_gift_point !== ""
+                        ? r.item_gifts.fitem_gift_point
+                        : ""}
+                    </p>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <li className="flex justify-center py-2">
+                <p>Tidak ada Barang</p>
+              </li>
+            )}
+            <li className="flex justify-between items-center gap-1 py-2 px-3 border-t border-slate-100">
+              <p className="font-semibold text-sm text-slate-700">
+                Subtotal Produk
+              </p>
+              <p className="font-bold text-base text-amber-500">
+                {rupiahCurrency(
+                  details && details.total_point !== 0 ? details.total_point : 0
+                )}
+              </p>
+            </li>
+          </ul>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdPayments /> Metode Pembayaran
+          </h2>
+          <div className="w-full flex justify-between items-center py-1 px-3">
+            <p className="text-sm text-gray-500">
+              {details && transformText(details.payments.payment_type)}
+            </p>
+            <p className="text-sm text-gray-500">
+              {details && details.payments.payment_status === "settlement"
+                ? "Terbayar"
+                : details && details.payments.payment_status === "pending"
+                ? "Belum Dibayar"
+                : "Gagal Dibayar"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdPaid /> Total Pembayaran
+          </h2>
+          <div className="w-full flex justify-between items-center py-1 px-3">
+            <p className="text-sm text-gray-500">Sub Total</p>
+            <p className="text-sm text-gray-500">
+              {details && details.ftotal_point}
+            </p>
+          </div>
+          <div className="w-full flex justify-between items-center py-1 px-3">
+            <p className="text-sm text-gray-500">Diskon</p>
+            <p className="text-sm text-gray-500">Rp 0</p>
+          </div>
+          <div className="w-full flex justify-between items-center py-1 px-3">
+            <p className="text-sm text-gray-500">Pengiriman</p>
+            <p className="text-sm text-gray-500">
+              {details && details.fshipping_fee}
+            </p>
+          </div>
+          <div className="w-full flex justify-between items-center py-1 px-3 border-t border-slate-100">
+            <p className="text-base font-semibold text-gray-500">Semua Total</p>
+            <p className="text-base font-semibold text-gray-500">
+              {details && details.ftotal_amount}
+            </p>
+          </div>
+        </div>
+      </div>
+    </ModalContent>
+  );
+};

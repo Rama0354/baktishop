@@ -9,6 +9,7 @@ import { getCart } from "../lib/redux/slice/cartSlice";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import DeleteBtnCart from "./cart/DeleteBtnCart";
 
 export default function CartButton() {
   const [cartBtn, setCartBtn] = useState(false);
@@ -20,32 +21,6 @@ export default function CartButton() {
   const totalCartQty = cartItems.reduce((sum: number, item) => {
     return sum + item.product_quantity;
   }, 0);
-
-  const mutation = useMutation({
-    mutationFn: async ({ cart_id }: { cart_id: string }) => {
-      return await axios
-        .delete(`api/cart/${cart_id}`)
-        .then((res) => {
-          if (res.data.status !== 500) {
-            if (res.data.error === 0) {
-              toast.success("Produk telah dihapus dari Keranjang");
-            } else {
-              toast.error(res.data.error.message);
-            }
-          } else {
-            toast.error(`Error ${res.data.status}`);
-          }
-        })
-        .catch((err) => console.log(err));
-    },
-    onSuccess: () => {
-      dispatch(getCart() as any);
-    },
-  });
-
-  const handleDeleteCart = (item: any) => {
-    mutation.mutate({ cart_id: item.cart_id });
-  };
 
   useEffect(() => {
     dispatch(getCart() as any);
@@ -112,14 +87,7 @@ export default function CartButton() {
                         </span>
                       </div>
                       <div>
-                        <button
-                          onClick={() => handleDeleteCart(cart)}
-                          className="py-2 px-3 flex gap-1 items-center bg-rose-100 sm:bg-white hover:bg-rose-100 rounded-md"
-                        >
-                          <AiOutlineDelete
-                            className={"text-rose-500 stroke-2 w-6 h-6"}
-                          />
-                        </button>
+                        <DeleteBtnCart cartid={cart.cart_id} />
                       </div>
                     </div>
                   </li>

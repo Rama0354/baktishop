@@ -1,5 +1,5 @@
 import GiftCardWishlist from "@/app/components/GiftCardWishlist";
-import { getAllWishlist } from "@/app/utils/action/WishlistActions";
+import { getAllWishlist } from "@/app/lib/utils/action/WishlistActions";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 

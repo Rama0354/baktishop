@@ -3,8 +3,11 @@
 import { useTransition } from "react";
 import { useOptimistic } from "react";
 import { decQty, incQty } from "../../lib/utils/action/Cartactions";
+import { useDispatch } from "react-redux";
+import { getCart } from "@/app/lib/redux/slice/cartSlice";
 
 const CountCart = ({ scale, count, cartId }: any) => {
+  const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const [optimisticQty, setOptimisticQty] = useOptimistic(
     { count, sending: false },
@@ -26,7 +29,7 @@ const CountCart = ({ scale, count, cartId }: any) => {
           disabled={isPending}
           onClick={async () => {
             startTransition(() => setOptimisticQty(optimisticQty.count - 1));
-            await decQty(cartId, count);
+            await decQty(cartId, count).then(dispatch(getCart() as any));
           }}
           className="bg-slate-200 text-slate-600 font-bold text-xl"
         >
@@ -43,7 +46,7 @@ const CountCart = ({ scale, count, cartId }: any) => {
           disabled={isPending}
           onClick={async () => {
             startTransition(() => setOptimisticQty(optimisticQty.count + 1));
-            await incQty(cartId, count);
+            await incQty(cartId, count).then(dispatch(getCart() as any));
           }}
           className="bg-slate-200 text-slate-600 font-bold text-xl"
         >

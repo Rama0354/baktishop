@@ -5,14 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import CountCart from "../components/cart/CountCart";
 import DeleteBtnCart from "../components/cart/DeleteBtnCart";
-import { CartDataType } from "../lib/types/cart";
 
 export default async function CartPage() {
   const getCartDatas = await getCarts();
-  const cartItems = getCartDatas && getCartDatas.data;
+  const cartItems = getCartDatas !== undefined ? getCartDatas : undefined;
   const cartData =
     cartItems &&
-    cartItems.data.map((product: CartDataType) => {
+    cartItems.map((product) => {
       return {
         points: product.variants
           ? product.variants.variant_point
@@ -54,8 +53,8 @@ export default async function CartPage() {
               </tr>
             </thead>
             <tbody>
-              {cartItems && cartItems.data.length > 0 ? (
-                cartItems.data.map((product: CartDataType, idx: number) => (
+              {cartItems && cartItems.length > 0 ? (
+                cartItems.map((product, idx: number) => (
                   <tr key={idx} className="bg-white border-b ">
                     <td className="flex items-center justify-between gap-3 px-6 py-3 text-slate-700">
                       <div className="shrink-0 max-h-20 w-20">

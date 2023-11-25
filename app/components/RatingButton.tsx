@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { AiFillStar } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../redux/slice/filterSlice";
+import { setFilter } from "../lib/redux/slice/filterSlice";
 
 const rating = [
   {

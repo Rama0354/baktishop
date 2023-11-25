@@ -1,3 +1,64 @@
+import {z} from 'zod'
+
+const CartSchema = z.object({
+    item_gifts: z.object({
+        id: z.number().int().positive(),
+        item_gift_name: z.string(),
+        item_gift_slug: z.string(),
+        item_gift_point: z.number(),
+        fitem_gift_point: z.string(),
+        item_gift_weight: z.number(),
+        fitem_gift_weight: z.string(),
+        item_gift_status: z.string(),
+        item_gift_images: z.array(
+            z.object({
+                item_gift_id: z.number().int().positive(),
+                variant_id: z.number().int().positive().nullable(),
+                item_gift_image_url: z.string(),
+                item_gift_image_thumbnail_url: z.string()
+            }),
+        )
+    }),
+    variants: z.object({
+        id: z.number().int().positive(),
+        variant_name: z.string(),
+        variant_slug: z.string(),
+        variant_quantity: z.number().int().positive(),
+        variant_point: z.number().int(),
+        fvariant_point: z.string(),
+        variant_weight: z.number().int().positive(),
+        fvariant_weight: z.string(),
+        variant_image: z.object({
+            id: z.number().int().positive(),
+            image_url: z.string(),
+            image_thumb_url: z.string()
+        })
+    }).nullable()
+})
+
+const FormAddCartSchema = z.object({
+    item_gift_id:z.number().int().positive(),
+    variant_id:z.number().int().positive().nullable(),
+    cart_quantity:z.number().int().positive()
+})
+
+const CartId = z.object({id: z.string()})
+const CartQuantity = z.object({cart_quantity: z.number().int().positive()})
+
+export const Cart = CartSchema.merge(CartQuantity).merge(CartId)
+export const CartArray = z.array(CartSchema.merge(CartQuantity).merge(CartId))
+
+export type Cart = z.infer<typeof Cart>
+export type CartArray = z.infer<typeof CartArray>
+
+export const FormAddCart = FormAddCartSchema
+export const FormEditCart = CartId.merge(CartQuantity)
+export const FormDeleteCart = CartId
+
+export type FormAddCart = z.infer<typeof FormAddCart>
+export type FormEditCart = z.infer<typeof FormEditCart>
+export type FormDeleteCart = z.infer<typeof FormDeleteCart>
+
 export type CartType = {
     cart_id: string;
     product_id: number;
@@ -8,69 +69,4 @@ export type CartType = {
     product_weight: number;
     product_quantity: number;
     product_price: number;
-  }
-
-  export type CartDataType = {
-    id: string,
-    item_gifts: {
-        id: number,
-        item_gift_code: string,
-        item_gift_name: string,
-        item_gift_slug: string,
-        category: {
-            id: number,
-            category_code: string,
-            category_name: string,
-            category_slug: string,
-            category_image: string,
-            category_sort: number,
-            category_status: string,
-            category_image_url: string
-        },
-        brand: {
-            id: number,
-            brand_name: string,
-            brand_slug: string,
-            brand_logo: string,
-            brand_sort: number,
-            brand_logo_url: string
-        },
-        item_gift_description: string,
-        item_gift_spesification: [
-            {
-                key: string,
-                value: string
-            }
-        ],
-        item_gift_point: number,
-        fitem_gift_point: string,
-        item_gift_weight: number,
-        fitem_gift_weight: string,
-        item_gift_status: string,
-        item_gift_images: [
-            {
-                item_gift_id: number,
-                variant_id: number | null,
-                item_gift_image_url: string,
-                item_gift_image_thumbnail_url: string
-            }
-        ]
-    },
-    variants: {
-        id: number,
-        variant_name:string,
-        variant_slug: string,
-        variant_quantity: number,
-        variant_point: number,
-        fvariant_point: string,
-        variant_weight: number,
-        fvariant_weight: string,
-        variant_image: {
-            id: number,
-            image: string,
-            image_url: string,
-            image_thumb_url: string
-        }
-    } | null,
-    cart_quantity: 1
 }

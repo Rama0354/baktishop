@@ -1,27 +1,11 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import AddressDnD from "@/app/components/users/AddressDnD";
 import { FullAddressArray } from "@/app/lib/types/address";
+import { getAddresses } from "@/app/lib/utils/action/AddressActions";
 import axios from "axios";
 import { getServerSession } from "next-auth";
 import React from "react";
 import { AiOutlineEnvironment } from "react-icons/ai";
-
-async function getAddresses(): Promise<FullAddressArray | undefined> {
-  const session = await getServerSession(options);
-  try {
-    const res = await axios.get(`${process.env.BACKEND_API}/address`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken}`,
-      },
-    });
-    const datas: FullAddressArray = await res.data.data;
-    const parseData = FullAddressArray.parse(datas);
-    return parseData;
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 export default async function AddressPage({
   searchParams,

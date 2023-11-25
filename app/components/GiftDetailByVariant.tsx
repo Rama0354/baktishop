@@ -172,7 +172,7 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
     }
   };
   return (
-    <section id="maincontent" className="container text-slate-700">
+    <section id="maincontent" className="container text-slate-700 bg-white">
       {/* breadcrumb */}
       <div className="w-full h-12 px-6 py-3 mb-3 border-b border-slate-200">
         <Link href={"/"}>Product</Link>

@@ -2,9 +2,11 @@
 import { useEffect } from "react";
 import NProgress from "nprogress";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 function ProgressBar() {
   const { status } = useSession();
+  const pathname = usePathname();
   useEffect(() => {
     NProgress.configure({
       showSpinner: false,
@@ -16,7 +18,7 @@ function ProgressBar() {
     if (status !== "loading") {
       NProgress.done();
     }
-  }, [status]);
+  }, [status, pathname]);
   return <div role="alert" aria-busy="true"></div>;
 }
 
