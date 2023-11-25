@@ -21,7 +21,6 @@ export default function DashboardClient({ redeem }: any) {
   const pNumber = [...Array(metapage.last_page)];
   function closeModal() {
     setIsOpen(false);
-    // setDetails(null);
   }
 
   function openModal(data: any) {

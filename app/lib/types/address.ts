@@ -31,13 +31,13 @@ const AddressUser = z.object({
 })
 
 const FormAddressSchema = z.object({
-    person_name: z.string(),
-    person_phone: z.string(),
+    person_name: z.string().nonempty('Nama tidak boleh kosong'),
+    person_phone: z.string().nonempty('Nomor tidak boleh kosong'),
     province_id: z.number().int().positive(),
     city_id: z.number().int().positive(),
     subdistrict_id: z.number().int().positive(),
-    postal_code: z.string(),
-    address: z.string(),
+    postal_code: z.string().nonempty('Kode Pos tidak boleh kosong'),
+    address: z.string().nonempty('Alamat tidak boleh kosong'),
 })
 
 // province
@@ -54,8 +54,8 @@ const CitySchema = z.object({
 const CitiesSchema = z.array(CitySchema)
 // subdistrict
 const SubdistrictSchema = z.object({
-    sbudistrict_id: z.number().int().positive(),
-    sbudistrict_name: z.string()
+    subdistrict_id: z.number().int().positive(),
+    subdistrict_name: z.string()
 })
 const SubdistrictsSchema = z.array(SubdistrictSchema)
 
@@ -81,9 +81,17 @@ export type FormDeleteAddress = z.infer<typeof FormDeleteAddressSchema>
 // export province
 export const Province = ProvinceSchema
 export const ProvinceArray = ProvincesSchema
+export type Province = z.infer<typeof ProvinceSchema>
+export type ProvinceArray = z.infer<typeof ProvincesSchema>
+
 // export city
 export const City = CitySchema
 export const CityArray = CitiesSchema
+export type City = z.infer<typeof CitySchema>
+export type CityArray = z.infer<typeof CitiesSchema>
+
 // export subdistrict
 export const Subdistrict = SubdistrictSchema
 export const SubdistrictArray = SubdistrictsSchema
+export type Subdistrict = z.infer<typeof SubdistrictSchema>
+export type SubdistrictArray = z.infer<typeof SubdistrictsSchema>

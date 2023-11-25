@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 import WishButton from "./WishButton";
 import GiftRating from "./GiftRating";
-import { Gifts } from "../types/gifts";
+import { Gifts } from "../lib/types/gifts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

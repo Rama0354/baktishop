@@ -3,8 +3,8 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { AiFillCaretDown, AiOutlineCheck } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { setSort } from "../redux/slice/filterSlice";
-import { RootState } from "../redux/store";
+import { setSort } from "../lib/redux/slice/filterSlice";
+import { RootState } from "../lib/redux/store";
 
 const sorts = [
   { id: 1, name: "Terbaru", value: "" },

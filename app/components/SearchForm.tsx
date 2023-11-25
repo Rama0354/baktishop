@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../redux/slice/filterSlice";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 

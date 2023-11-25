@@ -3,17 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect } from "react";
 import GiftCard from "./GiftCard";
-import { Gifts } from "../types/gifts";
+import { Gifts } from "../lib/types/gifts";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../lib/redux/store";
 import {
   resetAllSearch,
   setFilter,
   setQuery,
   setUrls,
-} from "../redux/slice/filterSlice";
+} from "../lib/redux/slice/filterSlice";
 import { SkeletonCard } from "./Skeleton";
 
 export default function GiftSearchContainer() {

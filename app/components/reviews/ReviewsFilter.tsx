@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch } from "react-redux";
-import { setReviewFilter } from "@/app/redux/slice/detailSlice";
+import { setReviewFilter } from "@/app/lib/redux/slice/detailSlice";
 import { AiFillStar } from "react-icons/ai";
-import { Rating } from "@/app/types/details";
-import { ratings } from "@/app/constant/reviewfilter";
+import { Rating } from "@/app/lib/types/details";
+import { ratings } from "@/app/lib/constant/reviewfilter";
 
 export default function ReviewsFilter() {
   const [selected, setSelected] = useState<Rating | null>(null);

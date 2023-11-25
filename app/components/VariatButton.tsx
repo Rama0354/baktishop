@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../lib/redux/store";
 
 type Variants = {
   id: number;

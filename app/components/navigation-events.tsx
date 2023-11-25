@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAllSearch } from "../redux/slice/filterSlice";
-import { RootState } from "../redux/store";
-import { resetDetail } from "../redux/slice/detailSlice";
+import { resetAllSearch } from "../lib/redux/slice/filterSlice";
+import { RootState } from "../lib/redux/store";
+import { resetDetail } from "../lib/redux/slice/detailSlice";
 
 export function NavigationEvents() {
   const pathname = usePathname();

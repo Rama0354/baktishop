@@ -1,14 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { AddressArray, FullAddressData } from "@/app/types/address";
+import { AddressArray, FullAddressData } from "@/app/lib/types/address";
 import { MdModeEditOutline, MdOutlineDeleteOutline } from "react-icons/md";
-import { reorder } from "@/app/utils/withAddressDnD";
+import { reorder } from "@/app/lib/utils/withAddressDnD";
 import AddressModalForm from "./AddressModalForm";
 
 export default function AddressDnD({
@@ -35,6 +35,11 @@ export default function AddressDnD({
   const [dndData, setDndData] = useState<AddressArray>(
     addresses ? addresses : []
   );
+  useEffect(() => {
+    if (addresses !== undefined) {
+      setDndData(addresses);
+    }
+  }, [addresses]);
   const handleDragStart = () => {
     if (window.navigator.vibrate) window.navigator.vibrate(100);
   };
@@ -85,13 +90,23 @@ export default function AddressDnD({
                             <div className="flex gap-3 justify-between">
                               <div className="flex flex-col">
                                 <p className="font-medium text-sm text-slate-500">
-                                  {`Penerima : ${
+                                  <span className="font-bold">Penerima : </span>
+                                  {`${
                                     address.person_name !== ""
                                       ? address.person_name
                                       : "Unknown"
                                   } `}
                                 </p>
                                 <p className="font-medium text-sm text-slate-500">
+                                  <span className="font-bold">Nomor : </span>
+                                  {`${
+                                    address.person_phone !== ""
+                                      ? address.person_phone
+                                      : "Unknown"
+                                  } `}
+                                </p>
+                                <p className="font-medium text-sm text-slate-500">
+                                  <span className="font-bold">Alamat : </span>
                                   {`${
                                     address.address !== ""
                                       ? address.address

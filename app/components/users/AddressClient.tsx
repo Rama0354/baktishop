@@ -1,4 +1,4 @@
-import { FullAddressArray } from "@/app/types/address";
+import { FullAddressArray } from "@/app/lib/types/address";
 import React from "react";
 import { AiOutlineEnvironment } from "react-icons/ai";
 import AddressDnD from "./AddressDnD";

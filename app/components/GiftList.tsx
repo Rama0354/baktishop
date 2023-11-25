@@ -2,17 +2,17 @@
 import GiftCard from "./GiftCard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Gifts } from "../types/gifts";
-import { useEffect, useState } from "react";
+import { Gifts } from "../lib/types/gifts";
+import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   setFilter,
   setQuery,
   setSort,
   setUrls,
-} from "../redux/slice/filterSlice";
+} from "../lib/redux/slice/filterSlice";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../redux/store";
+import type { RootState } from "../lib/redux/store";
 
 type GiftListProps = {
   pType?: string;

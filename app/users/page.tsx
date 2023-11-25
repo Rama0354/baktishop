@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 import axios from "axios";
-import DashboardClient from "../components/client/DasboardClient";
+import DashboardClient from "../components/users/DasboardClient";
 
 async function getRedeem({ page }: { page: number }) {
   const session = await getServerSession(options);

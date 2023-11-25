@@ -2,10 +2,10 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
-import { RootState } from "../redux/store";
+import { RootState } from "../lib/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
-import { getCart, removeCartItem } from "../redux/slice/cartSlice";
+import { getCart } from "../lib/redux/slice/cartSlice";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";

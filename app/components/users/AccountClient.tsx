@@ -1,13 +1,11 @@
 "use client";
-import { UserData } from "@/app/types/user";
+import { UserData } from "@/app/lib/types/user";
 import Image from "next/image";
 import React, { Fragment } from "react";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import MotionModalWrapper from "./MotionModalWrapper";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import ModalMain from "./ModalMain";
 import { editProfile } from "./action";
 

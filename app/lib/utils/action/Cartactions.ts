@@ -2,7 +2,7 @@
 
 import axios from "axios"
 import { getServerSession } from "next-auth"
-import { options } from "../../api/auth/[...nextauth]/options"
+import { options } from "../../../api/auth/[...nextauth]/options"
 import { revalidatePath } from "next/cache"
 
 export const getCarts =async () => {

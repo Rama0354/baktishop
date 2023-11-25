@@ -1,9 +1,8 @@
 import React from "react";
 import ClientLayout from "../components/layouts/ClientLayout";
-import { AiOutlineUser } from "react-icons/ai";
-import UsersNavigation from "../components/client/UsersNavigation";
+import UsersNavigation from "../components/users/UsersNavigation";
 import Image from "next/image";
-import { getProfie } from "../utils/action/profileAction";
+import { getProfie } from "../lib/utils/action/profileAction";
 
 export default async function UsersLayout({
   children,

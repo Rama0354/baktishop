@@ -4,15 +4,14 @@ import GiftRating from "./GiftRating";
 import Link from "next/link";
 import WishButton from "./WishButton";
 import { Fragment, useEffect, useState } from "react";
-import VariantButton from "./VariatButton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { setUrlDetail, setVariant } from "../redux/slice/detailSlice";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { RootState } from "../lib/redux/store";
+import { setUrlDetail } from "../lib/redux/slice/detailSlice";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { getCart } from "../redux/slice/cartSlice";
+import { getCart } from "../lib/redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
@@ -29,7 +28,6 @@ type DetailImages = DetailImage[];
 
 const GiftDetail = ({
   slug,
-  filterDetail,
   selectedVariants,
 }: {
   slug: string;
@@ -82,7 +80,6 @@ const GiftDetail = ({
     router.push(
       `?variants=${variant.variant_name.replace(/\s+/g, "-").toLowerCase()}`
     );
-    // dispatch(setVariant(variant));
     const selectedVariant = images.find(
       (image: any) => image.variant_id === variant.id
     );

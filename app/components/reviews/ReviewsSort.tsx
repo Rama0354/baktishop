@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/redux/store";
-import { setReviewSort } from "@/app/redux/slice/detailSlice";
+import { RootState } from "@/app/lib/redux/store";
+import { setReviewSort } from "@/app/lib/redux/slice/detailSlice";
 
 type Sort = {
   init: string;

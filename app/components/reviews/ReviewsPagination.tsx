@@ -1,5 +1,5 @@
-import { setReviewFilter, setReviewPage } from "@/app/redux/slice/detailSlice";
-import { RootState } from "@/app/redux/store";
+import { setReviewPage } from "@/app/lib/redux/slice/detailSlice";
+import { RootState } from "@/app/lib/redux/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 

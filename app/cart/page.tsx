@@ -1,11 +1,11 @@
 import React from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { getCarts } from "../utils/action/Cartactions";
+import { getCarts } from "../lib/utils/action/Cartactions";
 import Image from "next/image";
 import Link from "next/link";
 import CountCart from "../components/cart/CountCart";
 import DeleteBtnCart from "../components/cart/DeleteBtnCart";
-import { CartDataType } from "../types/cart";
+import { CartDataType } from "../lib/types/cart";
 
 export default async function CartPage() {
   const getCartDatas = await getCarts();

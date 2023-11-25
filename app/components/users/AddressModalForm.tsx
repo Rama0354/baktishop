@@ -1,33 +1,25 @@
 "use client";
 import {
+  editAddress,
   getAllCity,
   getAllProvince,
   getAllSubdistrict,
-} from "@/app/utils/action/AddressActions";
+} from "@/app/lib/utils/action/AddressActions";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DevTool } from "@hookform/devtools";
 import {
+  CityArray,
   FormEditAddress,
   FormEditAddressSchema,
-  FullAddress,
   FullAddressData,
-} from "@/app/types/address";
+  ProvinceArray,
+  SubdistrictArray,
+} from "@/app/lib/types/address";
+import toast from "react-hot-toast";
 
-type ProvinceData = {
-  province_id: number;
-  province_name: string;
-};
-type CityData = {
-  city_id: number;
-  city_name: string;
-};
-type SubdistrictData = {
-  subdistrict_id: number;
-  subdistrict_name: string;
-};
 export default function AddressModalForm({
   isOpen,
   onClose,
@@ -37,9 +29,9 @@ export default function AddressModalForm({
   onClose: () => void;
   data: FullAddressData | null;
 }) {
-  const [provinces, setProvinces] = useState<ProvinceData[]>([]);
-  const [cities, setCities] = useState<CityData[]>([]);
-  const [subdistricts, setSubdistricts] = useState<SubdistrictData[]>([]);
+  const [provinces, setProvinces] = useState<ProvinceArray>([]);
+  const [cities, setCities] = useState<CityArray>([]);
+  const [subdistricts, setSubdistricts] = useState<SubdistrictArray>([]);
   const [provinceSelected, setProvinceSelected] = useState<number>(0);
   const [citySelected, setCitySelected] = useState<number>(0);
 
@@ -47,7 +39,7 @@ export default function AddressModalForm({
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
+    formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
     setValue,
     watch,
     reset,
@@ -82,36 +74,36 @@ export default function AddressModalForm({
         setValue("subdistrict_id", 0);
       }
     }
-  }, [cities, subdistricts, provinceSelected, citySelected]);
+  }, [cities, subdistricts, provinceSelected, citySelected, data, setValue]);
 
   useEffect(() => {
-    // Fetch provinces from API
-    const fetchProvinces = async () => {
-      try {
-        const res = await getAllProvince();
-        setProvinces(res.data);
-      } catch (error) {
-        console.error("Error fetching provinces:", error);
-      }
-    };
-
-    fetchProvinces();
+    getAllProvince()
+      .then((res) => {
+        if (res !== undefined) {
+          setProvinces(res);
+        }
+      })
+      .catch((error) => console.log(error));
   }, []);
   useEffect(() => {
     // Fetch cities based on selected province
-    const fetchCities = async (id: number) => {
-      try {
-        const res = await getAllCity(id);
-        setCities(res.data);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-      }
-    };
     if (data !== null && data.province.id !== 0) {
-      fetchCities(data.province.id);
+      getAllCity(data.province.id)
+        .then((res) => {
+          if (res !== undefined) {
+            setCities(res);
+          }
+        })
+        .catch((error) => console.log(error));
     }
     if (provinceSelected) {
-      fetchCities(provinceSelected);
+      getAllCity(provinceSelected)
+        .then((res) => {
+          if (res !== undefined) {
+            setCities(res);
+          }
+        })
+        .catch((error) => console.log(error));
     } else {
       setCities([]);
     }
@@ -119,31 +111,39 @@ export default function AddressModalForm({
 
   useEffect(() => {
     // Fetch subdistricts based on selected city
-    const fetchSubdistricts = async (id: number) => {
-      try {
-        const res = await getAllSubdistrict(id);
-        setSubdistricts(res.data);
-      } catch (error) {
-        console.error("Error fetching subdistricts:", error);
-      }
-    };
     if (data !== null && data.city.id !== 0) {
-      fetchSubdistricts(data.city.id);
+      getAllSubdistrict(data.city.id)
+        .then((res) => {
+          if (res !== undefined) {
+            setSubdistricts(res);
+          }
+        })
+        .catch((error) => console.log(error));
     }
     if (citySelected) {
-      fetchSubdistricts(citySelected);
+      getAllSubdistrict(citySelected)
+        .then((res) => {
+          if (res !== undefined) {
+            setSubdistricts(res);
+          }
+        })
+        .catch((error) => console.log(error));
     } else {
       setSubdistricts([]);
     }
   }, [data, citySelected]);
-
-  const onSubmit = (data: FormEditAddress) => {
-    console.log(data);
-    // if (isSubmitSuccessful) {
-    //   reset();
-    //   setCities([]);
-    //   setSubdistricts([]);
-    // }
+  const onSubmit = async (data: FormEditAddress) => {
+    if (isSubmitSuccessful) {
+      await editAddress(data)
+        .then(() => {
+          toast.success("Berhasil Diubah");
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Ada Masalah");
+        });
+    }
   };
 
   return (
@@ -246,6 +246,13 @@ export default function AddressModalForm({
                       >
                         Provinsi
                       </label>
+                      {/* <ProvinceFormSelect
+                        provinces={provinces}
+                        setProvinceSelected={setProvinceSelected}
+                        register={register}
+                        setValue={setValue}
+                        defaultSelect={data ? data.province.id : undefined}
+                      /> */}
                       <select
                         id="province"
                         {...register("province_id", { valueAsNumber: true })}
@@ -382,9 +389,9 @@ export default function AddressModalForm({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:bg-slate-500 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
                   >
-                    Submit
+                    {isSubmitting ? "Menyimpan" : "Simpan"}
                   </button>
                 </form>
                 <DevTool control={control} />

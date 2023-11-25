@@ -5,13 +5,6 @@ import axios from "axios"
 import { getServerSession } from "next-auth"
 import { revalidatePath } from "next/cache"
 
-// type FormData = {
-//     profileId: string;
-//     profilename: string;
-//     birthdate: string;
-//     phone: string;
-//   };
-
 export async function editProfile(data:FormData){
     const session = await getServerSession(options)
     const profileId = data.get('profileid')

@@ -1,5 +1,5 @@
 "use client";
-import { deleteCart } from "@/app/utils/action/Cartactions";
+import { deleteCart } from "@/app/lib/utils/action/Cartactions";
 import React, { useTransition } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 

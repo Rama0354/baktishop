@@ -1,5 +1,5 @@
 "use client";
-import { accountnavigations } from "@/app/constant/accountPage";
+import { accountnavigations } from "@/app/lib/constant/accountPage";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

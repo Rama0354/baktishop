@@ -1,4 +1,4 @@
-import { WishlistData } from "@/app/types/giftwishlist";
+import { WishlistData } from "@/app/lib/types/giftwishlist";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import GiftCardWishlist from "../GiftCardWishlist";

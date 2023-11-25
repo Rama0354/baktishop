@@ -6,8 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useRouter } from "next/navigation";
-import { RootState } from "../../redux/store";
-import { setReviewQuery, setReviewUrls } from "../../redux/slice/detailSlice";
+import { RootState } from "../../lib/redux/store";
+import {
+  setReviewQuery,
+  setReviewUrls,
+} from "../../lib/redux/slice/detailSlice";
 import ReviewsFilter from "./ReviewsFilter";
 import ReviewsSort from "./ReviewsSort";
 import ReviewsPagination from "./ReviewsPagination";

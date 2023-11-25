@@ -1,7 +1,7 @@
 "use client";
-import { changeWishlist } from "@/app/utils/action/WishlistActions";
+import { changeWishlist } from "@/app/lib/utils/action/WishlistActions";
 import Image from "next/image";
-import React, { useOptimistic, useState, useTransition } from "react";
+import React, { useTransition } from "react";
 
 export default function WishBtn({ giftId }: { giftId: number }) {
   const [isPending, startTransition] = useTransition();

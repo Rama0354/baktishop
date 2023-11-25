@@ -2,14 +2,14 @@ import "./globals.css";
 import "./nprogress.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import AuthProvider from "./context/AuthProviders";
+import AuthProvider from "./lib/context/AuthProviders";
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-import QueryProvider from "./context/QueryProvider";
-import StoreProvider from "./redux/StoreProvider";
+import QueryProvider from "./lib/context/QueryProvider";
+import StoreProvider from "./lib/redux/StoreProvider";
 import { NavigationEvents } from "./components/navigation-events";
 import { Suspense } from "react";
 

@@ -96,6 +96,7 @@ const refreshTokenApiCall = async (token:any) => {
       }
     } else {
       console.error("Error refreshing access token", res.status, res.data);
+      signOut()
       return { ...token, error: "RefreshAccessTokenError" as const };
     }
   } catch (error) {

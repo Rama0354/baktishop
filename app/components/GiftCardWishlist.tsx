@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import GiftRating from "./GiftRating";
 import Link from "next/link";
-import { WishlistData } from "../types/giftwishlist";
+import { WishlistData } from "../lib/types/giftwishlist";
 import WishBtn from "./gifts/WishBtn";
 
 const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
