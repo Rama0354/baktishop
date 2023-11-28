@@ -12,7 +12,7 @@ export default async function UsersLayout({
   const profileData = await getProfie();
   return (
     <ClientLayout>
-      <section className="container mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md bg-white">
+      <section className="container mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md bg-gradient-to-br from-white to-slate-100">
         <div className="w-full flex flex-col sm:flex-row">
           <div className="w-full sm:w-1/4 md:px-3 shrink-0">
             <div className="w-full py-6 flex flex-col items-center">

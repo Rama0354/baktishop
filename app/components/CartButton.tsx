@@ -30,7 +30,7 @@ export default function CartButton() {
     <div className=" group relative">
       <Link
         href={"/cart"}
-        aria-label="button navigation to cart"
+        aria-label="keranjang belanja"
         className="block p-2 group-hover:bg-primary-light transition duration-300 ease-in-out rounded-full"
       >
         <AiOutlineShoppingCart className="text-white stroke-2 w-6 h-6" />

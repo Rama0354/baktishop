@@ -31,6 +31,7 @@ const AddressUser = z.object({
 })
 
 const FormAddressSchema = z.object({
+    user_id: z.number().int().positive().optional(),
     person_name: z.string().nonempty('Nama tidak boleh kosong'),
     person_phone: z.string().nonempty('Nomor tidak boleh kosong'),
     province_id: z.number().int().positive(),
@@ -62,7 +63,7 @@ const SubdistrictsSchema = z.array(SubdistrictSchema)
 // export address
 export const FullAddress = AddressSchema.extend({users: AddressUser}).merge(AddressId).merge(AddressMain)
 export const FullAddressArray = z.array(FullAddress)
-export const AddressData = AddressSchema.extend({users:AddressId}).merge(AddressId)
+export const AddressData = AddressSchema.merge(AddressId).merge(AddressMain)
 export const AddressArray = z.array(AddressData)
 
 export type FullAddressArray = z.infer<typeof FullAddressArray>
@@ -70,7 +71,7 @@ export type AddressArray = z.infer<typeof AddressArray>
 export type FullAddressData = z.infer<typeof FullAddress>
 export type AddressData = z.infer<typeof AddressData>
 
-export const FormAddAddressSchema = FormAddressSchema.merge(AddressId).merge(AddressMainSet)
+export const FormAddAddressSchema = FormAddressSchema
 export const FormEditAddressSchema = FormAddressSchema.merge(AddressId)
 export const FormDeleteAddressSchema = AddressId
 
