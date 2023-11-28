@@ -5,7 +5,6 @@ import {
   getAllProvince,
   getAllSubdistrict,
 } from "@/app/lib/utils/action/AddressActions";
-import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +14,6 @@ import {
   CityArray,
   FormEditAddress,
   FormEditAddressSchema,
-  FullAddressData,
   ProvinceArray,
   SubdistrictArray,
 } from "@/app/lib/types/address";

@@ -15,6 +15,7 @@ import { getCart } from "../lib/redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
+import { addCart } from "../lib/utils/action/Cartactions";
 
 type DetailImage = {
   id: number;
@@ -37,8 +38,6 @@ const GiftDetail = ({
   const { status: loginStatus } = useSession();
   const dispatch = useDispatch();
   const pathname = usePathname();
-  const router = useRouter();
-  const variant = useSelector((state: RootState) => state.detail.variant);
   const [countItem, setCountItem] = useState(1);
   const { data: detail } = useQuery({
     queryKey: ["detail", `${slug}`],
@@ -76,17 +75,6 @@ const GiftDetail = ({
         : "/assets/img/no-image.jpg"
     );
   };
-  const handleVariantSelect = (variant: any) => {
-    router.push(
-      `?variants=${variant.variant_name.replace(/\s+/g, "-").toLowerCase()}`
-    );
-    const selectedVariant = images.find(
-      (image: any) => image.variant_id === variant.id
-    );
-    selectedVariant !== undefined
-      ? setSelectedVariantImage(selectedVariant.image_url)
-      : setSelectedVariantImage(images[0].image_url);
-  };
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
@@ -94,63 +82,6 @@ const GiftDetail = ({
     dispatch(setUrlDetail(pathname));
   }, [pathname, dispatch]);
 
-  const mutation = useMutation({
-    mutationFn: async ({
-      item_gift_id,
-      variant_id,
-      cart_quantity,
-    }: {
-      item_gift_id: number;
-      variant_id?: number;
-      cart_quantity: number;
-    }) => {
-      if (variant_id !== undefined) {
-        return await axios
-          .post(`api/cart`, {
-            item_gift_id,
-            variant_id,
-            cart_quantity,
-          })
-          .then((res) => {
-            if (res.data.status !== 500) {
-              if (res.data.error === 0) {
-                toast.success(res.data.message);
-              } else if (res.data.status === 400) {
-                toast.error("Maaf, Jumlah yang anda masukkan melebihi stok!");
-              } else {
-                toast.error(res.data.error.message);
-              }
-            } else {
-              toast.error(`Error ${res.data.status}`);
-            }
-          })
-          .catch((err) => console.log(err));
-      } else {
-        return await axios
-          .post(`api/cart`, {
-            item_gift_id,
-            cart_quantity,
-          })
-          .then((res) => {
-            if (res.data.status !== 500) {
-              if (res.data.error === 0) {
-                toast.success(res.data.message);
-              } else if (res.data.status === 400) {
-                toast.error("Maaf, Jumlah yang anda masukkan melebihi stok!");
-              } else {
-                toast.error(res.data.error.message);
-              }
-            } else {
-              toast.error(`Error ${res.data.status}`);
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-    },
-    onSuccess: () => {
-      dispatch(getCart() as any);
-    },
-  });
   const handleAddToCart = () => {
     if (loginStatus === "unauthenticated") {
       signIn();
@@ -159,10 +90,18 @@ const GiftDetail = ({
         if (detail.variants.length !== 0) {
           toast.error("Mohon pilih varian");
         } else {
-          mutation.mutate({
+          addCart({
             item_gift_id: detail.id,
             cart_quantity: countItem,
-          });
+            variant_id: null,
+          })
+            .then(() => {
+              toast.success("berhasil ditambahkan");
+              dispatch(getCart() as any);
+            })
+            .catch(() => {
+              toast.error("ada masalah");
+            });
         }
       } else {
         toast.error("Mohon atur jumlah barang");
@@ -341,11 +280,6 @@ const GiftDetail = ({
                         );
                       })}
                   </div>
-                  {/* <VariantButton
-                    variants={detail && detail.variants}
-                    filterDetail={selectedVariants}
-                    onVariantSelect={handleVariantSelect}
-                  /> */}
                 </div>
               )}
             </div>

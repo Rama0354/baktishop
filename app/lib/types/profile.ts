@@ -3,9 +3,9 @@ import {z} from 'zod'
 const profileId = z.object({id: z.number().int().positive()})
 const profileAvatar = z.object({avatar_url: z.string()})
 const profileSchema = z.object({
-    name: z.string(),
-    birthdate: z.string(),
-    phone_number: z.string(),
+    name: z.string().nonempty('Nama tidak boleh kosong'),
+    birthdate: z.string().nonempty('Tanggal Lahir harus di atur'),
+    phone_number: z.string().nonempty('Noor telepon harus di isi').max(12, 'Tidak boleh lebih dari 12 Karakter'),
 })
 const userSchema = z.object({
     username: z.string(),

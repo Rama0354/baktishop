@@ -15,6 +15,7 @@ import { getCart } from "../lib/redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
+import { addCart } from "../lib/utils/action/Cartactions";
 
 type DetailImage = {
   id: number;
@@ -150,21 +151,21 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
       signIn();
     } else {
       if (countItem !== 0) {
-        if (detail.item_gifts.variants.length !== 0) {
-          if (detail.id !== 0) {
-            mutation.mutate({
-              item_gift_id: detail.item_gifts.id,
-              variant_id: detail.id,
-              cart_quantity: countItem,
-            });
-          } else {
-            toast.error("Mohon pilih varian");
-          }
-        } else {
-          mutation.mutate({
-            item_gift_id: detail.id,
+        if (detail.id !== 0) {
+          addCart({
+            item_gift_id: detail.item_gifts.id,
+            variant_id: detail.id,
             cart_quantity: countItem,
-          });
+          })
+            .then(() => {
+              toast.success("berhasil ditambahkan");
+              dispatch(getCart() as any);
+            })
+            .catch(() => {
+              toast.error("ada masalah");
+            });
+        } else {
+          toast.error("Mohon pilih varian");
         }
       } else {
         toast.error("Mohon atur jumlah barang");

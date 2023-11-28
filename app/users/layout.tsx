@@ -16,7 +16,7 @@ export default async function UsersLayout({
         <div className="w-full flex flex-col sm:flex-row">
           <div className="w-full sm:w-1/4 md:px-3 shrink-0">
             <div className="w-full py-6 flex flex-col items-center">
-              <div className="w-20 h-20 shrink-0 flex justify-center items-center bg-purple-500 rounded-full overflow-hidden ring-2 ring-purple-500">
+              <div className="w-20 h-20 shrink-0 flex justify-center items-center bg-primary-dark rounded-full overflow-hidden ring-2 ring-primary-dark">
                 {profileData ? (
                   profileData.profile.avatar_url !== "" ? (
                     <Image
