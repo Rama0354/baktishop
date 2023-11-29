@@ -1,52 +1,67 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import ClientLayout from "../components/layouts/ClientLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import SelectProvince from "../components/SelectProvince";
-import SelectCity from "../components/SelectCity";
-import SelectSubdistrict from "../components/SelectSubdistrict";
+import { getCarts } from "../lib/utils/action/Cartactions";
+import Image from "next/image";
+import CheckoutClient from "../components/checkout/CheckoutClient";
+import { getAddresses } from "../lib/utils/action/AddressActions";
 
-const products = [
-  {
-    id: 1,
-    product_name: "Kabel Data 1M 6A",
-    price: 100000,
-    fprice: "Rp 100.000",
-    qty: 2,
-  },
-  {
-    id: 2,
-    product_name: "Fan Cooler Matrix USB C",
-    price: 200000,
-    fprice: "Rp 200.000",
-    qty: 1,
-  },
-  {
-    id: 3,
-    product_name: "Xiaomi Stylus Pen 1448Dpi",
-    price: 350000,
-    fprice: "Rp 350.000",
-    qty: 1,
-  },
-];
-
-export default function CheckoutPage() {
-  const [selectedProvinceId, setSelectedProvinceId] = useState("");
-  const [selectedCityId, setSelectedCityId] = useState("");
-  const [selectedSubdistrictId, setSelectedSubdistrictId] = useState("");
-
-  const handleProvinceChange = (provinceId: string) => {
-    setSelectedProvinceId(provinceId);
-  };
-  const handleCityChange = (cityId: string) => {
-    setSelectedCityId(cityId);
-  };
-  const handleSubdistrictChange = (subdistrictId: string) => {
-    setSelectedSubdistrictId(subdistrictId);
-  };
+export default async function CheckoutPage() {
+  const getCartDatas = await getCarts();
+  const getAddress = await getAddresses();
+  const addresses =
+    getAddress !== undefined
+      ? getAddress.sort((a, b) => b.is_main - a.is_main)
+      : undefined;
+  const cartItems = getCartDatas !== undefined ? getCartDatas : undefined;
+  const cartData =
+    cartItems &&
+    cartItems.map((product) => {
+      return {
+        points: product.variants
+          ? product.variants.variant_point
+          : product.item_gifts.item_gift_point,
+        weights: product.variants
+          ? product.variants.variant_weight
+          : product.item_gifts.item_gift_weight,
+        qtys: product.cart_quantity,
+      };
+    });
+  const cartCheckout = cartItems
+    ? cartItems.map((item) => {
+        return {
+          item_gift_id: item.item_gifts.id,
+          redeem_quantity: item.cart_quantity,
+          variant_id: item.variants !== null ? item.variants.id : null,
+        };
+      })
+    : [];
+  const subTotal = cartData
+    ? cartData.reduce(
+        (acc: number, item: { points: number; qtys: number }) =>
+          acc + item.points * item.qtys,
+        0
+      )
+    : 0;
+  const weightTotal = cartData
+    ? cartData.reduce(
+        (acc: number, item: { weights: number; qtys: number }) =>
+          acc + item.weights * item.qtys,
+        0
+      )
+    : 0;
+  const qtyTotal = cartData
+    ? cartData.reduce(
+        (acc: number, item: { qtys: number }) => acc + item.qtys,
+        0
+      )
+    : 0;
+  function rupiahCurrency(x: number) {
+    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
+  }
   return (
     <ClientLayout>
-      <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col border border-slate-300 rounded-md shadow-md">
+      <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-white border border-slate-300 rounded-md shadow-md">
         <div className="w-full flex items-center gap-3 border-b-2 border-slate-300 py-1 px-6 md:py-2">
           <AiOutlineShoppingCart className="text-slate-700 stroke-2 w-6 h-6" />
           <h1 className="py-2 font-semibold text-xl text-slate-700">
@@ -55,210 +70,118 @@ export default function CheckoutPage() {
         </div>
         <div className="w-full py-3 px-6 flex flex-col sm:flex-row gap-3">
           <div className="w-full sm:1/2 md:w-2/3">
-            <table className="w-full text-sm text-left text-gray-500 border border-slate-200">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    Produk
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product.id} className="bg-white border-b ">
-                    <td
-                      scope="row"
-                      className="flex items-center justify-between gap-3 px-6 py-3 text-slate-700"
-                    >
-                      <div className="w-full">
-                        <p className="font-medium text-lg">
-                          {product.product_name}
-                        </p>
-                        <p className="w-max py-1 px-2 font-medium text-xs bg-slate-200 rounded-md">
-                          varian
-                        </p>
-                        <p className="font-semibold text-sm text-amber-500">
-                          {product.fprice}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-lg">x1</p>
-                      </div>
-                    </td>
+            <div className="py-1 px-3">
+              <table className="w-full min-w-min overflow-x-auto text-sm text-left text-gray-500 border border-slate-200">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Produk
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="mt-6 text-slate-700">
-              <div className="relative my-3 border-b-2 border-slate-300 bg-slate-200">
-                <h2 className="p-3 font-semibold text-xs uppercase">
-                  Data diri
-                </h2>
-              </div>
-              <form>
-                <div className="grid gap-6 mb-6 md:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="first_name"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Nama Penerima
-                    </label>
-                    <input
-                      type="text"
-                      id="first_name"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      placeholder="User"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="phone"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      No. Telp
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      placeholder="0813-0000-0000"
-                      pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-                      required
-                    />
-                  </div>
-                  <SelectProvince onProvinceChange={handleProvinceChange} />
-                  <SelectCity
-                    selectedProvinceId={selectedProvinceId}
-                    onCityChange={handleCityChange}
-                  />
-                  <SelectSubdistrict
-                    selectedCityId={selectedCityId}
-                    selectedProvinceId={selectedProvinceId}
-                    onSubdistrictChange={handleSubdistrictChange}
-                  />
-                  <div>
-                    <label
-                      htmlFor="address"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Alamat Lengkap(desa dsb.)
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      placeholder="menganti, RT 01 RW 01"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="shipping"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Pilih Pengiriman
-                  </label>
-                  <ul className="grid w-full gap-6 md:grid-cols-2">
-                    <li>
-                      <input
-                        type="radio"
-                        id="shipping-jne"
-                        name="hosting"
-                        value="shipping-jne"
-                        className="hidden peer"
-                        required
-                      />
-                      <label
-                        htmlFor="shipping-jne"
-                        className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
-                      >
-                        <div className="block">
-                          <div className="w-full text-lg font-semibold">
-                            JNE OKE
+                </thead>
+                <tbody>
+                  {cartItems && cartItems.length > 0 ? (
+                    cartItems.map((product, idx: number) => (
+                      <tr key={idx} className="bg-white border-b ">
+                        <td className="flex items-center justify-between gap-3 px-6 py-3 text-slate-700">
+                          <div className="shrink-0 max-h-20 w-20">
+                            <Image
+                              src={
+                                product && product.variants !== null
+                                  ? product.variants.variant_image.image_url
+                                  : product.item_gifts.item_gift_images[0]
+                                      .item_gift_image_url &&
+                                    product.item_gifts.item_gift_images[0]
+                                      .item_gift_image_url !== ""
+                                  ? product.item_gifts.item_gift_images[0]
+                                      .item_gift_image_url
+                                  : "/assets/img/no-image.jpg"
+                              }
+                              width={64}
+                              height={64}
+                              alt="cart-picture"
+                            />
                           </div>
-                          <div className="w-full">Ext 6 - 8 Apr Rp 50.000</div>
-                        </div>
-                        <svg
-                          className="w-5 h-5 ml-3"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        id="shipping-jnt"
-                        name="hosting"
-                        value={"shipping-jnt"}
-                        className="hidden peer"
-                        required
-                      />
-                      <label
-                        htmlFor="shipping-jnt"
-                        className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
-                      >
-                        <div className="block">
-                          <div className="w-full text-lg font-semibold">
-                            J&T Express
+                          <div className="w-full flex flex-col sm:flex-row justify-between items-center">
+                            <div className="w-full">
+                              <h2 className="text-lg font-medium">
+                                {product && product.item_gifts.item_gift_name}
+                              </h2>
+                              {product && product.variants !== null ? (
+                                <p className="text-xs font-medium py-1 px-2 w-max bg-slate-100 rounded-md">
+                                  {product.variants.variant_name}
+                                </p>
+                              ) : null}
+                              <p className="font-semibold text-base text-amber-500">
+                                {product && product.variants !== null
+                                  ? product.variants.fvariant_point
+                                  : product.item_gifts.fitem_gift_point !== ""
+                                  ? product.item_gifts.fitem_gift_point
+                                  : "Rp 0"}
+                              </p>
+                            </div>
+                            <div className="w-full text-right font-semibold">
+                              <p className="text-base">
+                                {product && product.cart_quantity !== 0
+                                  ? product.cart_quantity
+                                  : 0}
+                                x
+                              </p>
+                              <p className="text-sm">
+                                {product && product.variants !== null
+                                  ? product.variants.fvariant_weight
+                                  : product.item_gifts.fitem_gift_weight !== ""
+                                  ? product.item_gifts.fitem_gift_weight
+                                  : "0 Gram"}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-full">Ext 6 - 8 Apr Rp 48.000</div>
-                        </div>
-                        <svg
-                          className="w-5 h-5 ml-3"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </form>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="bg-white border-b ">
+                      <td
+                        scope="row"
+                        className="flex items-center justify-center gap-3 px-6 py-3 text-slate-700"
+                      >
+                        <p className=" italic">Tidak ada Barang yang dipesan</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
+            {addresses !== undefined ? (
+              <CheckoutClient
+                address={addresses}
+                weights={weightTotal}
+                gifts={cartCheckout}
+              />
+            ) : null}
           </div>
           <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1">
             <div className="flex justify-between items-center text-slate-700">
-              <p className="font-semibold text-sm">Total Sementara</p>
-              <p>Rp 850.000</p>
+              <p className="font-medium text-sm">Subtotal</p>
+              <p>{rupiahCurrency(subTotal)}</p>
             </div>
             <div className="flex justify-between items-center text-slate-700">
-              <p className="font-semibold text-sm">Potongan Harga</p>
-              <p>Rp 0</p>
+              <p className="font-medium text-sm">Jumlah</p>
+              <p>{qtyTotal}</p>
             </div>
             <div className="flex justify-between items-center text-slate-700">
-              <p className="font-semibold text-base">Jumlah</p>
-              <p>4</p>
+              <p className="font-medium text-sm">Berat</p>
+              <p>{weightTotal} Gram</p>
             </div>
             <div className="flex my-3 justify-between items-center text-slate-700 border-t-2 border-slate-500">
               <p className="font-semibold text-base">Harga Total</p>
-              <p>Rp 850.000</p>
+              <p className="font-semibold text-base">
+                {rupiahCurrency(subTotal)}
+              </p>
             </div>
             <div className="flex gap-3">
-              <button className="w-full py-1 px-3 font-semibold bg-purple-500 text-white border-2 border-purple-500 rounded-md">
-                Checkout Sekarang
+              <button className="w-full py-1 px-3 font-semibold bg-primary-dark text-white border-2 border-primary-dark hover:bg-secondary-dark hover:border-secondary-dark rounded-md">
+                Pesan Sekarang
               </button>
             </div>
           </div>

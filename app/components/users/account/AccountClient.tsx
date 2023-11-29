@@ -6,9 +6,6 @@ import { AiOutlineIdcard } from "react-icons/ai";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import ModalContent from "../../ModalContent";
-import { FormEditProfile } from "@/app/lib/types/profile";
-import { editProfile } from "@/app/lib/utils/action/profileAction";
 import EditProfile from "./EditProfile";
 
 export default function AccountClient({ userData }: { userData: UserData }) {
@@ -89,94 +86,8 @@ export default function AccountClient({ userData }: { userData: UserData }) {
         </div>
       </div>
       <AnimatePresence>
-        {modalOpen && (
-          // <EditProfileForm onClose={close} data={userData.profile} />
-          <EditProfile onClose={close} data={userData.profile} />
-        )}
+        {modalOpen && <EditProfile onClose={close} data={userData.profile} />}
       </AnimatePresence>
     </section>
   );
 }
-
-// const EditProfileForm = ({
-//   onClose,
-//   data,
-// }: {
-//   onClose: () => void;
-//   data: FormEditProfile;
-// }) => {
-//   return (
-//     <ModalContent closeModal={onClose} title="Ubah Profile">
-//       <form action={editProfile}>
-//         <input
-//           type="text"
-//           id="profileid"
-//           name="profileid"
-//           defaultValue={data.id}
-//           className="hidden"
-//           required
-//         />
-//         <div className="relative z-0 w-full mb-6 group">
-//           <label
-//             htmlFor="name"
-//             className="block mb-2 text-sm font-medium text-gray-900"
-//           >
-//             Nama
-//           </label>
-//           <input
-//             type="text"
-//             id="profilename"
-//             name="profilename"
-//             defaultValue={data.name}
-//             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//             placeholder="John"
-//             required
-//           />
-//         </div>
-//         <div className="grid md:grid-cols-2 md:gap-6">
-//           <div className="relative z-0 w-full mb-6 group">
-//             <label
-//               htmlFor="phone"
-//               className="block mb-2 text-sm font-medium text-gray-900"
-//             >
-//               No. Telp
-//             </label>
-//             <input
-//               type="tel"
-//               name="phone"
-//               id="phone"
-//               defaultValue={data.phone_number}
-//               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//               placeholder="081-0000-0000-0"
-//               required
-//             />
-//           </div>
-//           <div className="relative z-0 w-full mb-6 group">
-//             <label
-//               htmlFor="birthdate"
-//               className="block mb-2 text-sm font-medium text-gray-900"
-//             >
-//               Tanggal Lahir
-//             </label>
-//             <input
-//               type="date"
-//               name="birthdate"
-//               id="birthdate"
-//               defaultValue={data.birthdate}
-//               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//               required
-//             />
-//           </div>
-//         </div>
-//         <div className="w-full flex justify-end gap-6">
-//           <button
-//             type="submit"
-//             className="text-white bg-primary-dark hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-slate-300 font-bold rounded-lg text-sm w-full sm:w-auto px-9 py-2.5 text-center"
-//           >
-//             Simpan
-//           </button>
-//         </div>
-//       </form>
-//     </ModalContent>
-//   );
-// };

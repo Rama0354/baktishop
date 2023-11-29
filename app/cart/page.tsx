@@ -138,13 +138,16 @@ export default async function CartPage() {
           <div className="flex gap-3">
             <Link
               href={"/"}
-              className="w-1/3 py-1 px-3 font-semibold bg-white text-center text-purple-500 border-2 border-purple-500 rounded-md"
+              className="w-full py-1 px-3 font-semibold bg-white text-center text-purple-500 border-2 border-purple-500 rounded-md"
             >
               Lanjut Belanja
             </Link>
-            <button className="w-2/3 py-1 px-3 font-semibold bg-purple-500 text-white border-2 border-purple-500 rounded-md">
-              Checkout Sekarang
-            </button>
+            <Link
+              href={"/checkout"}
+              className="w-full block py-1 px-3 font-semibold bg-purple-500 text-center text-white border-2 border-purple-500 rounded-md"
+            >
+              Checkout
+            </Link>
           </div>
         </div>
       </div>

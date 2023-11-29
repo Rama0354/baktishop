@@ -76,7 +76,7 @@ export default function AddressDnD({
                         ref={draggableProvided.innerRef}
                       >
                         <div
-                          className={`w-full max-w-lg py-2 px-3 flex gap-3 items-center justify-between border bg-white border-slate-200 shadow-md rounded-md ${
+                          className={`w-full max-w-lg py-2 px-3 flex gap-3 items-center justify-between border bg-white shadow-md rounded-md ${
                             address && address.is_main === 1
                               ? "border-l-4 border-lime-500"
                               : null

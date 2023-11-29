@@ -14,34 +14,6 @@ const initialState:initialStateProps ={
     subtotal:0
 }
 
-type Cart ={
-    id: number,
-    item_gifts: {
-        id: number,
-        item_gift_name: string,
-        category: {
-            category_name: string,
-            category_slug: string,
-        },
-        brand: {
-            brand_name: string,
-            brand_slug: string,
-        },
-        item_gift_point: number,
-        item_gift_weight: number,
-        fitem_gift_weight: string,
-    },
-    variants: {
-        id: number,
-        variant_name: string,
-        variant_quantity: number,
-        variant_point: number,
-        fvariant_point: string
-    },
-    cart_quantity: number,
-}
-
-
 export const getCart = createAsyncThunk('cart/get', async () => {
   const res = await getCarts()
   return res
