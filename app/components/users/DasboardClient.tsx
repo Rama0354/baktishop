@@ -34,7 +34,7 @@ export default function DashboardClient({ redeem }: any) {
       <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 border-slate-200">
         <AiOutlineSchedule className={"w-6 h-6 stroke-2 text-slate-700"} />
         <h2 className="font-semibold text-lg text-slate-700">
-          Riwayat Pesanan
+          Riwayat Transaksi
         </h2>
       </div>
       <div className="relative md:max-w-lg lg:max-w-full overflow-x-auto">
@@ -81,27 +81,30 @@ export default function DashboardClient({ redeem }: any) {
                         <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
                         Selesai
                       </div>
-                    ) : r.redeem_status === "shipped" ? (
+                    ) : r.redeem_status === "shipped" &&
+                      r.shippings.shipping_status === "on progress" ? (
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                        Diproses
+                      </div>
+                    ) : r.redeem_status === "shipped" &&
+                      r.shippings.shipping_status === "on delivery" ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
                         Dikirim
                       </div>
-                    ) : r.redeem_status === "pending" &&
-                      r.payments.payment_status === "pending" ? (
+                    ) : (r.redeem_status === "pending" &&
+                        r.payments === null) ||
+                      (r.payments &&
+                        r.payments.payment_status === "pending") ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
                         Belum Dibayar
                       </div>
-                    ) : r.redeem_status === "pending" &&
-                      r.payments.payment_status === "settlement" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                        Proses
-                      </div>
                     ) : r.redeem_status === "failure" ? (
                       <div className="flex items-center">
                         <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                        Gagal
+                        Batal
                       </div>
                     ) : r.redeem_status === "canceled" ? (
                       <div className="flex items-center">
@@ -115,25 +118,23 @@ export default function DashboardClient({ redeem }: any) {
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 flex gap-3 float-right">
                     {r.redeem_status === "pending" ||
                     r.redeem_status === "failure" ? (
                       <Link
-                        target="_blank"
                         href={r.snap_url}
-                        className="block w-max px-4 py-2 text-sm font-medium bg-white border-2 border-purple-500 text-purple-500 hover:bg-purple-100"
+                        className="block w-max px-3 py-1 text-sm font-medium text-white bg-rose-600 hover:bg-rose-800 rounded-full"
                       >
                         Bayar
                       </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => openModal(r)}
-                        className="px-4 py-2 text-sm font-medium bg-white border-2 border-purple-500 text-purple-500 hover:bg-purple-100"
-                      >
-                        Detail
-                      </button>
-                    )}
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => openModal(r)}
+                      className="px-3 py-1 text-sm font-medium text-white bg-primary-dark hover:bg-secondary-dark rounded-full"
+                    >
+                      Detail
+                    </button>
                   </td>
                 </tr>
               ))
@@ -156,7 +157,7 @@ export default function DashboardClient({ redeem }: any) {
               metapage.current_page === 1
                 ? " pointer-events-none text-slate-300 border-slate-300"
                 : ""
-            } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:shadow-mds`}
+            } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:shadow-mds`}
             href={`?page=${metapage.current_page - 1}`}
           >
             Prev
@@ -166,9 +167,9 @@ export default function DashboardClient({ redeem }: any) {
               key={idx}
               className={`${
                 metapage.current_page === idx + 1
-                  ? "bg-purple-500 text-white hover:bg-purple-600"
+                  ? "bg-primary-dark text-white hover:bg-secondary-dark"
                   : ""
-              } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:bg-purple-100 hover:shadow-md`}
+              } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:bg-primary-light hover:shadow-md`}
               href={`?page=${idx + 1}`}
             >
               {idx + 1}
@@ -179,7 +180,7 @@ export default function DashboardClient({ redeem }: any) {
               metapage.current_page === metapage.last_page
                 ? " pointer-events-none text-slate-300 border-slate-300"
                 : ""
-            } block py-1 px-3 border border-purple-500 text-base font-semibold text-purple-500 rounded-md hover:shadow-mds`}
+            } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:shadow-mds`}
             href={`?page=${metapage.current_page + 1}`}
           >
             Next
@@ -386,15 +387,19 @@ const CheckoutDetail = ({
           </h2>
           <div className="w-full flex justify-between items-center py-1 px-3">
             <p className="text-sm text-gray-500">
-              {details && transformText(details.payments.payment_type)}
+              {details && details.payments !== null
+                ? transformText(details.payments.payment_type)
+                : "Belum memilih pembayaran"}
             </p>
-            <p className="text-sm text-gray-500">
-              {details && details.payments.payment_status === "settlement"
-                ? "Terbayar"
-                : details && details.payments.payment_status === "pending"
-                ? "Belum Dibayar"
-                : "Gagal Dibayar"}
-            </p>
+            {details && details.payments !== null && (
+              <p className="text-sm text-gray-500">
+                {details && details.payments.payment_status === "settlement"
+                  ? "Terbayar"
+                  : details && details.payments.payment_status === "pending"
+                  ? "Belum Dibayar"
+                  : "Gagal Dibayar"}
+              </p>
+            )}
           </div>
         </div>
         <div className="mt-3">

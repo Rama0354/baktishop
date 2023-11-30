@@ -23,8 +23,10 @@ const FormExpeditionSchema = z.object({
 })
 
 export const Expedition = ExpeditionSchema.extend({costs:z.array(CostsSchema.extend({cost:z.array(CostSchema)}))})
+export const ExpeditionDetail = CostsSchema.extend({cost:z.array(CostSchema)})
 export const ExpeditionArray = z.array(Expedition)
 export type Expedition = z.infer<typeof Expedition>
+export type ExpeditionDetail = z.infer<typeof ExpeditionDetail>
 export type ExpeditionArray = z.infer<typeof ExpeditionArray>
 
 export const FormGetExpedition = FormExpeditionSchema

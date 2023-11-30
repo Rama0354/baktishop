@@ -1,19 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Listbox, RadioGroup } from "@headlessui/react";
 import { MdCheck, MdOutlineUnfoldMore } from "react-icons/md";
 import { AddressArray, FullAddressData } from "@/app/lib/types/address";
 import { AnimatePresence, motion } from "framer-motion";
 import { getCostsExpedition } from "@/app/lib/utils/action/ExpeditionActions";
-import { ExpeditionArray } from "@/app/lib/types/expedition";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/lib/redux/store";
+import { ExpeditionArray, ExpeditionDetail } from "@/app/lib/types/expedition";
+import { useDispatch } from "react-redux";
 import {
   setAddressDetails,
+  setRedeemDetails,
   setRedeemItemGiftsDetails,
+  setShippingDetails,
 } from "@/app/lib/redux/slice/checkoutSlice";
 import { CheckoutGifts } from "@/app/lib/types/checkout";
+import { debounce } from "lodash";
 
 const Expedition = [
   { id: 0, name: "0", label: "Pilih Expedisi" },
@@ -34,13 +36,29 @@ export default function CheckoutClient({
   const [addressSelected, setAddressSelected] = useState(address[0]);
   const [expeditionSelected, setExpeditionSelected] = useState(Expedition[0]);
   const [couriers, setCouriers] = useState<ExpeditionArray>([]);
-  const [courierSelected, setCourierSelected] = useState(null);
+  const [courierSelected, setCourierSelected] =
+    useState<ExpeditionDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const gift = useSelector(
-    (state: RootState) => state.checkout.redeem_item_gifts_details
-  );
 
+  //set catatan untuk penjual
+  const debouncedDetails = useRef(
+    debounce(async (e) => {
+      dispatch(setRedeemDetails({ note: e }));
+    }, 300)
+  ).current;
+
+  useEffect(() => {
+    return () => {
+      debouncedDetails.cancel();
+    };
+  }, [debouncedDetails]);
+
+  async function handleDetailsNote(e: React.ChangeEvent<HTMLInputElement>) {
+    debouncedDetails(e.target.value);
+  }
+
+  //set alamat pengiriman
   useEffect(() => {
     dispatch(
       setAddressDetails({
@@ -56,6 +74,7 @@ export default function CheckoutClient({
     );
   }, [addressSelected, dispatch]);
 
+  //set item checkout
   useEffect(() => {
     dispatch(setRedeemItemGiftsDetails(gifts));
   }, [gifts, dispatch]);
@@ -80,12 +99,7 @@ export default function CheckoutClient({
       setCouriers([]);
       setIsLoading(false);
     }
-  }, [
-    addressSelected.city.id,
-    expeditionSelected.id,
-    expeditionSelected.name,
-    weights,
-  ]);
+  }, [addressSelected, expeditionSelected, weights]);
 
   const handleAddressSelected = (e: FullAddressData) => {
     setAddressSelected(e);
@@ -94,6 +108,7 @@ export default function CheckoutClient({
   const handleExpeditionChange = (e: any) => {
     setExpeditionSelected(e);
   };
+
   const handleCourier = (e: any) => {
     if (couriers.length !== 0) {
       setCourierSelected(e);
@@ -101,6 +116,36 @@ export default function CheckoutClient({
       setCourierSelected(null);
     }
   };
+
+  useEffect(() => {
+    if (courierSelected && courierSelected !== null) {
+      dispatch(
+        setShippingDetails({
+          shipping_courier: expeditionSelected.name,
+          shipping_service: courierSelected.service,
+          shipping_description: courierSelected.description,
+          shipping_destination: addressSelected.city.id,
+          shipping_cost: courierSelected.cost[0].value,
+          shipping_weight: weights,
+          shipping_etd: courierSelected.cost[0].etd,
+        })
+      );
+    }
+    if (expeditionSelected.id === 0) {
+      dispatch(
+        setShippingDetails({
+          shipping_destination: 0,
+          shipping_courier: "",
+          shipping_service: "",
+          shipping_description: "",
+          shipping_cost: 0,
+          shipping_weight: 0,
+          shipping_etd: "",
+        })
+      );
+    }
+  }, [addressSelected, courierSelected, dispatch, expeditionSelected, weights]);
+
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
@@ -115,6 +160,7 @@ export default function CheckoutClient({
           <input
             type="text"
             name="note"
+            onChange={handleDetailsNote}
             className="shadow-sm bg-gray-50 border border-primary-dark text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
           />
         </div>

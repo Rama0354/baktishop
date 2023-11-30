@@ -1,13 +1,14 @@
 import Link from "next/link";
 import React from "react";
-import SigninButton from "./SigninButton";
+import SigninButton from "../SigninButton";
 import Image from "next/image";
 import { AiOutlineFilter } from "react-icons/ai";
-import CartButton from "./CartButton";
-import MessageButton from "./MessageButton";
-import NotificationButton from "./NotificationButton";
-import SearchForm from "./SearchForm";
-import ProgressBar from "./Progressbar";
+import CartButton from "../CartButton";
+import MessageButton from "../MessageButton";
+import NotificationButton from "../NotificationButton";
+import SearchForm from "../SearchForm";
+import ProgressBar from "../Progressbar";
+import MobileFilter from "./MobileFilter";
 
 const AppBar = () => {
   return (
@@ -38,13 +39,9 @@ const AppBar = () => {
             </div>
             <div className="w-full flex items-center gap-1 lg:gap-3">
               <SearchForm />
-              <div className="lg:hidden">
-                <button
-                  aria-label="filter-pencarian"
-                  className="p-2 hover:bg-purple-100/50 transition duration-300 ease-in-out rounded-full"
-                >
-                  <AiOutlineFilter className="text-white stroke-2 w-6 h-6" />
-                </button>
+              <MobileFilter />
+              <div className="sm:hidden">
+                <CartButton />
               </div>
             </div>
             <div className="hidden md:flex lg:w-full shrink-0 lg:shrink justify-end gap-3">

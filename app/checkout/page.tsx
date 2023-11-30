@@ -5,6 +5,7 @@ import { getCarts } from "../lib/utils/action/Cartactions";
 import Image from "next/image";
 import CheckoutClient from "../components/checkout/CheckoutClient";
 import { getAddresses } from "../lib/utils/action/AddressActions";
+import CheckoutCountDetails from "../components/checkout/CheckoutCountDetails";
 
 export default async function CheckoutPage() {
   const getCartDatas = await getCarts();
@@ -36,13 +37,6 @@ export default async function CheckoutPage() {
         };
       })
     : [];
-  const subTotal = cartData
-    ? cartData.reduce(
-        (acc: number, item: { points: number; qtys: number }) =>
-          acc + item.points * item.qtys,
-        0
-      )
-    : 0;
   const weightTotal = cartData
     ? cartData.reduce(
         (acc: number, item: { weights: number; qtys: number }) =>
@@ -50,15 +44,6 @@ export default async function CheckoutPage() {
         0
       )
     : 0;
-  const qtyTotal = cartData
-    ? cartData.reduce(
-        (acc: number, item: { qtys: number }) => acc + item.qtys,
-        0
-      )
-    : 0;
-  function rupiahCurrency(x: number) {
-    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
-  }
   return (
     <ClientLayout>
       <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-white border border-slate-300 rounded-md shadow-md">
@@ -161,29 +146,7 @@ export default async function CheckoutPage() {
             ) : null}
           </div>
           <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1">
-            <div className="flex justify-between items-center text-slate-700">
-              <p className="font-medium text-sm">Subtotal</p>
-              <p>{rupiahCurrency(subTotal)}</p>
-            </div>
-            <div className="flex justify-between items-center text-slate-700">
-              <p className="font-medium text-sm">Jumlah</p>
-              <p>{qtyTotal}</p>
-            </div>
-            <div className="flex justify-between items-center text-slate-700">
-              <p className="font-medium text-sm">Berat</p>
-              <p>{weightTotal} Gram</p>
-            </div>
-            <div className="flex my-3 justify-between items-center text-slate-700 border-t-2 border-slate-500">
-              <p className="font-semibold text-base">Harga Total</p>
-              <p className="font-semibold text-base">
-                {rupiahCurrency(subTotal)}
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button className="w-full py-1 px-3 font-semibold bg-primary-dark text-white border-2 border-primary-dark hover:bg-secondary-dark hover:border-secondary-dark rounded-md">
-                Pesan Sekarang
-              </button>
-            </div>
+            <CheckoutCountDetails cartData={cartData} weight={weightTotal} />
           </div>
         </div>
       </section>

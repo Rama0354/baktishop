@@ -42,8 +42,8 @@ export default async function CartPage() {
         <h1 className="py-2 font-semibold text-xl text-slate-700">Keranjang</h1>
       </div>
       {/* <CartContainer cartItems={cartData && cartData.data} /> */}
-      <div className="w-full py-3 px-6 flex flex-col md:flex-row gap-3">
-        <div className="w-full md:w-2/3">
+      <div className="w-full py-3 px-6 flex flex-col lg:flex-row gap-3">
+        <div className="w-full lg:w-2/3">
           <table className="w-full min-w-min overflow-x-auto text-sm text-left text-gray-500 border border-slate-200">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
@@ -56,7 +56,7 @@ export default async function CartPage() {
               {cartItems && cartItems.length > 0 ? (
                 cartItems.map((product, idx: number) => (
                   <tr key={idx} className="bg-white border-b ">
-                    <td className="flex items-center justify-between gap-3 px-6 py-3 text-slate-700">
+                    <td className="h-full flex items-start sm:items-center justify-between gap-3 px-6 py-3 text-slate-700">
                       <div className="shrink-0 max-h-20 w-20">
                         <Image
                           src={
@@ -75,7 +75,7 @@ export default async function CartPage() {
                           alt="cart-picture"
                         />
                       </div>
-                      <div className="w-full flex flex-col sm:flex-row justify-between">
+                      <div className="w-full flex flex-col gap-3 md:flex-row justify-between">
                         <div className="w-full">
                           <h2 className="text-lg font-medium">
                             {product && product.item_gifts.item_gift_name}
@@ -101,7 +101,7 @@ export default async function CartPage() {
                           />
                         </div>
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-start">
                         <DeleteBtnCart cartid={product.id} />
                       </div>
                     </td>
@@ -120,7 +120,7 @@ export default async function CartPage() {
             </tbody>
           </table>
         </div>
-        <div className="w-full md:w-1/3 flex flex-col gap-1">
+        <div className="w-full lg:w-1/3 flex flex-col gap-1">
           <div className="flex justify-between items-center text-slate-700">
             <p className="font-medium text-sm">Total Sementara</p>
             <p>{rupiahCurrency(subTotal)}</p>
@@ -138,13 +138,13 @@ export default async function CartPage() {
           <div className="flex gap-3">
             <Link
               href={"/"}
-              className="w-full py-1 px-3 font-semibold bg-white text-center text-purple-500 border-2 border-purple-500 rounded-md"
+              className="w-full py-1 px-3 font-semibold bg-white text-center text-primary-dark border-2 border-primary-dark rounded-md"
             >
               Lanjut Belanja
             </Link>
             <Link
               href={"/checkout"}
-              className="w-full block py-1 px-3 font-semibold bg-purple-500 text-center text-white border-2 border-purple-500 rounded-md"
+              className="w-full block py-1 px-3 font-semibold bg-primary-dark text-center text-white border-2 border-primary-dark rounded-md"
             >
               Checkout
             </Link>
