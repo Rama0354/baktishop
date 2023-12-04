@@ -11,8 +11,8 @@ type wishlistClientProps = {
 
 export default function WishlistClient({ wishlist }: wishlistClientProps) {
   return (
-    <section className="w-full py-3">
-      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 border-slate-200">
+    <section className="w-full h-screen bg-slate-200/50">
+      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 border-slate-300 bg-white">
         <AiOutlineHeart className={"text-slate-700 stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg text-slate-700">Barang Favorit</h2>
       </div>

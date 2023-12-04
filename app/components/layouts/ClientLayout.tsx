@@ -12,7 +12,7 @@ export default function ClientLayout({
   return (
     <>
       <AppBar />
-      <main className="w-full min-h-screen flex flex-col items-center mx-auto bg-primary-light">
+      <main className="w-full min-h-screen pb-12 flex flex-col items-center mx-auto bg-primary-light">
         {children}
       </main>
       <Toaster position="top-center" />

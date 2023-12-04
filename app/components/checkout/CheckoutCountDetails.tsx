@@ -3,7 +3,7 @@ import { getCart } from "@/app/lib/redux/slice/cartSlice";
 import { RootState } from "@/app/lib/redux/store";
 import { createCheckout } from "@/app/lib/utils/action/CheckoutActions";
 import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
+import React, { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -38,6 +38,49 @@ export default function CheckoutCountDetails({
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
+
+  useEffect(() => {
+    const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+
+    const myMidtransClientKey = `${process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}`;
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    document.body.appendChild(scriptTag);
+
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+  }, []);
+
+  const handlePay = (snap: string) => {
+    window.snap.pay(snap, {
+      onSuccess: function (result: any) {
+        /* You may add your own implementation here */
+        alert("payment success!");
+        console.log(result);
+      },
+      onPending: function (result: any) {
+        /* You may add your own implementation here */
+        alert("wating your payment!");
+        console.log(result);
+      },
+      onError: function (result: any) {
+        /* You may add your own implementation here */
+        alert("payment failed!");
+        console.log(result);
+      },
+      onClose: function () {
+        /* You may add your own implementation here */
+        alert(
+          "Pesananmu Berhasil dibuat anda dapat membayarnya nanti pada halaman detail Transaksi"
+        );
+        router.push("/users");
+      },
+    });
+  };
   return (
     <>
       <div className="flex justify-between items-center text-slate-700">
@@ -64,18 +107,15 @@ export default function CheckoutCountDetails({
       </div>
       <div className="flex gap-3">
         <button
-          disabled={isPending}
+          disabled={isPending || ongkir === 0}
           onClick={() => {
             startTransition(
               async () =>
                 await createCheckout(checkotData)
-                  .then((res) => {
+                  .then((res: any) => {
                     dispatch(getCart() as any);
                     if (res !== undefined) {
-                      toast.success(
-                        "Pesanan Berhasil dibuat silahkan melakukan pembayaran 😁"
-                      );
-                      router.push("/users");
+                      handlePay(res.data.snap_token);
                     } else {
                       toast.error("ada masalah");
                     }

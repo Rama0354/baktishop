@@ -3,16 +3,6 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signOut } from "next-auth/react";
 
-type Token ={
-  user_id: string;
-  name: string;
-  roles: string[];
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  expires_at: number;
-}
-
 export const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -50,27 +40,19 @@ export const options: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.user_id = user.data.users.id;
-        token.username = user.data.users.username;
-        token.email = user.data.users.email;
-        token.name = user.data.users.profile.name;
-        token.avatar_url = user.data.users.profile.avatar_url;
         token.roles = user.data.users.roles;
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
-        token.expires_at = Math.floor((Date.now() / 1000)+ user.data.expires_in);
+        token.expires_at = Math.ceil((Date.now() / 1000)+ user.data.expires_in);
       }
       if(Date.now() < (token.expires_at * 1000)) {
         return token;
       }
-      return await refreshTokenApiCall(token)
+      return await refreshTokenApiCall(token).catch(()=>signOut())
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.user_id;
-        session.user.name = token.name;
-        session.user.username = token.username;
-        session.user.email = token.email!;
-        session.user.avatar_url = token.avatar_url!;
         session.user.roles = token.roles;
         session.accessToken = token.access_token;
       }
@@ -91,17 +73,15 @@ const refreshTokenApiCall = async (token:any) => {
       return {
         ...token,
         access_token : res.data.data.access_token,
-        expires_at : Math.floor((Date.now() / 1000) + res.data.data.expires_in),
+        expires_at : Math.ceil((Date.now() / 1000) + res.data.data.expires_in),
         refresh_token : res.data.data.refresh_token,
       }
     } else {
       console.error("Error refreshing access token", res.status, res.data);
-      signOut()
       return { ...token, error: "RefreshAccessTokenError" as const };
     }
   } catch (error) {
     console.error("Error refreshing access token", error);
-    signOut()
     return { ...token, error: "RefreshAccessTokenError" as const };
   }
 }

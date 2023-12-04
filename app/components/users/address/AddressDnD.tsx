@@ -11,6 +11,7 @@ import { reorder } from "@/app/lib/utils/withAddressDnD";
 import EditAddressBtn from "./EditAddressBtn";
 import DeleteAddressBtn from "./DeleteAddressBtn";
 import { changeAddress } from "@/app/lib/utils/action/AddressActions";
+import toast from "react-hot-toast";
 
 export default function AddressDnD({
   addresses,
@@ -44,10 +45,39 @@ export default function AddressDnD({
       result.destination.index
     );
     setDndData(newDndData);
-    changeAddress({
-      id: newDndData[0].id,
-      is_main: newDndData[0].is_main,
-    }).catch(() => setDndData(dndData));
+    // changeAddress({
+    //   id: newDndData[0].id,
+    //   is_main: newDndData[0].is_main,
+    // })
+    //   .then(() => {
+    //     toast.success(
+    //       `Alamat utama berhasil diatur dengan a/n ${newDndData[0].person_name}`
+    //     );
+    //   })
+    //   .catch(() => {
+    //     setDndData(dndData);
+    //     toast.error("ada masalah");
+    //   });
+    if (newDndData[0].is_main !== 1) {
+      toast.promise(
+        changeAddress({
+          id: newDndData[0].id,
+          is_main: newDndData[0].is_main,
+        }).catch(() => {
+          setDndData(dndData);
+        }),
+        {
+          loading: "Mengubah...",
+          success: (
+            <p>
+              Alamat utama berhasil diatur dengan a/n{" "}
+              <span className="font-semibold">{newDndData[0].person_name}</span>
+            </p>
+          ),
+          error: <b>Ada masalah!</b>,
+        }
+      );
+    }
   };
 
   return (
@@ -60,7 +90,7 @@ export default function AddressDnD({
               {...droppableProvided.droppableProps}
               ref={droppableProvided.innerRef}
             >
-              {dndData &&
+              {dndData.length !== 0 ? (
                 dndData.map((address, index) => (
                   <Draggable
                     draggableId={address.id.toString()}
@@ -140,7 +170,10 @@ export default function AddressDnD({
                       </div>
                     )}
                   </Draggable>
-                ))}
+                ))
+              ) : (
+                <p>Anda belum memiliki alamat</p>
+              )}
               {droppableProvided.placeholder}
             </div>
           )}

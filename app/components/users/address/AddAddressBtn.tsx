@@ -17,7 +17,7 @@ export default function AddAddressBtn() {
     <>
       <button
         onClick={() => openModal()}
-        className="w-max h-max p-2 gap-3 flex items-center hover:bg-primary-light cursor-pointer text-sm text-primary-dark font-semibold rounded-full"
+        className="w-max h-max p-2 gap-3 flex items-center hover:bg-primary-light bg-white cursor-pointer text-sm text-primary-dark font-semibold rounded-full"
       >
         <MdCreate className={"w-6 h-6"} />
         <p>Tambaah</p>

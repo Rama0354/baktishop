@@ -9,8 +9,7 @@ import {
   MdShoppingBag,
   MdSpeakerNotes,
 } from "react-icons/md";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,17 +28,55 @@ export default function DashboardClient({ redeem }: any) {
     setDetails(data);
     setIsOpen(true);
   }
+  useEffect(() => {
+    const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+
+    const myMidtransClientKey = `${process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}`;
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    document.body.appendChild(scriptTag);
+
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+  }, []);
+  const handlePay = (snap: string) => {
+    window.snap.pay(snap, {
+      onSuccess: function (result: any) {
+        /* You may add your own implementation here */
+        alert("payment success!");
+        console.log(result);
+      },
+      onPending: function (result: any) {
+        /* You may add your own implementation here */
+        alert("wating your payment!");
+        console.log(result);
+      },
+      onError: function (result: any) {
+        /* You may add your own implementation here */
+        alert("payment failed!");
+        console.log(result);
+      },
+      // onClose: function () {
+      //   /* You may add your own implementation here */
+      //   alert("you closed the popup without finishing the payment");
+      // },
+    });
+  };
   return (
-    <section className="w-full py-3">
-      <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 border-slate-200">
+    <section className="w-full h-screen bg-slate-200/50">
+      <div className="w-full flex gap-3 items-center py-4 px-6 mb-3 border-b-2 border-slate-300 bg-white">
         <AiOutlineSchedule className={"w-6 h-6 stroke-2 text-slate-700"} />
         <h2 className="font-semibold text-lg text-slate-700">
           Riwayat Transaksi
         </h2>
       </div>
-      <div className="relative md:max-w-lg lg:max-w-full overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-500 border border-slate-200">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+      <div className="relative md:max-w-lg lg:max-w-full px-3 overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500 border border-slate-200 rounded-md overflow-hidden">
+          <thead className="text-xs text-gray-700 uppercase bg-primary-light">
             <tr>
               <th scope="col" className="px-6 py-3">
                 Nama Produk
@@ -121,12 +158,12 @@ export default function DashboardClient({ redeem }: any) {
                   <td className="px-6 py-4 flex gap-3 float-right">
                     {r.redeem_status === "pending" ||
                     r.redeem_status === "failure" ? (
-                      <Link
-                        href={r.snap_url}
+                      <button
+                        onClick={() => handlePay(r.snap_token)}
                         className="block w-max px-3 py-1 text-sm font-medium text-white bg-rose-600 hover:bg-rose-800 rounded-full"
                       >
                         Bayar
-                      </Link>
+                      </button>
                     ) : null}
                     <button
                       type="button"

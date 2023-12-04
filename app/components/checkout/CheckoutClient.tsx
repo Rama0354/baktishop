@@ -2,9 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Listbox, RadioGroup } from "@headlessui/react";
-import { MdCheck, MdOutlineUnfoldMore } from "react-icons/md";
+import {
+  MdCheck,
+  MdLocationOn,
+  MdOutlineUnfoldMore,
+  MdPerson,
+  MdPhone,
+} from "react-icons/md";
 import { AddressArray, FullAddressData } from "@/app/lib/types/address";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { getCostsExpedition } from "@/app/lib/utils/action/ExpeditionActions";
 import { ExpeditionArray, ExpeditionDetail } from "@/app/lib/types/expedition";
 import { useDispatch } from "react-redux";
@@ -16,9 +22,14 @@ import {
 } from "@/app/lib/redux/slice/checkoutSlice";
 import { CheckoutGifts } from "@/app/lib/types/checkout";
 import { debounce } from "lodash";
+import Image from "next/image";
 
-const Expedition = [
-  { id: 0, name: "0", label: "Pilih Expedisi" },
+type Expeditions = {
+  id: number;
+  name: string;
+  label: string;
+};
+const Expedition: Expeditions[] = [
   { id: 1, name: "jne", label: "JNE" },
   { id: 2, name: "pos", label: "POS" },
   { id: 3, name: "tiki", label: "TIKI" },
@@ -34,7 +45,8 @@ export default function CheckoutClient({
   weights: number;
 }) {
   const [addressSelected, setAddressSelected] = useState(address[0]);
-  const [expeditionSelected, setExpeditionSelected] = useState(Expedition[0]);
+  const [expeditionSelected, setExpeditionSelected] =
+    useState<Expeditions | null>(null);
   const [couriers, setCouriers] = useState<ExpeditionArray>([]);
   const [courierSelected, setCourierSelected] =
     useState<ExpeditionDetail | null>(null);
@@ -54,7 +66,7 @@ export default function CheckoutClient({
     };
   }, [debouncedDetails]);
 
-  async function handleDetailsNote(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleDetailsNote(e: React.ChangeEvent<HTMLTextAreaElement>) {
     debouncedDetails(e.target.value);
   }
 
@@ -80,7 +92,7 @@ export default function CheckoutClient({
   }, [gifts, dispatch]);
 
   useEffect(() => {
-    if (expeditionSelected.id !== 0) {
+    if (expeditionSelected !== null) {
       setIsLoading(true);
       getCostsExpedition({
         weight: weights,
@@ -118,7 +130,7 @@ export default function CheckoutClient({
   };
 
   useEffect(() => {
-    if (courierSelected && courierSelected !== null) {
+    if (courierSelected !== null && expeditionSelected !== null) {
       dispatch(
         setShippingDetails({
           shipping_courier: expeditionSelected.name,
@@ -131,7 +143,7 @@ export default function CheckoutClient({
         })
       );
     }
-    if (expeditionSelected.id === 0) {
+    if (expeditionSelected === null) {
       dispatch(
         setShippingDetails({
           shipping_destination: 0,
@@ -153,7 +165,22 @@ export default function CheckoutClient({
   return (
     <div className="relative w-full py-3">
       <div className="w-full">
-        <div className="py-2 px-3">
+        <label
+          htmlFor="note"
+          className="block py-2 px-3 text-sm font-medium text-primary-dark "
+        >
+          Catatan
+        </label>
+        <textarea
+          id="note"
+          rows={4}
+          name="note"
+          onChange={handleDetailsNote}
+          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Catatan untuk penjual...(Opsional)"
+        ></textarea>
+
+        {/* <div className="py-2 px-3">
           <h2 className="font-semibold text-base text-primary-dark">Catatan</h2>
         </div>
         <div className="w-full">
@@ -163,17 +190,93 @@ export default function CheckoutClient({
             onChange={handleDetailsNote}
             className="shadow-sm bg-gray-50 border border-primary-dark text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
           />
-        </div>
+        </div> */}
       </div>
-      <div className="w-full flex flex-col sm:flex-row gap-3">
+      <div className="w-full flex flex-col gap-3 mt-3">
         <div className="w-full">
           <div className="py-2 px-3">
-            <h2 className="font-semibold text-base text-primary-dark">
+            <h2 className="font-medium text-sm text-primary-dark">
               Pilih Alamat
             </h2>
           </div>
-          <div className="p-1">
-            <AnimatePresence>
+          <div>
+            <RadioGroup value={addressSelected} onChange={setAddressSelected}>
+              <RadioGroup.Label className="sr-only">
+                Address {address.length !== 0 && address[0].person_name}
+              </RadioGroup.Label>
+              <div className="flex overflow-y-auto gap-3 scrollbar-style pb-3">
+                {address.length !== 0
+                  ? address.map((address, idx: number) => (
+                      <RadioGroup.Option
+                        key={idx}
+                        value={address}
+                        className={({ active, checked }) =>
+                          ` ${
+                            active
+                              ? "ring-2 ring-white/60 ring-offset-2 ring-offset-primary-light"
+                              : ""
+                          }
+                  ${checked ? "bg-primary-dark text-white" : "bg-white"}
+                    relative w-full max-w-sm shrink-0 h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border border-primary-light`
+                        }
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <div className="flex w-full items-start justify-between">
+                              <div className="flex items-center">
+                                <div className="text-sm">
+                                  <RadioGroup.Label
+                                    as="p"
+                                    className={`font-medium uppercase  ${
+                                      checked ? "text-white" : "text-gray-900"
+                                    }`}
+                                  >
+                                    <span className="capitalize">
+                                      {`Alamat ${
+                                        address.is_main === 1 ? "Utama" : "Lain"
+                                      }`}
+                                    </span>
+                                  </RadioGroup.Label>
+                                  <RadioGroup.Description
+                                    as="div"
+                                    className={`flex flex-col ${
+                                      checked ? "text-sky-100" : "text-gray-500"
+                                    }`}
+                                  >
+                                    <p className="flex gap-1 items-center">
+                                      <MdPerson />
+                                      <span className="block truncate">
+                                        {address.person_name}
+                                      </span>
+                                    </p>
+
+                                    <p className="flex gap-1 items-center">
+                                      <MdPhone />
+                                      <span className="block truncate">
+                                        {address.person_phone}
+                                      </span>
+                                    </p>
+                                    <p className="flex gap-1 items-start">
+                                      <span className="shrink-0 py-1">
+                                        <MdLocationOn />
+                                      </span>
+                                      <span className="block flex-wrap">{`${address.address}, ${address.subdistrict.subdistrict_name}, ${address.city.city_name}, ${address.province.province_name}, ${address.postal_code}`}</span>
+                                    </p>
+                                  </RadioGroup.Description>
+                                </div>
+                              </div>
+                              <div className="shrink-0 w-6 text-white">
+                                {checked && <CheckIcon className="h-6 w-6" />}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))
+                  : null}
+              </div>
+            </RadioGroup>
+            {/* <AnimatePresence>
               <Listbox value={addressSelected} onChange={handleAddressSelected}>
                 <div className="relative">
                   <Listbox.Button className="w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left border border-primary-dark focus:outline-none focus-visible:border-primary-dark focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-light sm:text-sm">
@@ -244,17 +347,80 @@ export default function CheckoutClient({
                   </Listbox.Options>
                 </div>
               </Listbox>
-            </AnimatePresence>
+            </AnimatePresence> */}
           </div>
         </div>
         <div className="w-full">
           <div className="py-2 px-3">
-            <h2 className="font-semibold text-base text-primary-dark">
+            <h2 className="font-medium text-sm text-primary-dark">
               Pilih Expedisi
             </h2>
           </div>
           <div className="p-1">
-            <Listbox
+            <RadioGroup
+              value={expeditionSelected}
+              onChange={handleExpeditionChange}
+            >
+              <RadioGroup.Label className="sr-only">
+                Expedisi{" "}
+                {expeditionSelected !== null && expeditionSelected.label}
+              </RadioGroup.Label>
+              <div className="flex items-center flex-wrap gap-3">
+                {Expedition.length !== 0
+                  ? Expedition.map((exp, idx: number) => (
+                      <RadioGroup.Option
+                        key={idx}
+                        value={exp}
+                        className={({ active, checked }) =>
+                          ` ${
+                            active
+                              ? "ring-2 ring-white/60 ring-offset-2 ring-offset-primary-light"
+                              : ""
+                          }
+                  ${
+                    checked
+                      ? "border-primary-dark"
+                      : "bg-white border-transparent "
+                  }
+                    relative w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border k`
+                        }
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <div className="flex w-full items-start gap-3 justify-between">
+                              <div className="flex items-center text-sm">
+                                <RadioGroup.Label
+                                  as="p"
+                                  className={`font-medium uppercase flex items-center gap-3 text-primary-dark`}
+                                >
+                                  <Image
+                                    src={`/assets/icon/${exp.name}.png`}
+                                    width={50}
+                                    height={50}
+                                    style={{ width: "auto", height: "24px" }}
+                                    alt={`${exp.name}-expedition`}
+                                  />
+                                  <span className="capitalize">
+                                    {`${exp.label}`}
+                                  </span>
+                                </RadioGroup.Label>
+                              </div>
+                              <div className="shrink-0 w-6">
+                                {checked && (
+                                  <div className="w-6 h-6 flex justify-center items-center text-primary-dark bg-primary-light rounded-full">
+                                    <MdCheck className="w-4 h-4" />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))
+                  : null}
+              </div>
+            </RadioGroup>
+            {/* <Listbox
               value={expeditionSelected}
               onChange={handleExpeditionChange}
             >
@@ -315,11 +481,11 @@ export default function CheckoutClient({
                     ))}
                 </Listbox.Options>
               </div>
-            </Listbox>
+            </Listbox> */}
           </div>
         </div>
       </div>
-      <div className="w-full px-6 py-3">
+      <div className="w-full py-3">
         {isLoading ? (
           <div className="w-max px-3 py-2 text-base font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full flex gap-3 items-center">
             <div role="status">
@@ -349,7 +515,7 @@ export default function CheckoutClient({
               <RadioGroup.Label className="sr-only">
                 Expedisi {couriers.length !== 0 && couriers[0].code}
               </RadioGroup.Label>
-              <div className="space-y-2 flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3">
                 {couriers.length !== 0
                   ? couriers[0].costs.map((courier, idx: number) => (
                       <RadioGroup.Option
@@ -362,12 +528,12 @@ export default function CheckoutClient({
                               : ""
                           }
                   ${checked ? "bg-primary-dark text-white" : "bg-white"}
-                    relative w-full max-w-sm h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border border-primary-light`
+                    relative shrink-0 w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border border-primary-light`
                         }
                       >
                         {({ active, checked }) => (
                           <>
-                            <div className="flex w-full items-center justify-between">
+                            <div className="flex w-full items-center justify-between gap-1">
                               <div className="flex items-center">
                                 <div className="text-sm">
                                   <RadioGroup.Label
@@ -400,11 +566,9 @@ export default function CheckoutClient({
                                   </RadioGroup.Description>
                                 </div>
                               </div>
-                              {checked && (
-                                <div className="shrink-0 text-white">
-                                  <CheckIcon className="h-6 w-6" />
-                                </div>
-                              )}
+                              <div className="shrink-0 text-white w-6">
+                                {checked && <CheckIcon className="h-6 w-6" />}
+                              </div>
                             </div>
                           </>
                         )}

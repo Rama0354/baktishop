@@ -21,7 +21,7 @@ export const getCarts =async ():Promise<CartArray | undefined> => {
         return parseData;
     } catch (error:any) {
         if(error.response !== undefined){
-            console.log(error.response.data)
+            console.log(error.response.data.error.message)
         }
     }
 }
