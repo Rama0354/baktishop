@@ -63,7 +63,7 @@ const GiftCardWishlist = ({ wish }: { wish: WishlistData }) => {
             </div>
           </div>
           <button className="w-1/4">
-            <WishBtn giftId={wish.item_gifts.id} />
+            <WishBtn giftId={wish.item_gifts.id} is_wishlist={1} />
           </button>
         </div>
       </div>

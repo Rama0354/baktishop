@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import WishButton from "./WishButton";
 import GiftRating from "./GiftRating";
 import { Gifts } from "../lib/types/gifts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import WishBtn from "./gifts/WishBtn";
 
 const GiftCard = ({ gift }: { gift: Gifts }) => {
   const router = useRouter();
@@ -60,7 +60,7 @@ const GiftCard = ({ gift }: { gift: Gifts }) => {
             </div>
           </div>
           <button className="w-1/4">
-            <WishButton id={gift.id} isWishlist={gift.is_wishlist} />
+            <WishBtn giftId={gift.id} is_wishlist={gift.is_wishlist} />
           </button>
         </div>
       </div>

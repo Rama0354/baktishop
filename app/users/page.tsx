@@ -12,7 +12,7 @@ async function getRedeem({ page }: { page: number }) {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.accessToken}`,
+            Authorization: `Bearer ${session && session.accessToken}`,
           },
         }
       )

@@ -7,7 +7,8 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ngrok": "ngrok http 3000"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -32,6 +33,7 @@
     "lodash": "^4.17.21",
     "next": "^14.0.2",
     "next-auth": "^4.24.5",
+    "ngrok": "^5.0.0-beta.2",
     "nprogress": "^0.2.0",
     "postcss": "8.4.27",
     "react": "^18.2.0",

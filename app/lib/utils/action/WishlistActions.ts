@@ -23,12 +23,13 @@ export const getAllWishlist =async (params?:string) => {
 export const changeWishlist =async (giftId:number) => {
     const session = await getServerSession(options)
     try {
-        await axios.post(`${process.env.BACKEND_API}/gifts/${giftId}/wishlist`,undefined,{
+        const res = await axios.post(`${process.env.BACKEND_API}/gifts/${giftId}/wishlist`,undefined,{
             headers:{
                 'Content-Type':'application/json',
                 Authorization:`Bearer ${session?.accessToken}`
             }
         })
+        return res.data
     } catch (error) {
         console.log(error)
     }finally{
