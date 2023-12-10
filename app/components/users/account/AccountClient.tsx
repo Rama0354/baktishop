@@ -7,6 +7,7 @@ import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import EditProfile from "./EditProfile";
+import EditUserPassBtn from "./EditUserPassBtn";
 
 export default function AccountClient({ userData }: { userData: UserData }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -97,12 +98,7 @@ export default function AccountClient({ userData }: { userData: UserData }) {
             <div className="flex gap-1">
               <p className="font-semibold">Password</p>
               <div className="flex gap-2">
-                <button
-                  // onClick={() => (modalOpen ? close() : open())}
-                  className="flex gap-1 items-center px-3 bg-primary-dark hover:bg-secondary-dark text-white text-sm font-semibold rounded-full"
-                >
-                  <MdModeEdit /> Edit Password
-                </button>
+                <EditUserPassBtn />
               </div>
             </div>
           </div>

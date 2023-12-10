@@ -1,3 +1,17 @@
+import {z} from 'zod'
+
+const UserPasswordSchema = z.object({
+    id:z.number().int().positive().optional(),
+    password:z.string().min(8,'Password minimal 8 karakter'),
+    confirmPassword:z.string().min(8,'Password minimal 8 karakter')
+}).refine((data)=>data.password === data.confirmPassword,{
+    message:'Password tidak sama!',
+    path:['confirmPassword']
+})
+
+export const FormEditPassword = UserPasswordSchema
+export type FormEditPassword = z.infer<typeof FormEditPassword>
+
 export type UserData = {
     id: number,
     roles: [

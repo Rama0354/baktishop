@@ -16,13 +16,13 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await axios.post(`${process.env.BACKEND_API}/login`,credentials, {
-          headers: { "Content-Type": "application/json" }
-        });
-        if (res.data) {
-          return res.data;
-        } else {
-          return null;
+        try {
+          const res = await axios.post(`${process.env.BACKEND_API}/login`,credentials, {
+            headers: { "Content-Type": "application/json" }
+          });
+          return res.data
+        } catch (error:any) {
+          console.log(error)
         }
       },
     }),

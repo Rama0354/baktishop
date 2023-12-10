@@ -13,7 +13,7 @@ export default async function UsersLayout({
   return (
     <section className="container h-full mt-3 min-h-screen flex border border-slate-300 overflow-hidden rounded-md shadow-md bg-gradient-to-br from-white to-slate-200">
       <div className="w-max sm:w-1/4 py-1 px-0 sm:px-2">
-        <button className="p-3 text-slate-600 rounded-full hover:bg-slate-100">
+        <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
           <MdMenu className="w-6 h-6 " />
         </button>
         <div className="w-full md:px-3 shrink-0">

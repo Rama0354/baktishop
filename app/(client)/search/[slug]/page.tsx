@@ -1,23 +1,17 @@
 import React from "react";
-import CatAndBrLayout from "@/app/components/layouts/CatAndBrLayout";
-import GiftList from "@/app/components/GiftList";
-import CategoryListContainer from "@/app/components/category/CategoryListContainer";
 import SelectSort from "@/app/components/SelectSort";
-import Sidebar from "@/app/components/Sidebar";
-import Image from "next/image";
-import {
-  getAllItemByCategory,
-  getCategoryBySlug,
-} from "@/app/lib/utils/action/CategoryActions";
+import { getGiftCards } from "@/app/lib/utils/action/GiftActions";
 import GiftCard from "@/app/components/gifts/GiftCard";
 
-export default async function CategoryPage({
+export default async function SearchPage({
   params,
   searchParams,
 }: {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const slug = params.slug;
+  const search = `search_column[0]=item_gift_name&search_text[0]=${slug}&search_operator[0]=like`;
   const sort =
     searchParams.sort === "new"
       ? ""
@@ -30,33 +24,11 @@ export default async function CategoryPage({
       : searchParams.sort === "high"
       ? "sort_column[0]=item_gift_point&sort_type[0]=desc"
       : "";
-  const slug = params.slug;
-  const cat = await getCategoryBySlug(slug);
-  const items = await getAllItemByCategory(
-    slug + (sort !== "" ? "?" + sort : "")
-  );
+
+  const filters = search !== "" ? search + (sort !== "" ? "&" + sort : "") : "";
+  const items = await getGiftCards(filters);
   return (
     <div className="container px-3 md:px-9 min-h-screen bg-white">
-      <div className="w-full bg-gradient-to-r from-primary-dark to-secondary-light">
-        <div className="w-full flex gap-3 h-48 p-6 text-white">
-          <div className="w-36 h-36 flex items-center justify-center bg-white rounded-md shadow-md">
-            <Image
-              src={cat ? cat.category_image_url : "/assets/img/no-image.jpg"}
-              width={100}
-              height={100}
-              alt="category"
-              className="h-full object-contain"
-            />
-          </div>
-          <div>
-            <h2 className="font-semibold text-3xl">
-              {cat && cat.category_name}
-            </h2>
-            <p className="font-thin text-xl">Category</p>
-          </div>
-        </div>
-      </div>
-      <CategoryListContainer />
       <div id="maincontent" className="w-full flex gap-6 text-slate-700 mb-12">
         {/* <Sidebar /> */}
         <div className="w-full">
@@ -71,15 +43,14 @@ export default async function CategoryPage({
           </div>
           <div className="w-full pb-12">
             <section className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 py-3 justify-center">
-              {items && items.length !== 0 ? (
-                items.map((item, idx: number) => (
+              {items && items.data.length !== 0 ? (
+                items.data.map((item, idx: number) => (
                   <GiftCard gift={item} key={idx} />
                 ))
               ) : (
-                <span>Tidak ada Barang</span>
+                <span>Produk Tidak Ditemukn</span>
               )}
             </section>
-            {/* <GiftList pType={"cat"} sType={`${slug}`} /> */}
           </div>
         </div>
       </div>

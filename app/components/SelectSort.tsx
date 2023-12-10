@@ -5,13 +5,14 @@ import { AiFillCaretDown, AiOutlineCheck } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setSort } from "../lib/redux/slice/filterSlice";
 import { RootState } from "../lib/redux/store";
+import { useRouter } from "next/navigation";
 
 const sorts = [
   { id: 1, name: "Terbaru", value: "" },
-  { id: 2, name: "Nama (A-Z)", value: "item_gift_slug-asc" },
-  { id: 3, name: "Nama (Z-A)", value: "item_gift_slug-desc" },
-  { id: 4, name: "Termurah", value: "item_gift_point-asc" },
-  { id: 5, name: "Termahal", value: "item_gift_point-desc" },
+  { id: 2, name: "Nama (A-Z)", value: "nameUp" },
+  { id: 3, name: "Nama (Z-A)", value: "nameDown" },
+  { id: 4, name: "Termurah", value: "low" },
+  { id: 5, name: "Termahal", value: "high" },
 ];
 
 type SortOption = {
@@ -26,15 +27,16 @@ export default function SelectSort() {
   const sortSet = sorts.findIndex((f) => f.value === sortState);
   const [selected, setSelected] = useState(sorts[sortSet]);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const setSorting = (event: SortOption) => {
     setSelected(event);
-    const newValue = event.value.split("-");
-    const newSort = {
-      column: newValue[0],
-      type: newValue[1],
-    };
-    dispatch(setSort(newSort));
+    router.replace(`?sort=${event.value}`, { scroll: false });
+    // const newSort = {
+    //   column: newValue[0],
+    //   type: newValue[1],
+    // };
+    // dispatch(setSort(newSort));
   };
   return (
     <div className="relative w-full md:w-64">

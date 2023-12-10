@@ -27,7 +27,7 @@ export default function SearchForm() {
     const name = inputValue
       .replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, "-")
       .toLowerCase();
-    router.push(`/search?${name ? "st=" + name : ""}`);
+    router.replace(`/search/${name}`);
   };
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
