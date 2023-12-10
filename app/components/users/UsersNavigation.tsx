@@ -1,28 +1,62 @@
 "use client";
-import { accountnavigations } from "@/app/lib/constant/accountPage";
+// import { accountnavigations } from "@/app/lib/constant/accountPage";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import {
+  AiOutlineEnvironment,
+  AiOutlineHeart,
+  AiOutlineIdcard,
+} from "react-icons/ai";
+import { MdOutlineFactCheck } from "react-icons/md";
 
 export default function UsersNavigation() {
   const pathname = usePathname();
+  const accountnavigations = [
+    {
+      id: 1,
+      name: "dashboard",
+      title: "Dashboard",
+      urls: "/users",
+      icon: <MdOutlineFactCheck className="w-6 h-6" />,
+    },
+    {
+      id: 2,
+      name: "favorit",
+      title: "Wishlist",
+      urls: "/users/wishlist",
+      icon: <AiOutlineHeart className="w-6 h-6" />,
+    },
+    {
+      id: 3,
+      name: "alamat",
+      title: "Alamat",
+      urls: "/users/address",
+      icon: <AiOutlineEnvironment className="w-6 h-6" />,
+    },
+    {
+      id: 4,
+      name: "akun",
+      title: "Akun",
+      urls: "/users/account",
+      icon: <AiOutlineIdcard className="w-6 h-6" />,
+    },
+  ];
   return (
-    <ul className={"w-full py-2 flex sm:flex-col border-t border-l-slate-100"}>
+    <ul className={"w-full py-2 border-t border-l-slate-100"}>
       {accountnavigations.map((nav, idx) => (
         <li
           key={idx}
           id={nav.name}
-          className={"w-full text-center sm:text-left"}
+          className={`${
+            pathname === nav.urls
+              ? "bg-primary-dark text-white hover:text-white"
+              : "bg-white text-primary-dark hover:bg-primary-light hover:text-primary-dark"
+          } w-full py-2 px-3 font-medium rounded-md outline-none`}
         >
-          <Link
-            href={nav.urls}
-            className={`${
-              pathname === nav.urls
-                ? "bg-primary-dark text-white hover:text-white"
-                : "bg-white text-primary-dark hover:bg-primary-light hover:text-primary-dark"
-            }  block w-full py-2 px-3 font-medium rounded-md outline-none`}
-          >
-            {nav.title}
+          <Link href={nav.urls} className={`w-full h-full flex gap-1 `}>
+            {nav.icon}
+            <span className="hidden sm:block">{nav.title}</span>
           </Link>
         </li>
       ))}

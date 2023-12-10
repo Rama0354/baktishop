@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import "../nprogress.css";
 import AuthenticationhButton from "./AuthenticationButton";
 import { getProfie } from "../lib/utils/action/profileAction";
 import { getServerSession } from "next-auth";

@@ -2,8 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect } from "react";
-import GiftCard from "./GiftCard";
-import { Gifts } from "../lib/types/gifts";
+import GiftCard from "./gifts/GiftCard";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -123,7 +122,7 @@ export default function GiftSearchContainer() {
       {isLoading ? (
         skeleton.map((_, id) => <SkeletonCard key={id} />)
       ) : data ? (
-        data.map((gift: Gifts) => <GiftCard key={gift.id} gift={gift} />)
+        data.map((gift: any) => <GiftCard key={gift.id} gift={gift} />)
       ) : (
         <p>Not Found</p>
       )}

@@ -51,7 +51,7 @@ export default function ReviewsSort() {
           <RadioGroup.Label id="reviewsort" className="sr-only">
             Reviews Sort
           </RadioGroup.Label>
-          <div className="flex flex-col gap-3 py-3">
+          <div className="flex flex-row sm:flex-col gap-3 py-3">
             {reviews.map((review) => (
               <RadioGroup.Option
                 key={review.init}
@@ -60,7 +60,7 @@ export default function ReviewsSort() {
                 className={({ active, checked }) =>
                   `
                   ${checked ? "bg-purple-500" : "bg-purple-100"}
-                    relative flex cursor-pointer rounded-lg px-4 py-3 shadow-md focus:outline-none`
+                    w-full relative flex cursor-pointer rounded-lg px-4 py-3 shadow-md focus:outline-none`
                 }
               >
                 {({ active, checked }) => (

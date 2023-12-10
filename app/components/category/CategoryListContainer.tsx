@@ -6,13 +6,13 @@ import Link from "next/link";
 export default async function CategoryListContainer() {
   const getCategoryData = await getAllCategory();
   return (
-    <div className="w-full flex shrink gap-3 py-6 fadein">
+    <div className="w-full flex shrink gap-3 py-6">
       {getCategoryData &&
         getCategoryData.data.map((cat: any, idx: number) => (
           <Link
             key={cat.id}
             href={`/category/${cat.category_slug}`}
-            className={`fadechild w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md`}
+            className={`w-24 p-3 flex shrink flex-col items-center gap-1 border border-slate-200 hover:border-purple-500 rounded-md shadow-md`}
           >
             <div className="relative w-20 h-20 mx-auto">
               <Image

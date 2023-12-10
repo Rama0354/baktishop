@@ -57,21 +57,21 @@ export default function CheckoutCountDetails({
 
   const handlePay = (snap: string) => {
     window.snap.pay(snap, {
-      onSuccess: function (result: any) {
-        /* You may add your own implementation here */
-        alert("payment success!");
-        console.log(result);
-      },
-      onPending: function (result: any) {
-        /* You may add your own implementation here */
-        alert("wating your payment!");
-        console.log(result);
-      },
-      onError: function (result: any) {
-        /* You may add your own implementation here */
-        alert("payment failed!");
-        console.log(result);
-      },
+      // onSuccess: function (result: any) {
+      //   /* You may add your own implementation here */
+      //   alert("payment success!");
+      //   console.log(result);
+      // },
+      // onPending: function (result: any) {
+      //   /* You may add your own implementation here */
+      //   alert("wating your payment!");
+      //   console.log(result);
+      // },
+      // onError: function (result: any) {
+      //   /* You may add your own implementation here */
+      //   alert("payment failed!");
+      //   console.log(result);
+      // },
       onClose: function () {
         /* You may add your own implementation here */
         alert(

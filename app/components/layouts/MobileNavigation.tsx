@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { AiOutlineHome, AiOutlineMessage, AiOutlineUser } from "react-icons/ai";
 import { usePathname } from "next/navigation";
+import { MdNotifications } from "react-icons/md";
 
 export default function MobileNavigation() {
   const pathname = usePathname();
@@ -20,14 +21,14 @@ export default function MobileNavigation() {
         <AiOutlineHome className={"stroke-2 w-6 h-6"} /> Beranada
       </Link>
       <Link
-        href={"/message"}
+        href={"/notifications"}
         className={`w-full py-1 px-2 flex flex-col items-center cursor-pointer font-medium text-sm rounded-md ${
-          pathname === "/message"
+          pathname === "/notifications"
             ? "bg-primary-dark text-white hover:bg-secondary-dark"
             : "bg-white text-primary-dark hover:bg-primary-light hover:text-primary-dark"
         }`}
       >
-        <AiOutlineMessage className={"stroke-2 w-6 h-6"} /> Pesan
+        <MdNotifications className={"w-6 h-6"} /> Notifikasi
       </Link>
       <Link
         href={"/users"}

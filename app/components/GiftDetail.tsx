@@ -16,6 +16,7 @@ import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
 import { addCart } from "../lib/utils/action/Cartactions";
+import WishBtn from "./gifts/WishBtn";
 
 type DetailImage = {
   id: number;
@@ -289,9 +290,9 @@ const GiftDetail = ({
             <CountDetail count={countItem} setCountItem={setCountItem} />
           </div>
           <div className="flex gap-3">
-            <WishButton
-              id={detail && detail.id}
-              isWishlist={detail && detail.is_wishlist}
+            <WishBtn
+              giftId={detail && detail.id}
+              is_wishlist={detail && detail.is_wishlist}
             />
             <button
               onClick={handleAddToCart}

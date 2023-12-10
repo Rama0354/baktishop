@@ -195,8 +195,8 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
               sizes="(max-width: 425px) 50vw,75vw"
             />
           </div>
-          <div className="relative mx-auto">
-            <div className="flex overflow-x-auto w-full sm:max-w-[216px] gap-3 py-3">
+          <div className="relative mx-auto w-full">
+            <div className="flex overflow-x-auto max-w-[216px] gap-3 py-3">
               {/* gambar */}
               {detail &&
                 detail.item_gifts.item_gift_images.map((image: any) => (
@@ -294,11 +294,11 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
               {detail && detail.item_gifts.variants[0] === undefined ? (
                 ""
               ) : (
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   <div className="w-20">
                     <p className="font-medium uppercase">Varian</p>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-wrap gap-3">
                     {detail &&
                       detail.item_gifts.variants.map((v: any, idx: number) => {
                         return v.variant_slug !== null ? (
@@ -336,18 +336,18 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
             <p className="text-sm">Jumlah</p>
             <CountDetail count={countItem} setCountItem={setCountItem} />
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-1 sm:gap-3">
             <WishButton
               id={detail && detail.id}
               isWishlist={detail && detail.item_gifts.is_wishlist}
             />
             <button
               onClick={handleAddToCart}
-              className="px-3 py-1.5 text-white text-sm font-semibold bg-fuchsia-500 border border-purple-500 hover:bg-fuchsia-600 rounded-full"
+              className="px-2 sm:px-3 py-1.5 text-white text-sm font-semibold bg-fuchsia-500 border border-purple-500 hover:bg-fuchsia-600 rounded-full"
             >
               + Keranjang
             </button>
-            <button className="px-3 py-1.5 text-white text-sm font-semibold bg-purple-500 border border-fuchsia-500 hover:bg-purple-600 rounded-full">
+            <button className="px-2 sm:px-3 py-1.5 text-white text-sm font-semibold bg-purple-500 border border-fuchsia-500 hover:bg-purple-600 rounded-full">
               Beli Sekarang
             </button>
           </div>

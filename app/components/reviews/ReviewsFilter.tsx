@@ -28,8 +28,8 @@ export default function ReviewsFilter() {
     dispatch(setReviewFilter(newFilter));
   };
   return (
-    <div className="w-full sm:w-max px-6">
-      <div className="mx-auto w-full max-w-md">
+    <div className="w-full sm:w-max px-3 sm:px-6">
+      <div className="mx-auto w-full sm:max-w-md">
         <RadioGroup
           value={selected}
           id="reviewfilter"
@@ -49,7 +49,7 @@ export default function ReviewsFilter() {
                     className={({ active, checked }) =>
                       `
                   ${checked ? "bg-purple-500" : "bg-purple-100"}
-                    relative flex cursor-pointer rounded-lg px-4 py-3 shadow-md focus:outline-none`
+                    relative flex cursor-pointer rounded-lg px-3 sm:px-4 py-2 sm:py-3 shadow-md focus:outline-none`
                     }
                   >
                     {({ active, checked }) => (

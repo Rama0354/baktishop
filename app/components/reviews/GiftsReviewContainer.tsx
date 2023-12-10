@@ -147,11 +147,11 @@ export default function GiftsReviewContainer({
           Penilaian Produk
         </h2>
       </div>
-      <div className="flex w-full mt-3">
-        <div className="w-1/4">
+      <div className="flex flex-col sm:flex-row w-full mt-3">
+        <div className="w-full sm:w-1/4">
           <ReviewsSort />
         </div>
-        <div className="w-3/4 border-l-2 border-slate-100">
+        <div className="w-full sm:w-3/4 border-l-2 border-slate-100">
           <ReviewsFilter />
           <div className="w-full p-3">
             {isLoading ? (

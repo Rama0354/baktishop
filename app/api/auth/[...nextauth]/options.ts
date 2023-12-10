@@ -16,16 +16,11 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch(`${process.env.BACKEND_API}/login`, {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
+        const res = await axios.post(`${process.env.BACKEND_API}/login`,credentials, {
+          headers: { "Content-Type": "application/json" }
         });
-
-        const data = await res.json();
-
-        if (res.ok && data) {
-          return data;
+        if (res.data) {
+          return res.data;
         } else {
           return null;
         }
@@ -38,17 +33,26 @@ export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
+      let dateNow = Date.now()
+      let setDay = 24 * 60 * 60 * 1000;
       if (user) {
         token.user_id = user.data.users.id;
         token.roles = user.data.users.roles;
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
-        token.expires_at = Math.ceil((Date.now() / 1000)+ user.data.expires_in);
+        token.expires_at = Math.ceil(dateNow + (user.data.expires_in * 1000))
       }
-      if(Date.now() < (token.expires_at * 1000)) {
-        return token;
+      if(dateNow <= token.expires_at) {
+        // console.log('sekarang : ' + (dateNow))
+        // console.log('diatur : ' +token.expires_at)
+        // console.log('tanggal sekarang : ' + new Date(dateNow))
+        // console.log('tanggal diatur : ' + new Date(token.expires_at))
+        return token
       }
-      return await refreshTokenApiCall(token).catch(()=>signOut())
+      if(dateNow > token.expires_at){
+        console.log('lakukan refresh token')
+        return await refreshTokenApiCall(token)
+      }
     },
     async session({ session, token }) {
       if (token) {
@@ -73,7 +77,7 @@ const refreshTokenApiCall = async (token:any) => {
       return {
         ...token,
         access_token : res.data.data.access_token,
-        expires_at : Math.ceil((Date.now() / 1000) + res.data.data.expires_in),
+        expires_at : Math.ceil(Date.now() + (res.data.data.expires_in * 1000)),
         refresh_token : res.data.data.refresh_token,
       }
     } else {

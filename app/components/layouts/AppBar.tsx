@@ -20,14 +20,14 @@ const AppBar = () => {
             <div className="relative lg:w-full flex shrink-0 lg:shrink">
               <Link
                 href={"/"}
-                className="flex object-contain lg:items-end px-1"
+                className="flex items-center gap-1 object-contain lg:items-end px-1"
               >
-                <div className="relative w-12 h-12 sm:w-16 sm:h-16">
+                <div className="relative w-12 h-12">
                   <Image
-                    src={"/assets/img/logo2.png"}
+                    src={"/assets/icon/logo.png"}
                     alt="logo"
-                    width={80}
-                    height={80}
+                    width={50}
+                    height={50}
                     className="brightness-0 invert"
                     priority
                   />

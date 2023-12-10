@@ -12,6 +12,12 @@ export default function ModalContent({
   title,
   children,
 }: ModalContentProps) {
+  const handleClose = () => {
+    if (window.screen.width < 768) {
+      return;
+    }
+    closeModal();
+  };
   return (
     <Dialog
       as={motion.div}
@@ -19,7 +25,7 @@ export default function ModalContent({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50"
-      onClose={closeModal}
+      onClose={handleClose}
       open={true}
     >
       <div className="flex flex-col justify-center h-full px-1 pt-4 text-center sm:block sm:p-0">

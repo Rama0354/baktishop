@@ -16,7 +16,7 @@ export default function AccountClient({ userData }: { userData: UserData }) {
 
   return (
     <section className="relative w-full h-screen bg-slate-200/50">
-      <div className="w-full flex items-center gap-3 py-4 px-6 border-b-2 border-slate-200 bg-white">
+      <div className="w-full flex items-center gap-3 py-4 px-1 sm:px-6 border-b-2 border-slate-200 bg-white">
         <AiOutlineIdcard className={"text-slate-700 stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg text-slate-700">Akun</h2>
       </div>
@@ -35,7 +35,7 @@ export default function AccountClient({ userData }: { userData: UserData }) {
           </div>
           <div className="w-full flex justify-between flex-col-reverse sm:flex-row bg-white rounded-md py-1 px-3">
             <div className="max-w-md  text-slate-600">
-              <div className="grid grid-cols-[160px_1fr]">
+              <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[160px_1fr]">
                 <p className="font-semibold">Nama</p>
                 <p>
                   :{" "}
@@ -83,20 +83,20 @@ export default function AccountClient({ userData }: { userData: UserData }) {
               Akun
             </h2>
           </div>
-          <div className="w-full flex justify-between flex-col-reverse sm:flex-row bg-white rounded-md py-1 px-3">
-            <div className="grid grid-cols-[160px_1fr]">
+          <div className="w-full flex justify-between flex-col bg-white rounded-md py-1 px-3">
+            <div className="flex flex-col sm:grid sm:grid-cols-[160px_1fr]">
               <p className="font-semibold">Username</p>
               <p>
-                :{" "}
                 {userData && userData.username !== "" ? userData.username : ""}
               </p>
               <p className="font-semibold">Email</p>
-              <p className=" whitespace-nowrap">
-                : {userData && userData.email !== "" ? userData.email : ""}
+              <p className="text-xs sm:text-base">
+                {userData && userData.email !== "" ? userData.email : ""}
               </p>
+            </div>
+            <div className="flex gap-1">
               <p className="font-semibold">Password</p>
-              <div className="flex  gap-2">
-                :{" "}
+              <div className="flex gap-2">
                 <button
                   // onClick={() => (modalOpen ? close() : open())}
                   className="flex gap-1 items-center px-3 bg-primary-dark hover:bg-secondary-dark text-white text-sm font-semibold rounded-full"

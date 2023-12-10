@@ -1,15 +1,15 @@
 "use client";
-import axios from "axios";
 import { signIn, signOut } from "next-auth/react";
 import React from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { LogoutAction } from "../lib/utils/action/AuthActions";
+import toast from "react-hot-toast";
 
 export default function AuthenticationhButton({ type }: { type: string }) {
   const handleLogout = async () => {
-    const res = await axios.post("/api/logout").then((res) => {
-      signOut({ callbackUrl: "/login" });
-    });
-    return res;
+    return LogoutAction()
+      .then(() => signOut({ callbackUrl: "/login" }))
+      .catch(() => toast.error("ada masalah 🙁"));
   };
   return type === "logout" ? (
     <button

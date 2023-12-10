@@ -1,8 +1,7 @@
 "use client";
-import GiftCard from "./GiftCard";
+import GiftCard from "./gifts/GiftCard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Gifts } from "../lib/types/gifts";
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -167,7 +166,7 @@ const GiftList = ({ pType, sType }: GiftListProps) => {
       {isLoading ? (
         <p>loading...</p>
       ) : data ? (
-        data.map((gift: Gifts) => <GiftCard key={gift.id} gift={gift} />)
+        data.map((gift: any) => <GiftCard key={gift.id} gift={gift} />)
       ) : (
         <p>Not Found</p>
       )}
