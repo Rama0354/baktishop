@@ -1,11 +1,9 @@
 "use client";
-import { FormEditProfile, Profile } from "@/app/lib/types/profile";
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React from "react";
+import { useForm } from "react-hook-form";
 import ModalContent from "../../ModalContent";
-import { editProfile } from "@/app/lib/utils/action/profileAction";
 import toast from "react-hot-toast";
 import { FormEditPassword } from "@/app/lib/types/user";
 import { changePassword } from "@/app/lib/utils/action/UserActions";
@@ -60,14 +58,14 @@ export default function EditUserPassword({ onClose }: { onClose: () => void }) {
         </div>
         <div className="relative z-0 w-full mb-6 group">
           <label
-            htmlFor="password"
+            htmlFor="confirmpassword"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
             Confirm Password
           </label>
           <input
             type="password"
-            id="password"
+            id="confirmpassword"
             {...register("confirmPassword")}
             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="********"

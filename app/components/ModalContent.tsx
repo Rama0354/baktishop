@@ -16,7 +16,8 @@ export default function ModalContent({
     if (window.screen.width < 768) {
       return;
     }
-    closeModal();
+    // closeModal();
+    return;
   };
   return (
     <Dialog

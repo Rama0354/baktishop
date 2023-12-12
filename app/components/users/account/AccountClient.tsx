@@ -8,6 +8,7 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import EditProfile from "./EditProfile";
 import EditUserPassBtn from "./EditUserPassBtn";
+import EditProfileImageBtn from "./EditProfileImageBtn";
 
 export default function AccountClient({ userData }: { userData: UserData }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -61,22 +62,24 @@ export default function AccountClient({ userData }: { userData: UserData }) {
               </div>
             </div>
             <div className="relative w-full p-3 sm:p-0 flex justify-center sm:w-max">
-              <div className="relative group transition-all duration-500  border border-purple-500 cursor-pointer">
-                <Image
-                  src={
-                    userData && userData.profile.avatar_url !== ""
-                      ? userData.profile.avatar_url
-                      : "/assets/img/no-image.jpg"
-                  }
-                  width={150}
-                  height={150}
-                  className="group-hover:contrast-50"
-                  alt="avatar"
-                />
-                <p className="absolute bottom-0 w-full py-1 bg-purple-500 text-white text-sm text-center invisible group-hover:visible">
-                  Edit
-                </p>
-              </div>
+              <EditProfileImageBtn profileId={userData && userData.id}>
+                <div className="relative group transition-all duration-500  border border-purple-500 cursor-pointer">
+                  <Image
+                    src={
+                      userData && userData.profile.avatar_url !== ""
+                        ? userData.profile.avatar_url
+                        : "/assets/img/no-image.jpg"
+                    }
+                    width={150}
+                    height={150}
+                    className="group-hover:contrast-50"
+                    alt="avatar"
+                  />
+                  <p className="absolute bottom-0 w-full py-1 bg-purple-500 text-white text-sm text-center invisible group-hover:visible">
+                    Edit
+                  </p>
+                </div>
+              </EditProfileImageBtn>
             </div>
           </div>
           <div className="w-full flex justify-between py-1 px-3">

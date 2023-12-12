@@ -23,3 +23,32 @@ export type Profile = z.infer<typeof Profile>
 export type FullProfile = z.infer<typeof FullProfile>
 
 export type FormEditProfile = z.infer<typeof FormEditProfile>
+
+// const ChangeAvatarSchema = z.object({
+//   profileId: z.number().min(1, { message: "Name is required" }),
+//   avatar: z.custom<File>((v) => v instanceof File, {
+//     message: "Image is required",
+//   }),
+// });
+
+const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
+const ChangeAvatarSchema = z.object({
+  profileId: z.number().min(1, { message: "Name is required" }),
+  avatar: z.any().refine((files) => {
+       return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max image size is 5MB.`).refine(
+      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
+});
+
+export const FormChangeAvatar = ChangeAvatarSchema
+  
+export type FormChangeAvatar = z.infer<typeof FormChangeAvatar>;

@@ -3,7 +3,7 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import axios from "axios";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
-import { FormEditProfile } from "../../types/profile";
+import { FormChangeAvatar, FormEditProfile } from "../../types/profile";
 
 export const getProfie = async () => {
   try {
@@ -44,4 +44,26 @@ export async function editProfile(data:FormEditProfile){
   }finally{
       revalidatePath('/users/account')
   }
-} 
+}
+
+export async function changeAvatarProfile(data:any){
+  try {
+    const session = await getServerSession(options)
+    const avatar = data.avatar.get('avatar')
+
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+    await axios.post(`${process.env.BACKEND_API}/profile/${data.profileId}`,formData,{
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${session?.accessToken}`
+        }
+    })
+  } catch (error:any) {
+      if(error.response !== undefined){
+        console.log(error.response.data)
+      }
+  }finally{
+      revalidatePath('/users/account')
+  }
+}
