@@ -2,7 +2,7 @@
 
 # First Online Shop
 
-![](olshop.png)
+![](olshop.jpg)
 
 First, run installation
 
@@ -16,7 +16,7 @@ pnpm install
 
 Second, run installation
 
-```bash
+```
 change your envirotment file
 ```
 
