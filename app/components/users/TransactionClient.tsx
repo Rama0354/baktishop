@@ -74,118 +74,122 @@ export default function TransactionClient({ redeem }: any) {
           Riwayat Transaksi
         </h2>
       </div>
-      <div className="relative md:max-w-lg lg:max-w-full px-3 overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-500 border border-slate-200 rounded-md overflow-hidden">
-          <thead className="text-xs text-gray-700 uppercase bg-primary-light">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Nama Produk
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Tanggal Pesan
-              </th>
-              <th scope="col" className="px-6 py-3 text-center">
-                Harga
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {redeem && redeem.data.length !== 0 ? (
-              redeem.data.map((r: any, idx: number) => (
-                <tr key={idx} className="bg-white border-b ">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                  >
-                    {r.redeem_item_gifts &&
-                      r.redeem_item_gifts
-                        .map((rname: any) => rname.item_gifts.item_gift_name)
-                        .join(", ")}
-                  </th>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {r.fredeem_date}
-                  </td>
-                  <td className="px-6 py-4 text-right whitespace-nowrap">
-                    {r.ftotal_amount}
-                  </td>
-                  <td className="px-6 py-4">
-                    {r.redeem_status === "success" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                        Selesai
-                      </div>
-                    ) : r.redeem_status === "shipped" &&
-                      r.shippings.shipping_status === "on progress" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                        Diproses
-                      </div>
-                    ) : r.redeem_status === "shipped" &&
-                      r.shippings.shipping_status === "on delivery" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                        Dikirim
-                      </div>
-                    ) : (r.redeem_status === "pending" &&
-                        r.payments === null) ||
-                      (r.payments &&
-                        r.payments.payment_status === "pending") ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                        Belum Dibayar
-                      </div>
-                    ) : r.redeem_status === "failure" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                        Batal
-                      </div>
-                    ) : r.redeem_status === "canceled" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                        Dibatalkan
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
-                        Unknown
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 flex gap-3 float-right">
-                    {r.redeem_status === "pending" ||
-                    r.redeem_status === "failure" ? (
+      <div className="relative w-full px-1 sm:px-3 ">
+        <div className="w-full max-w-sm sm:max-w-max overflow-x-auto">
+          <table className="w-full text-sm text-left text-gray-500 border border-slate-200 rounded-md overflow-hidden">
+            <thead className=" text-xs text-gray-700 uppercase bg-primary-light">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Aksi
+                </th>
+                <th scope="col" className=" px-6 py-3">
+                  Nama Produk
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Tanggal Pesan
+                </th>
+                <th scope="col" className="px-6 py-3 text-center">
+                  Harga
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {redeem && redeem.data.length !== 0 ? (
+                redeem.data.map((r: any, idx: number) => (
+                  <tr key={idx} className="bg-white border-b ">
+                    <td className="px-6 py-4 flex gap-3 float-right">
+                      {r.redeem_status === "pending" ||
+                      r.redeem_status === "failure" ? (
+                        <button
+                          onClick={() => handlePay(r.snap_token)}
+                          className="block w-max px-3 py-1 text-sm font-medium text-white bg-rose-600 hover:bg-rose-800 rounded-full"
+                        >
+                          Bayar
+                        </button>
+                      ) : null}
                       <button
-                        onClick={() => handlePay(r.snap_token)}
-                        className="block w-max px-3 py-1 text-sm font-medium text-white bg-rose-600 hover:bg-rose-800 rounded-full"
+                        type="button"
+                        onClick={() => openModal(r)}
+                        className="px-3 py-1 text-sm font-medium text-white bg-primary-dark hover:bg-secondary-dark rounded-full"
                       >
-                        Bayar
+                        Detail
                       </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={() => openModal(r)}
-                      className="px-3 py-1 text-sm font-medium text-white bg-primary-dark hover:bg-secondary-dark rounded-full"
+                    </td>
+                    <td
+                      scope="row"
+                      className="px-1 sm:px-6 py-4 font-medium text-gray-900 sm:min-w-[368px] whitespace-nowrap sm:whitespace-normal"
                     >
-                      Detail
-                    </button>
+                      {r.redeem_item_gifts &&
+                        r.redeem_item_gifts
+                          .map((rname: any) => rname.item_gifts.item_gift_name)
+                          .join(", ")}
+                    </td>
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap">
+                      {r.fredeem_date}
+                    </td>
+                    <td className="px-1 sm:px-6 py-4 text-right whitespace-nowrap">
+                      {r.ftotal_amount}
+                    </td>
+                    <td className="px-1 sm:px-6 py-4">
+                      {r.redeem_status === "success" ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                          Selesai
+                        </div>
+                      ) : r.redeem_status === "shipped" &&
+                        r.shippings.shipping_status === "on progress" ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                          Diproses
+                        </div>
+                      ) : r.redeem_status === "shipped" &&
+                        r.shippings.shipping_status === "on delivery" ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                          Dikirim
+                        </div>
+                      ) : (r.redeem_status === "pending" &&
+                          r.payments === null) ||
+                        (r.payments &&
+                          r.payments.payment_status === "pending") ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                          Belum Dibayar
+                        </div>
+                      ) : r.redeem_status === "failure" ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                          Batal
+                        </div>
+                      ) : r.redeem_status === "canceled" ? (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                          Dibatalkan
+                        </div>
+                      ) : (
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
+                          Unknown
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>
+                    <p className="w-full py-2 px-3 mx-auto text-center text-base font-semibold italic">
+                      Belum ada Pesanan
+                    </p>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5}>
-                  <p className="w-full py-2 px-3 mx-auto text-center text-base font-semibold italic">
-                    Belum ada Pesanan
-                  </p>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       {metapage && metapage.total > metapage.per_page ? (
         <nav className="w-full py-2 px-3 flex gap-3">
@@ -257,14 +261,73 @@ const CheckoutDetail = ({
     <ModalContent closeModal={closeModal} title="Detail Pesanan">
       <div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-            <MdInfo /> No Pesanan
-          </h2>
+          <div className="flex gap-1 justify-between items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <h2 className="flex gap-1 items-center font-semibold text-base">
+              <MdInfo /> No Pesanan
+            </h2>
+            <div className="text-sm">
+              {details && details.redeem_status === "success" ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                  Selesai
+                </div>
+              ) : details &&
+                details.redeem_status === "shipped" &&
+                details &&
+                details.shippings.shipping_status === "on progress" ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                  Diproses
+                </div>
+              ) : details &&
+                details.redeem_status === "shipped" &&
+                details &&
+                details.shippings.shipping_status === "on delivery" ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                  Dikirim
+                </div>
+              ) : (details &&
+                  details.redeem_status === "pending" &&
+                  details &&
+                  details.payments === null) ||
+                (details &&
+                  details.payments &&
+                  details &&
+                  details.payments.payment_status === "pending") ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
+                  Belum Dibayar
+                </div>
+              ) : details && details.redeem_status === "failure" ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                  Batal
+                </div>
+              ) : details && details.redeem_status === "canceled" ? (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
+                  Dibatalkan
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
+                  Unknown
+                </div>
+              )}
+            </div>
+          </div>
           <div className="w-full flex justify-between px-1">
             <p className="text-sm text-gray-500">
               {details && details.redeem_code !== "" && details.redeem_code}
             </p>
           </div>
+        </div>
+        <div className="mt-3">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+            <MdInfo /> Status
+          </h2>
+          <div className="w-full flex justify-between px-1"></div>
         </div>
         <div className="mt-3">
           <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">

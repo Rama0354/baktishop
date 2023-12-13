@@ -22,13 +22,13 @@ const AppBar = () => {
                 href={"/"}
                 className="flex items-center gap-1 object-contain lg:items-end px-1"
               >
-                <div className="relative w-12 h-12">
+                <div className="relative w-6 h-6 sm:w-12 sm:h-12">
                   <Image
                     src={"/assets/icon/logo.png"}
                     alt="logo"
                     width={50}
                     height={50}
-                    className="brightness-0 invert"
+                    className="w-full h-full brightness-0 invert"
                     priority
                   />
                 </div>
@@ -39,14 +39,14 @@ const AppBar = () => {
             </div>
             <div className="w-full flex items-center gap-1 lg:gap-3">
               <SearchForm />
-              <MobileFilter />
+              {/* <MobileFilter /> */}
               <div className="sm:hidden">
                 <CartButton />
               </div>
             </div>
             <div className="hidden md:flex lg:w-full shrink-0 lg:shrink justify-end gap-3">
               <NotificationButton />
-              <MessageButton />
+              {/* <MessageButton /> */}
               <CartButton />
               <SigninButton />
             </div>

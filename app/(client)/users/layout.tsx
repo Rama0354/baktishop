@@ -2,7 +2,9 @@ import React from "react";
 import UsersNavigation from "@/app/components/users/UsersNavigation";
 import Image from "next/image";
 import { getProfie } from "@/app/lib/utils/action/profileAction";
-import { MdMenu } from "react-icons/md";
+import { MdLogout, MdMenu } from "react-icons/md";
+import AuthenticationhButton from "@/app/components/AuthenticationButton";
+import AuthenticationButton from "@/app/components/AuthenticationButton";
 
 export default async function UsersLayout({
   children,
@@ -12,7 +14,7 @@ export default async function UsersLayout({
   const profileData = await getProfie();
   return (
     <section className="container h-full mt-3 min-h-screen flex border border-slate-300 overflow-hidden rounded-md shadow-md bg-gradient-to-br from-white to-slate-200">
-      <div className="w-max sm:w-1/4 py-1 px-0 sm:px-2">
+      <div className="w-max sm:w-1/4 py-1 px-0 sm:px-2 shrink-0">
         <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
           <MdMenu className="w-6 h-6 " />
         </button>
@@ -47,6 +49,9 @@ export default async function UsersLayout({
           </div>
           <div>
             <UsersNavigation />
+          </div>
+          <div className="sm:hidden bg-white rounded-md mt-6 px-1 py-2 flex justify-center items-center text-rose-600 hover:bg-rose-100 cursor-pointer">
+            <AuthenticationButton type="logout" />
           </div>
         </div>
       </div>

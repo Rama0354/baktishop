@@ -4,8 +4,9 @@ import React from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { LogoutAction } from "../lib/utils/action/AuthActions";
 import toast from "react-hot-toast";
+import { MdLogout } from "react-icons/md";
 
-export default function AuthenticationhButton({ type }: { type: string }) {
+export default function AuthenticationButton({ type }: { type: string }) {
   const handleLogout = async () => {
     return LogoutAction()
       .then(() => signOut({ callbackUrl: "/login" }))
@@ -15,9 +16,10 @@ export default function AuthenticationhButton({ type }: { type: string }) {
     <button
       onClick={handleLogout}
       aria-label="user button navigation to logout"
-      className="text-rose-500 font-medium py-1 px-2 rounded-md hover:bg-rose-200"
+      className="flex gap-1 text-rose-500 font-medium py-1 px-2 rounded-md hover:bg-rose-200"
     >
-      Log Out
+      <MdLogout className="w-6 h-6" />
+      <span className="hidden sm:block">Log Out</span>
     </button>
   ) : (
     <button
