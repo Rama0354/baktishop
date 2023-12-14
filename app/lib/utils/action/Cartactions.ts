@@ -10,10 +10,10 @@ import { CartArray, FormAddCart } from "../../types/cart"
 export const getCarts =async ():Promise<CartArray | undefined> => {
     try {
         const session = await getServerSession(options)
-        const res = await axios.get(`${process.env.BACKEND_API}/carts`,{
+        const res = await axios.get(`${process.env.BACKEND_API}/carts/user/${session && session.user.id}`,{
             headers:{
                 'Content-Type':'application/json',
-                Authorization:`Bearer ${session?.accessToken}`
+                Authorization:`Bearer ${session && session.accessToken}`
             }
         })
         const datas: CartArray = res.data.data;
