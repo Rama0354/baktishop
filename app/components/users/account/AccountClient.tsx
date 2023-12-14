@@ -66,7 +66,7 @@ export default function AccountClient({ userData }: { userData: UserData }) {
                 <div className="relative group transition-all duration-500  border border-purple-500 cursor-pointer">
                   <Image
                     src={
-                      userData && userData.profile.avatar_url !== ""
+                      userData && userData.profile.avatar_url !== null
                         ? userData.profile.avatar_url
                         : "/assets/img/no-image.jpg"
                     }

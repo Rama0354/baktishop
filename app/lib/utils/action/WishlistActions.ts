@@ -8,10 +8,10 @@ import { revalidatePath } from "next/cache"
 export const getAllWishlist =async (params?:string) => {
     try {
         const session = await getServerSession(options)
-        const res = await axios.get(`${process.env.BACKEND_API}/gifts/wishlist${params ? '?'+params:''}`,{
+        const res = await axios.get(`${process.env.BACKEND_API}/gifts/wishlist/user/${session && session.user.id}${params ? '?'+params:''}`,{
             headers:{
                 'Content-Type':'application/json',
-                Authorization:`Bearer ${session?.accessToken}`
+                Authorization:`Bearer ${session && session.accessToken}`
             }
         })
         return res

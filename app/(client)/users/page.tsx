@@ -17,7 +17,7 @@ async function getRedeem({ page }: { page: number }) {
         }
       )
       .then((res) => res.data)
-      .catch((err) => err.message);
+      .catch((err) => err.response.data);
     return res;
   } catch (error) {
     console.log(error);
@@ -33,5 +33,9 @@ export default async function DashboardPage({
   const redeemData = await getRedeem({
     page: searchPage ? parseInt(searchPage as string) : 1,
   });
-  return <TransactionClient redeem={redeemData} />;
+  return (
+    <TransactionClient
+      redeem={redeemData && !redeemData.error ? redeemData : { data: [] }}
+    />
+  );
 }

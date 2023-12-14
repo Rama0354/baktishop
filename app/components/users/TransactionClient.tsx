@@ -18,8 +18,8 @@ import ModalContent from "../ModalContent";
 export default function TransactionClient({ redeem }: any) {
   let [isOpen, setIsOpen] = useState(false);
   let [details, setDetails] = useState<any | null>(null);
-  const metapage = redeem ? redeem.meta : null;
-  const pNumber = [...Array(metapage.last_page)];
+  const metapage = redeem && redeem.data.length !== 0 ? redeem.meta : null;
+  const pNumber = metapage !== null ? [...Array(metapage.last_page)] : [];
   function closeModal() {
     setIsOpen(false);
   }
@@ -75,9 +75,9 @@ export default function TransactionClient({ redeem }: any) {
         </h2>
       </div>
       <div className="relative w-full px-1 sm:px-3 ">
-        <div className="w-full max-w-sm sm:max-w-max overflow-x-auto">
+        <div className="w-full overflow-x-auto">
           <table className="w-full text-sm text-left text-gray-500 border border-slate-200 rounded-md overflow-hidden">
-            <thead className=" text-xs text-gray-700 uppercase bg-primary-light">
+            <thead className="text-xs text-gray-700 uppercase bg-primary-light">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Aksi
@@ -179,8 +179,8 @@ export default function TransactionClient({ redeem }: any) {
                   </tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan={5}>
+                <tr className="w-full">
+                  <td colSpan={5} className="bg-white">
                     <p className="w-full py-2 px-3 mx-auto text-center text-base font-semibold italic">
                       Belum ada Pesanan
                     </p>
@@ -203,19 +203,21 @@ export default function TransactionClient({ redeem }: any) {
           >
             Prev
           </Link>
-          {pNumber.map((_, idx) => (
-            <Link
-              key={idx}
-              className={`${
-                metapage.current_page === idx + 1
-                  ? "bg-primary-dark text-white hover:bg-secondary-dark"
-                  : ""
-              } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:bg-primary-light hover:shadow-md`}
-              href={`?page=${idx + 1}`}
-            >
-              {idx + 1}
-            </Link>
-          ))}
+          {pNumber && pNumber.length !== 0
+            ? pNumber.map((_, idx) => (
+                <Link
+                  key={idx}
+                  className={`${
+                    metapage.current_page === idx + 1
+                      ? "bg-primary-dark text-white hover:bg-secondary-dark"
+                      : ""
+                  } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:bg-primary-light hover:shadow-md`}
+                  href={`?page=${idx + 1}`}
+                >
+                  {idx + 1}
+                </Link>
+              ))
+            : null}
           <Link
             className={`${
               metapage.current_page === metapage.last_page

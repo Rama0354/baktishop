@@ -9,10 +9,12 @@ import NotificationButton from "../NotificationButton";
 import SearchForm from "../SearchForm";
 import ProgressBar from "../Progressbar";
 import MobileFilter from "./MobileFilter";
+import EmailVerifNotifContainer from "../email_verification/EmailVerifNotifContainer";
 
 const AppBar = () => {
   return (
     <>
+      <EmailVerifNotifContainer />
       <ProgressBar />
       <header className="w-full px-1 bg-gradient-to-b from-secondary-dark to-primary-dark text-white sticky top-0 z-40">
         <div className="container flex gap-1 lg:gap-4 py-2 px-1 lg:px-3 mx-auto">

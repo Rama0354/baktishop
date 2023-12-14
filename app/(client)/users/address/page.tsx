@@ -11,7 +11,10 @@ export default async function AddressPage({
 }) {
   const searchPage = searchParams.page;
   const addressData = await getAddresses();
-  const addressDataSort = addressData?.sort((a, b) => b.is_main - a.is_main);
+  const addressDataSort =
+    addressData !== undefined
+      ? addressData?.sort((a, b) => b.is_main - a.is_main)
+      : [];
   return (
     <section className="w-full h-screen bg-slate-200/50">
       <div className="w-full flex items-center justify-between gap-3 py-3 px-1 sm:px-6 mb-3 border-b-2 border-slate-200 bg-white">

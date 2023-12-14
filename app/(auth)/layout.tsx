@@ -12,6 +12,7 @@ import AuthProvider from "../lib/context/AuthProviders";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Login Bakti Shop",
@@ -50,6 +51,7 @@ export default async function AuthRootLayout({
               {children}
             </div>
           </div>
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

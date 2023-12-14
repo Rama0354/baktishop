@@ -21,8 +21,8 @@ export default async function UsersLayout({
         <div className="w-full md:px-3 shrink-0">
           <div className="w-full py-6 flex flex-col items-center">
             <div className="w-10 h-10 sm:w-20 sm:h-20 shrink-0 flex justify-center items-center bg-primary-dark rounded-full overflow-hidden ring-2 ring-primary-dark">
-              {profileData ? (
-                profileData.profile.avatar_url !== "" ? (
+              {profileData && profileData ? (
+                profileData.profile.avatar_url !== null ? (
                   <Image
                     src={profileData.profile.avatar_url}
                     width={100}

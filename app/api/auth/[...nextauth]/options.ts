@@ -2,6 +2,7 @@ import axios from "axios";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export const options: NextAuthOptions = {
   providers: [
@@ -22,7 +23,7 @@ export const options: NextAuthOptions = {
           });
           return res.data
         } catch (error:any) {
-          console.log(error)
+          console.log(error.response.data.message)
         }
       },
     }),
@@ -38,6 +39,7 @@ export const options: NextAuthOptions = {
       if (user) {
         token.user_id = user.data.users.id;
         token.roles = user.data.users.roles;
+        token.verifed = user.data.users.email_verified_at !== null ? 'verifed':'unverifed'
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
         token.expires_at = Math.ceil(dateNow + (user.data.expires_in * 1000))
@@ -57,6 +59,7 @@ export const options: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.user_id;
+        session.verifed = token.verifed;
         session.user.roles = token.roles;
         session.accessToken = token.access_token;
       }

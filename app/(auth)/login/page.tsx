@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Login() {
   // const router = useRouter();
@@ -19,12 +20,14 @@ export default function Login() {
     resolver: zodResolver(LoginFom),
   });
   const onSubmit = (data: LoginForm) => {
-    signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: true,
-      callbackUrl: "/",
-    });
+    if (isSubmitSuccessful) {
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: true,
+        callbackUrl: "/",
+      });
+    }
   };
 
   // useEffect(() => {
@@ -79,9 +82,10 @@ export default function Login() {
       <div className="bg-slate-200 mt-3">
         <button
           type="submit"
-          className="w-full bg-purple-500 focus:bg-fuchsia-500 rounded-md px-3 py-2 text-center text-white font-bold"
+          disabled={isSubmitting}
+          className="text-white bg-primary-dark hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:bg-slate-500 font-medium rounded-lg text-sm w-full sm:max-w-xs px-5 py-2.5 text-center "
         >
-          Login
+          {isSubmitting ? "Proses" : "Masuk"}
         </button>
       </div>
     </form>

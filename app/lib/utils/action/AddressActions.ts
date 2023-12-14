@@ -46,7 +46,7 @@ export const getAllSubdistrict =async (city_id:number):Promise<SubdistrictArray 
 export const getAddresses = async (): Promise<FullAddressArray | undefined> => {
     try {
         const session = await getServerSession(options);
-        const res = await axios.get(`${process.env.BACKEND_API}/address`, {
+        const res = await axios.get(`${process.env.BACKEND_API}/address?search_column[0]=user_id&search_text[0]=${session && session.user.id}&search_operator[0]==`, {
             headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session && session.accessToken}`,
