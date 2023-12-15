@@ -1,5 +1,6 @@
 import GiftCardWishlist from "@/app/components/GiftCardWishlist";
 import { getAllWishlist } from "@/app/lib/utils/action/WishlistActions";
+import Image from "next/image";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 
@@ -24,7 +25,15 @@ export default async function WishlistPage({
             ))}
           </div>
         ) : (
-          <div>Anda Belum mempunyai Produk Favorit</div>
+          <div className="w-full flex justify-center">
+            <Image
+              src={"/assets/img/not-found-favorite.png"}
+              width={300}
+              height={300}
+              className="sm:w-80"
+              alt="product-not-found"
+            />
+          </div>
         )}
       </div>
     </section>

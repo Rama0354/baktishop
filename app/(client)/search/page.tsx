@@ -2,6 +2,7 @@ import React from "react";
 import SelectSort from "@/app/components/SelectSort";
 import { getGiftCards } from "@/app/lib/utils/action/GiftActions";
 import GiftCard from "@/app/components/gifts/GiftCard";
+import Image from "next/image";
 
 export default async function SearchPage({
   searchParams,
@@ -38,13 +39,23 @@ export default async function SearchPage({
             </div>
           </div>
           <div className="w-full pb-12">
-            <section className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 py-3 justify-center">
+            <section className="w-full flex py-2 justify-center">
               {items && items.data.length !== 0 ? (
-                items.data.map((item, idx: number) => (
-                  <GiftCard gift={item} key={idx} />
-                ))
+                <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
+                  {items.data.map((item, idx: number) => (
+                    <GiftCard gift={item} key={idx} />
+                  ))}
+                </div>
               ) : (
-                <span>Produk Tidak Ditemukn</span>
+                <div className="w-full h-full flex justify-center items-center">
+                  <Image
+                    src={"/assets/img/not-found-product.jpg"}
+                    width={200}
+                    height={200}
+                    className="sm:w-64"
+                    alt="product-not-found"
+                  />
+                </div>
               )}
             </section>
           </div>

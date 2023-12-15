@@ -33,7 +33,7 @@ export default async function AuthRootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <AuthProvider>
-          <div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-tl from-primary-light via-white to-secondary-light">
+          <section className="w-full min-h-screen flex justify-center items-center bg-gradient-to-tl from-primary-light via-white to-secondary-light">
             <div className=" py-6 px-3 flex flex-col gap-3 items-center justify-center bg-white rounded-md border border-primary-light shadow-md">
               <Link
                 href={"/"}
@@ -50,7 +50,7 @@ export default async function AuthRootLayout({
               </Link>
               {children}
             </div>
-          </div>
+          </section>
           <Toaster />
         </AuthProvider>
       </body>

@@ -1,19 +1,11 @@
 'use server'
 
-import { options } from "@/app/api/auth/[...nextauth]/options"
-import axios from "axios"
-import { getServerSession } from "next-auth"
 import { GiftCardApi } from "../../types/gifts"
+import { axiosAuthServer } from "../../axios"
 
 export const getGiftCards =async (params?:string):Promise<GiftCardApi | undefined> => {
     try {
-        const session = await getServerSession(options)
-        const res = await axios.get(`${process.env.BACKEND_API}/gifts?${params}`,{
-            headers:{
-                'Content-Type':'application/json',
-                Authorization:`Bearer ${session?.accessToken}`
-            }
-        })
+        const res = await axiosAuthServer.get(`/gifts?${params}`)
         const datas: GiftCardApi = res.data;
         const parseData = GiftCardApi.parse(datas)
         return parseData;

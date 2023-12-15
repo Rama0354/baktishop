@@ -12,6 +12,7 @@ import EditAddressBtn from "./EditAddressBtn";
 import DeleteAddressBtn from "./DeleteAddressBtn";
 import { changeAddress } from "@/app/lib/utils/action/AddressActions";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function AddressDnD({
   addresses,
@@ -86,7 +87,7 @@ export default function AddressDnD({
         <Droppable droppableId="droppable">
           {(droppableProvided) => (
             <div
-              className="flex flex-col max-w-max"
+              className="flex flex-col"
               {...droppableProvided.droppableProps}
               ref={droppableProvided.innerRef}
             >
@@ -172,7 +173,15 @@ export default function AddressDnD({
                   </Draggable>
                 ))
               ) : (
-                <p>Anda belum memiliki alamat</p>
+                <div className="w-full flex justify-center">
+                  <Image
+                    src={"/assets/img/not-found-address.png"}
+                    width={300}
+                    height={300}
+                    className="sm:w-80"
+                    alt="product-not-found"
+                  />
+                </div>
               )}
               {droppableProvided.placeholder}
             </div>

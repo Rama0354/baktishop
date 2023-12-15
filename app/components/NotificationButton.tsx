@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { AiOutlineBell } from "react-icons/ai";
@@ -42,8 +43,13 @@ export default function NotificationButton() {
                   </li>
                 ))
               ) : (
-                <div className="w-full mx-auto py-3">
-                  <p className="text-sm">tidak ada pemberitahuan</p>
+                <div className="w-full mx-auto">
+                  <Image
+                    src={"/assets/img/not-found-notification.jpg"}
+                    width={200}
+                    height={200}
+                    alt="notifications"
+                  />
                 </div>
               )}
             </ul>

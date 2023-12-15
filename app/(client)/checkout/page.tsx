@@ -1,5 +1,4 @@
 import React from "react";
-import ClientLayout from "@/app/components/layouts/ClientLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { getCarts } from "@/app/lib/utils/action/Cartactions";
 import Image from "next/image";
@@ -7,6 +6,8 @@ import CheckoutClient from "@/app/components/checkout/CheckoutClient";
 import { getAddresses } from "@/app/lib/utils/action/AddressActions";
 import CheckoutCountDetails from "@/app/components/checkout/CheckoutCountDetails";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import AddAddressBtn from "@/app/components/users/address/AddAddressBtn";
 
 export default async function CheckoutPage() {
   const getCartDatas = await getCarts();
@@ -15,7 +16,7 @@ export default async function CheckoutPage() {
     getAddress !== undefined
       ? getAddress.sort((a, b) => b.is_main - a.is_main)
       : undefined;
-  const cartItems = getCartDatas !== undefined ? getCartDatas : undefined;
+  const cartItems = getCartDatas !== undefined ? getCartDatas : redirect("/");
   const cartData =
     cartItems &&
     cartItems.map((product) => {
@@ -134,10 +135,17 @@ export default async function CheckoutPage() {
               gifts={cartCheckout}
             />
           ) : (
-            <p className="italic">
-              Anda Belum memiliki alamat pengiriman silahkan buat alamat
-              terlebih dahulu <Link href={"/users/address"}>disini</Link>
-            </p>
+            <div className="w-full px-3 py-2">
+              <p className="italic">
+                Anda Belum memiliki alamat pengiriman silahkan buat alamat
+                terlebih dahulu
+              </p>
+              <AddAddressBtn>
+                <button className="w-max h-max p-2 gap-3 flex items-center bg-primary-dark cursor-pointer text-sm text-white font-semibold rounded-md">
+                  <p className="hidden sm:block">Buat disini</p>
+                </button>
+              </AddAddressBtn>
+            </div>
           )}
         </div>
         <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1 py-1 px-3 border-primary-light border-t border-l-0 sm:border-l sm:border-t-0 mb-12">

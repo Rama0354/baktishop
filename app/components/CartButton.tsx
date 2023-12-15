@@ -43,7 +43,7 @@ export default function CartButton() {
           {totalCartQty}
         </span>
       </Link>
-      <div className="absolute right-0 top-9 group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
+      <div className="absolute right-0 top-9 sm:group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
         <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">
           <div className="w-full py-2 px-3 border-b-2 border-slate-100">
             <h2 className="text-slate-600 text-xl font-semibold">Keranjang</h2>
@@ -93,17 +93,14 @@ export default function CartButton() {
                   </li>
                 ))
               ) : (
-                <li className="py-1">
+                <li>
                   <div className="w-full flex flex-col items-center justify-center">
                     <Image
                       src={"/assets/img/empty-cart.png"}
-                      width={100}
-                      height={100}
+                      width={200}
+                      height={200}
                       alt="empty-cart"
                     />
-                    <p className="text-center text-slate-700">
-                      tidak ada barang
-                    </p>
                   </div>
                 </li>
               )}

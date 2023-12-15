@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { MdNotifications } from "react-icons/md";
 
@@ -10,7 +11,16 @@ export default function NotificationsPage() {
           Notifikasi
         </h1>
       </div>
-      <div className="w-full py-3 px-6 flex gap-3">konten notifikasi</div>
+      <div className="w-full py-3 px-6 flex gap-3">
+        <div className="w-full flex justify-center">
+          <Image
+            src={"/assets/img/not-found-notification.jpg"}
+            width={300}
+            height={300}
+            alt="notifications"
+          />
+        </div>
+      </div>
     </section>
   );
 }

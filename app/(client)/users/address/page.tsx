@@ -3,6 +3,7 @@ import AddressDnD from "@/app/components/users/address/AddressDnD";
 import { getAddresses } from "@/app/lib/utils/action/AddressActions";
 import React from "react";
 import { AiOutlineEnvironment } from "react-icons/ai";
+import { MdCreate } from "react-icons/md";
 
 export default async function AddressPage({
   searchParams,
@@ -24,7 +25,12 @@ export default async function AddressPage({
             Daftar Alamat
           </h2>
         </div>
-        <AddAddressBtn />
+        <AddAddressBtn>
+          <button className="w-max h-max p-2 gap-1 flex items-center hover:bg-primary-light bg-white cursor-pointer text-sm text-primary-dark font-semibold rounded-full">
+            <MdCreate className={"w-6 h-6"} />
+            <p className="hidden sm:block">Buat</p>
+          </button>
+        </AddAddressBtn>
       </div>
       <div className="w-full relative px-3">
         <AddressDnD addresses={addressDataSort} />

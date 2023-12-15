@@ -2,19 +2,14 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import axios from "axios";
 import TransactionClient from "@/app/components/users/TransactionClient";
+import { axiosAuthServer } from "@/app/lib/axios";
 
 async function getRedeem({ page }: { page: number }) {
   try {
     const session = await getServerSession(options);
-    const res = await axios
+    const res = await axiosAuthServer
       .get(
-        `${process.env.BACKEND_API}/gifts/redeem?page=${page}&per_page=5&search_column[0]=user_id&search_text[0]=${session?.user.id}&search_operator[0]==`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session && session.accessToken}`,
-          },
-        }
+        `/gifts/redeem?page=${page}&per_page=5&search_column[0]=user_id&search_text[0]=${session?.user.id}&search_operator[0]==`
       )
       .then((res) => res.data)
       .catch((err) => err.response.data);

@@ -1,22 +1,12 @@
 "use server";
 
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import axios from "axios";
-import { getServerSession } from "next-auth";
 import { FormRegister } from "../../types/auth";
+import axios, { axiosAuthServer } from "../../axios";
 
 export async function LogoutAction() {
   try {
-    const session = await getServerSession(options);
-    await axios.post(
-      `${process.env.BACKEND_API}/logout`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session && session.accessToken}`,
-        },
-      }
+    await axiosAuthServer.post(
+      `/logout`
     );
   } catch (error) {
     console.log(error);
@@ -26,7 +16,7 @@ export async function LogoutAction() {
 export async function RegisterAction(data:FormRegister) {
   try {
     const res = await axios.post(
-      `${process.env.BACKEND_API}/register`,
+      `/register`,
       {
         name:data.name,
         username:data.username,

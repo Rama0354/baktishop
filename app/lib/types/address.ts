@@ -27,7 +27,7 @@ const AddressUser = z.object({
     id: z.number().int().positive(),
     username: z.string(),
     email: z.string(),
-    main_address_id: z.number().int().positive()
+    main_address_id: z.number().int().positive().nullable()
 })
 
 const FormAddressSchema = z.object({

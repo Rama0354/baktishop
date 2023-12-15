@@ -16,7 +16,7 @@ export default async function Home() {
       >
         <div className="w-full">
           {/* main content */}
-          <div className="w-full sticky top-16 lg:top-16 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-primary-dark">
+          <div className="w-full sticky top-14 lg:top-16 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-primary-dark">
             <div className="w-full">
               <p className="font-semibold text-base">Produk Terbaru</p>
             </div>
@@ -33,7 +33,7 @@ export default async function Home() {
       >
         <div className="w-full">
           {/* main content */}
-          <div className="w-full sticky top-16 lg:top-16 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-primary-dark">
+          <div className="w-full sticky top-14 lg:top-16 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-primary-dark">
             <div className="w-full">
               <p className="font-semibold text-base">Produk Terlaris</p>
             </div>

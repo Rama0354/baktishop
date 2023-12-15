@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/app/lib/axios";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signOut } from "next-auth/react";
@@ -18,9 +18,7 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const res = await axios.post(`${process.env.BACKEND_API}/login`,credentials, {
-            headers: { "Content-Type": "application/json" }
-          });
+          const res = await axios.post(`/login`,credentials);
           return res.data
         } catch (error:any) {
           console.log(error.response.data.message)

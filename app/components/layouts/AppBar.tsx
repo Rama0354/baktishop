@@ -24,7 +24,7 @@ const AppBar = () => {
                 href={"/"}
                 className="flex items-center gap-1 object-contain lg:items-end px-1"
               >
-                <div className="relative w-6 h-6 sm:w-12 sm:h-12">
+                <div className="relative w-8 h-8 sm:w-12 sm:h-12">
                   <Image
                     src={"/assets/icon/logo.png"}
                     alt="logo"

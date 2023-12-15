@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CountCart from "@/app/components/cart/CountCart";
 import DeleteBtnCart from "@/app/components/cart/DeleteBtnCart";
+import ToCheckoutBtn from "@/app/components/cart/ToCheckoutBtn";
 
 export default async function CartPage() {
   const getCartDatas = await getCarts();
@@ -142,12 +143,7 @@ export default async function CartPage() {
             >
               Lanjut Belanja
             </Link>
-            <Link
-              href={"/checkout"}
-              className="w-full block py-1 px-3 font-semibold bg-primary-dark text-center text-white border-2 border-primary-dark rounded-md"
-            >
-              Checkout
-            </Link>
+            <ToCheckoutBtn cartCount={cartItems ? cartItems.length : 0} />
           </div>
         </div>
       </div>

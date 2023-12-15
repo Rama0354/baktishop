@@ -104,7 +104,7 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
     }
   };
   return (
-    <ModalContent closeModal={onClose} title="Tambah Alamat">
+    <ModalContent closeModal={onClose} title="Buat Alamat">
       <div className="py-1 space-y-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-6 mb-6 md:grid-cols-2">
