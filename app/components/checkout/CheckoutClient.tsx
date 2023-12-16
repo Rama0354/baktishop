@@ -13,7 +13,7 @@ import { AddressArray, FullAddressData } from "@/app/lib/types/address";
 import { motion } from "framer-motion";
 import { getCostsExpedition } from "@/app/lib/utils/action/ExpeditionActions";
 import { ExpeditionArray, ExpeditionDetail } from "@/app/lib/types/expedition";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setAddressDetails,
   setRedeemDetails,
@@ -23,6 +23,7 @@ import {
 import { CheckoutGifts } from "@/app/lib/types/checkout";
 import { debounce } from "lodash";
 import Image from "next/image";
+import { RootState } from "@/app/lib/redux/store";
 
 type Expeditions = {
   id: number;
@@ -52,6 +53,14 @@ export default function CheckoutClient({
     useState<ExpeditionDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const singleCartData = useSelector(
+    (state: RootState) => state.cart.singleCart
+  );
+  const weightTotal =
+    singleCartData && singleCartData.length
+      ? singleCartData[0].product_quantity * singleCartData[0].product_weight
+      : 0;
+  const checkout = useSelector((state: RootState) => state.checkout);
 
   //set catatan untuk penjual
   const debouncedDetails = useRef(
@@ -87,15 +96,27 @@ export default function CheckoutClient({
   }, [addressSelected, dispatch]);
 
   //set item checkout
+  // console.log(checkout);
   useEffect(() => {
-    dispatch(setRedeemItemGiftsDetails(gifts));
-  }, [gifts, dispatch]);
+    if (singleCartData && singleCartData.length) {
+      const singleGift = [
+        {
+          item_gift_id: singleCartData[0].product_id,
+          redeem_quantity: singleCartData[0].product_quantity,
+          variant_id: singleCartData[0].varian_id,
+        },
+      ];
+      dispatch(setRedeemItemGiftsDetails(singleGift));
+    } else {
+      dispatch(setRedeemItemGiftsDetails(gifts));
+    }
+  }, [singleCartData, gifts, dispatch]);
 
   useEffect(() => {
     if (expeditionSelected !== null) {
       setIsLoading(true);
       getCostsExpedition({
-        weight: weights,
+        weight: singleCartData && singleCartData.length ? weightTotal : weights,
         courier: expeditionSelected.name,
         destination_city: addressSelected.city.id,
       })
@@ -111,7 +132,13 @@ export default function CheckoutClient({
       setCouriers([]);
       setIsLoading(false);
     }
-  }, [addressSelected, expeditionSelected, weights]);
+  }, [
+    addressSelected,
+    expeditionSelected,
+    singleCartData,
+    weightTotal,
+    weights,
+  ]);
 
   const handleAddressSelected = (e: FullAddressData) => {
     setAddressSelected(e);
@@ -138,7 +165,8 @@ export default function CheckoutClient({
           shipping_description: courierSelected.description,
           shipping_destination: addressSelected.city.id,
           shipping_cost: courierSelected.cost[0].value,
-          shipping_weight: weights,
+          shipping_weight:
+            singleCartData && singleCartData.length ? weightTotal : weights,
           shipping_etd: courierSelected.cost[0].etd,
         })
       );
@@ -156,7 +184,15 @@ export default function CheckoutClient({
         })
       );
     }
-  }, [addressSelected, courierSelected, dispatch, expeditionSelected, weights]);
+  }, [
+    addressSelected,
+    courierSelected,
+    dispatch,
+    expeditionSelected,
+    singleCartData,
+    weightTotal,
+    weights,
+  ]);
 
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });

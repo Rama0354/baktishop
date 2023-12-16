@@ -4,12 +4,14 @@ import axios from "axios";
 import { getCarts } from "../../utils/action/Cartactions";
 
 interface initialStateProps {
-    cartItems:CartType[],
+    cartItems:CartType[]
+    singleCart:CartType[];
     totalQty:number
     subtotal:number
 }
 const initialState:initialStateProps ={
     cartItems:[],
+    singleCart:[],
     totalQty:0,
     subtotal:0
 }
@@ -92,7 +94,37 @@ const cartSlice = createSlice({
               updatedItems.splice(indexItem, 1);
               state.cartItems = updatedItems;
           }
-      }
+        },
+        setSingleCart(state,action:PayloadAction<CartType>){
+          const indexItem = state.singleCart.findIndex((item) => {
+              if (item.varian_id) {
+                return item.product_id === action.payload.product_id && item.varian_id === action.payload.varian_id;
+              } else {
+                return item.product_id === action.payload.product_id;
+              }
+            });
+      
+            if (indexItem !== -1) {
+              const updatedItems = [...state.singleCart];
+              if (updatedItems[indexItem].varian_id) {
+                updatedItems[indexItem] = {
+                  ...updatedItems[indexItem],
+                  product_quantity: updatedItems[indexItem].product_quantity + action.payload.product_quantity,
+                };
+              } else {
+                updatedItems[indexItem] = {
+                  ...updatedItems[indexItem],
+                  product_quantity: updatedItems[indexItem].product_quantity + action.payload.product_quantity,
+                };
+              }
+              state.singleCart = updatedItems;
+            } else {
+              state.singleCart = [...state.singleCart, action.payload];
+            }
+          },
+          removeSingleCart(state) {
+            state.singleCart = []
+        },
     },
     extraReducers: (builder) => {
       builder.addCase(getCart.fulfilled, (state, action) => {
@@ -123,6 +155,6 @@ const cartSlice = createSlice({
     },
 })
 
-export const { setCartItems,changeCartItems,removeCartItem } = cartSlice.actions;
+export const { setCartItems,changeCartItems,removeCartItem,setSingleCart,removeSingleCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

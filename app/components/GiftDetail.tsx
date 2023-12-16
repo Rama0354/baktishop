@@ -11,7 +11,7 @@ import { RootState } from "../lib/redux/store";
 import { setUrlDetail } from "../lib/redux/slice/detailSlice";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { getCart } from "../lib/redux/slice/cartSlice";
+import { getCart, setSingleCart } from "../lib/redux/slice/cartSlice";
 import CountDetail from "./CountDetail";
 import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
@@ -38,6 +38,10 @@ const GiftDetail = ({
 }) => {
   const { status: loginStatus } = useSession();
   const dispatch = useDispatch();
+  const singleCartData = useSelector(
+    (state: RootState) => state.cart.singleCart
+  );
+  const router = useRouter();
   const pathname = usePathname();
   const [countItem, setCountItem] = useState(1);
   const { data: detail } = useQuery({
@@ -103,6 +107,47 @@ const GiftDetail = ({
             .catch(() => {
               toast.error("ada masalah");
             });
+        }
+      } else {
+        toast.error("Mohon atur jumlah barang");
+      }
+    }
+  };
+  const handleAddToCheckout = () => {
+    if (loginStatus === "unauthenticated") {
+      signIn();
+    } else {
+      if (countItem !== 0) {
+        if (detail.variants.length !== 0) {
+          toast.error("Mohon pilih varian");
+        } else {
+          dispatch(
+            setSingleCart({
+              cart_id: "1",
+              product_id: detail.id,
+              product_image: selectedVariantImage,
+              product_name: detail.item_gift_name,
+              product_price: detail.item_gift_point,
+              product_quantity: countItem,
+              product_weight: detail.item_gift_weight,
+              varian_id: null,
+              varian_name: null,
+            })
+          );
+          router.push("/checkout");
+          // addCart({
+          //   item_gift_id: detail.id,
+          //   cart_quantity: countItem,
+          //   variant_id: null,
+          // })
+          //   .then(() => {
+          //     toast.success("berhasil ditambahkan");
+          //     dispatch(getCart() as any);
+          //     router.push("/checkout");
+          //   })
+          //   .catch(() => {
+          //     toast.error("ada masalah");
+          //   });
         }
       } else {
         toast.error("Mohon atur jumlah barang");
@@ -300,7 +345,10 @@ const GiftDetail = ({
             >
               + Keranjang
             </button>
-            <button className="px-3 py-1.5 text-white text-sm font-semibold bg-purple-500 border border-fuchsia-500 hover:bg-purple-600 rounded-full">
+            <button
+              onClick={handleAddToCheckout}
+              className="px-3 py-1.5 text-white text-sm font-semibold bg-purple-500 border border-fuchsia-500 hover:bg-purple-600 rounded-full"
+            >
               Beli Sekarang
             </button>
           </div>

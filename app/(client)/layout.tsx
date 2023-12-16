@@ -41,9 +41,9 @@ export default function ClientRootLayout({
               <Toaster position="top-center" />
               <Footer />
               <MobileNavigation />
-              {/* <Suspense fallback={null}>
+              <Suspense fallback={null}>
                 <NavigationEvents />
-              </Suspense> */}
+              </Suspense>
             </StoreProvider>
           </AuthProvider>
         </QueryProvider>

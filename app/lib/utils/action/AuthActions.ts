@@ -1,5 +1,6 @@
 "use server";
 
+import {z} from 'zod'
 import { FormRegister } from "../../types/auth";
 import axios, { axiosAuthServer } from "../../axios";
 
@@ -10,6 +11,18 @@ export async function LogoutAction() {
     );
   } catch (error) {
     console.log(error);
+  }
+}
+
+const EmailVerification = z.string().email()
+type EmailVerification = z.infer<typeof EmailVerification>
+export async function ResendEmailVerificationAction(data:EmailVerification) {
+  try {
+    await axios.post('/email/resend',{
+      email:data
+    })
+  } catch (error:any) {
+    console.log(error.response.data)
   }
 }
 

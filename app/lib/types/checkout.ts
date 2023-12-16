@@ -16,8 +16,8 @@ const ShippingSchema = z.object({
 const CheckoutGiftsSchema = z.array(
     z.object({
         item_gift_id: z.number().int().positive(),
-        variant_id: z.number().int().positive().nullable(),
-        redeem_quantity: z.number().int().positive()
+        redeem_quantity: z.number().int().positive(),
+        variant_id: z.number().int().nullable().optional(),
     })
 )
 

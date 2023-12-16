@@ -2,6 +2,7 @@
 import { getCart } from "@/app/lib/redux/slice/cartSlice";
 import { RootState } from "@/app/lib/redux/store";
 import { createCheckout } from "@/app/lib/utils/action/CheckoutActions";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
@@ -14,26 +15,40 @@ export default function CheckoutCountDetails({
   cartData: any;
   weight: number;
 }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const checkotData = useSelector((state: RootState) => state.checkout);
+  const singleCartData = useSelector(
+    (state: RootState) => state.cart.singleCart
+  );
   const ongkir = useSelector(
     (state: RootState) => state.checkout.shipping_details.shipping_cost
   );
-  const subTotal = cartData
-    ? cartData.reduce(
-        (acc: number, item: { points: number; qtys: number }) =>
-          acc + item.points * item.qtys,
-        0
-      )
-    : 0;
-  const qtyTotal = cartData
-    ? cartData.reduce(
-        (acc: number, item: { qtys: number }) => acc + item.qtys,
-        0
-      )
-    : 0;
+  const subTotal =
+    singleCartData && singleCartData.length
+      ? singleCartData[0].product_price * singleCartData[0].product_quantity
+      : cartData
+      ? cartData.reduce(
+          (acc: number, item: { points: number; qtys: number }) =>
+            acc + item.points * item.qtys,
+          0
+        )
+      : 0;
+  const qtyTotal =
+    singleCartData && singleCartData.length
+      ? singleCartData[0].product_quantity
+      : cartData
+      ? cartData.reduce(
+          (acc: number, item: { qtys: number }) => acc + item.qtys,
+          0
+        )
+      : 0;
+  const weightTotal =
+    singleCartData && singleCartData.length
+      ? singleCartData[0].product_quantity * singleCartData[0].product_weight
+      : 0;
 
   function rupiahCurrency(x: number) {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
@@ -93,7 +108,9 @@ export default function CheckoutCountDetails({
       </div>
       <div className="flex justify-between items-center text-slate-700">
         <p className="font-medium text-sm">Berat</p>
-        <p>{weight} Gram</p>
+        <p>
+          {singleCartData && singleCartData.length ? weightTotal : weight} Gram
+        </p>
       </div>
       <div className="flex justify-between items-center text-slate-700">
         <p className="font-medium text-sm">Pengiriman</p>
@@ -109,8 +126,10 @@ export default function CheckoutCountDetails({
         <button
           disabled={isPending || ongkir === 0}
           onClick={() => {
-            startTransition(
-              async () =>
+            startTransition(async () => {
+              if (session?.email_status === "unverifed") {
+                toast.error("Maaf, Akun anda belum terverifikasi!");
+              } else {
                 await createCheckout(checkotData)
                   .then((res: any) => {
                     dispatch(getCart() as any);
@@ -122,8 +141,9 @@ export default function CheckoutCountDetails({
                   })
                   .catch((error) => {
                     toast.error(error.response.message);
-                  })
-            );
+                  });
+              }
+            });
           }}
           className="w-full py-1 px-3 font-semibold bg-primary-dark disabled:bg-slate-500 disabled:pointer-events-none text-white border-2 border-primary-dark hover:bg-secondary-dark hover:border-secondary-dark rounded-md"
         >

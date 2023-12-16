@@ -52,10 +52,12 @@ export type Cart = z.infer<typeof Cart>
 export type CartArray = z.infer<typeof CartArray>
 
 export const FormAddCart = FormAddCartSchema
+export const CartGiftsCheckout = z.array(FormAddCartSchema)
 export const FormEditCart = CartId.merge(CartQuantity)
 export const FormDeleteCart = CartId
 
 export type FormAddCart = z.infer<typeof FormAddCart>
+export type CartGiftsCheckout = z.infer<typeof CartGiftsCheckout>
 export type FormEditCart = z.infer<typeof FormEditCart>
 export type FormDeleteCart = z.infer<typeof FormDeleteCart>
 
@@ -64,8 +66,8 @@ export type CartType = {
     product_id: number;
     product_name: string;
     product_image: string;
-    varian_id?: number;
-    varian_name?: string;
+    varian_id?: number | null;
+    varian_name?: string | null;
     product_weight: number;
     product_quantity: number;
     product_price: number;

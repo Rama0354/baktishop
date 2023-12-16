@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetAllSearch } from "../lib/redux/slice/filterSlice";
 import { RootState } from "../lib/redux/store";
 import { resetDetail } from "../lib/redux/slice/detailSlice";
+import { removeSingleCart } from "../lib/redux/slice/cartSlice";
 
 export function NavigationEvents() {
   const pathname = usePathname();
@@ -21,6 +22,9 @@ export function NavigationEvents() {
     }
     if (pathname !== urldetail) {
       dispatch(resetDetail());
+    }
+    if (pathname !== "/checkout") {
+      dispatch(removeSingleCart());
     }
   }, [pathname, dispatch, queryfiter, urldetail]);
 
