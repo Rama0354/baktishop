@@ -12,8 +12,11 @@ export default withAuth(
     callbacks: {
       authorized({ req, token }) {
         // `/admin` requires admin role
-        if (req.nextUrl.pathname === "/admin") {
+        if (req.nextUrl.pathname === "/dashboard") {
           return token?.roles[0] === "admin";
+        }
+        if (req.nextUrl.pathname === "/users" || req.nextUrl.pathname === "/users/(.*)" || req.nextUrl.pathname === "/message" || req.nextUrl.pathname === "/cart") {
+          return token?.roles[0] === "customer";
         }
         // `/account` only requires the user to be logged in
         // return !!token;
@@ -24,5 +27,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/users","/users/(.*)", "/message", "/cart", "/dashboard"],
+  matcher: ["/users","/users/(.*)", "/message", "/cart",'/dashboard'],
 };

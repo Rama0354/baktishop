@@ -130,7 +130,6 @@ const cartSlice = createSlice({
       builder.addCase(getCart.fulfilled, (state, action) => {
         const cartItems = action.payload && action.payload.length !== 0 ? action.payload.map((item:any) => {
           const findVarImage = item.variants !== null ? item.item_gifts.item_gift_images.find((f: any) => f.variant_id === item.variants.id) : undefined
-          console.log(findVarImage)
           return item.variants !== null ? {
           cart_id: item.id,
           product_id: item.item_gifts.id,
