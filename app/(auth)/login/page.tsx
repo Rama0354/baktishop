@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 
 export default function Login() {
-  // const router = useRouter();
+  const router = useRouter();
   // const { status } = useSession();
   const {
     register,
@@ -20,13 +20,20 @@ export default function Login() {
   } = useForm<LoginForm>({
     resolver: zodResolver(LoginFom),
   });
-  const onSubmit = (data: LoginForm) => {
+  const onSubmit = async (data: LoginForm) => {
     if (isSubmitSuccessful) {
-      signIn("credentials", {
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirect: true,
+        redirect: false,
         callbackUrl: "/",
+      }).then((res) => {
+        if (res?.ok) {
+          toast.success("Berhasil login");
+          router.push("/");
+        } else {
+          toast.error("Email atau password anda salah");
+        }
       });
     }
   };
