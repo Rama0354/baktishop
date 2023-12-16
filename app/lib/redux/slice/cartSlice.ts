@@ -130,11 +130,12 @@ const cartSlice = createSlice({
       builder.addCase(getCart.fulfilled, (state, action) => {
         const cartItems = action.payload && action.payload.length !== 0 ? action.payload.map((item:any) => {
           const findVarImage = item.variants !== null ? item.item_gifts.item_gift_images.find((f: any) => f.variant_id === item.variants.id) : undefined
+          console.log(findVarImage)
           return item.variants !== null ? {
           cart_id: item.id,
           product_id: item.item_gifts.id,
           product_name: item.item_gifts.item_gift_name,
-          product_image: findVarImage !== undefined ? findVarImage.item_gift_image_url : item.item_gifts.item_gift_images[0].item_gift_image_url,
+          product_image: findVarImage !== undefined ? findVarImage.item_gift_image_url !== null ? findVarImage.item_gift_image_url : item.item_gifts.item_gift_images[0].item_gift_image_url:item.item_gifts.item_gift_images[0].item_gift_image_url,
           varian_id:item.variants.id,
           varian_name: item.variants.variant_name,
           product_weight: item.item_gifts.item_gift_weight,

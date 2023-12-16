@@ -32,7 +32,7 @@ const CartSchema = z.object({
             id: z.number().int().positive(),
             image_url: z.string(),
             image_thumb_url: z.string()
-        })
+        }).nullable()
     }).nullable()
 })
 

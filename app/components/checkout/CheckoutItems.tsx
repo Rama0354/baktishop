@@ -85,7 +85,9 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
               <div className="shrink-0 max-h-20 w-20">
                 <Image
                   src={
-                    product && product.variants !== null
+                    product &&
+                    product.variants !== null &&
+                    product.variants.variant_image !== null
                       ? product.variants.variant_image.image_url
                       : product.item_gifts.item_gift_images[0]
                           .item_gift_image_url &&
