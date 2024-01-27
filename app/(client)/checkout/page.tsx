@@ -1,14 +1,11 @@
 import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { getCarts } from "@/app/lib/utils/action/Cartactions";
-import Image from "next/image";
-import CheckoutClient from "@/app/components/checkout/CheckoutClient";
-import { getAddresses } from "@/app/lib/utils/action/AddressActions";
-import CheckoutCountDetails from "@/app/components/checkout/CheckoutCountDetails";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import AddAddressBtn from "@/app/components/users/address/AddAddressBtn";
-import CheckoutItems from "@/app/components/checkout/CheckoutItems";
+import { getCarts } from "@/lib/utils/action/Cartactions";
+import CheckoutClient from "@/components/checkout/CheckoutClient";
+import { getAddresses } from "@/lib/utils/action/AddressActions";
+import CheckoutCountDetails from "@/components/checkout/CheckoutCountDetails";
+import AddAddressBtn from "@/components/users/address/AddAddressBtn";
+import CheckoutItems from "@/components/checkout/CheckoutItems";
 
 export default async function CheckoutPage() {
   const getCartDatas = await getCarts();

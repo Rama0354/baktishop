@@ -1,12 +1,12 @@
-import { getQueryClient } from "@/app/lib/getQueryClient";
 import { dehydrate } from "@tanstack/react-query";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import React from "react";
 import axios from "axios";
-import Hydrate from "@/app/lib/Hydrate";
-import CatAndBrLayout from "@/app/components/layouts/CatAndBrLayout";
-import GiftList from "@/app/components/GiftList";
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import { getQueryClient } from "@/lib/getQueryClient";
+import Hydrate from "@/lib/Hydrate";
+import CatAndBrLayout from "@/components/layouts/CatAndBrLayout";
+import GiftList from "@/components/GiftList";
 
 async function getListByCategory(category: string) {
   const session = await getServerSession(options);

@@ -1,10 +1,10 @@
 import React from "react";
-import UsersNavigation from "@/app/components/users/UsersNavigation";
 import Image from "next/image";
-import { getProfie } from "@/app/lib/utils/action/profileAction";
 import { MdLogout, MdMenu } from "react-icons/md";
-import AuthenticationhButton from "@/app/components/AuthenticationButton";
-import AuthenticationButton from "@/app/components/AuthenticationButton";
+import { getProfie } from "@/lib/utils/action/profileAction";
+import AuthenticationhButton from "@/components/AuthenticationButton";
+import UsersNavigation from "@/components/users/UsersNavigation";
+import AuthenticationButton from "@/components/AuthenticationButton";
 
 export default async function UsersLayout({
   children,
@@ -13,14 +13,14 @@ export default async function UsersLayout({
 }) {
   const profileData = await getProfie();
   return (
-    <section className="container h-full mt-3 min-h-screen flex border border-slate-300 overflow-hidden rounded-md shadow-md bg-gradient-to-br from-white to-slate-200">
-      <div className="w-max sm:w-1/4 py-1 px-0 sm:px-2 shrink-0">
+    <section className="container h-full min-h-screen flex">
+      <div className="sm:w-1/4 px-3 sm:px-2 shrink-0 bg-accent sm:border-r-2">
         <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
           <MdMenu className="w-6 h-6 " />
         </button>
         <div className="w-full md:px-3 shrink-0">
-          <div className="w-full py-6 flex flex-col items-center">
-            <div className="w-10 h-10 sm:w-20 sm:h-20 shrink-0 flex justify-center items-center bg-primary-dark rounded-full overflow-hidden ring-2 ring-primary-dark">
+          <div className="w-full py-6 flex flex-col items-center gap-2">
+            <div className="w-10 h-10 sm:w-20 sm:h-20 shrink-0 flex justify-center items-center bg-primary/25 rounded-full overflow-hidden ring-2 ring-primary">
               {profileData && profileData ? (
                 profileData.profile.avatar_url !== null ? (
                   <Image
@@ -38,11 +38,11 @@ export default async function UsersLayout({
                 <p className="text-white font-medium text-xl">G</p>
               )}
             </div>
-            <div className="hidden sm:block">
-              <h2 className="font-semibold text-slate-600">
+            <div className="hidden sm:block text-center">
+              <h2 className="font-semibold">
                 {profileData ? profileData.profile.name : "Guest"}
               </h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-primary dark:text-white">
                 {profileData ? "@" + profileData.username : "@unknown"}
               </p>
             </div>
@@ -55,7 +55,9 @@ export default async function UsersLayout({
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col sm:flex-row">{children}</div>
+      <div className="w-full flex flex-col sm:flex-row bg-secondary/25">
+        {children}
+      </div>
     </section>
   );
 }

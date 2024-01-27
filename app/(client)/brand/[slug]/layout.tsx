@@ -1,4 +1,4 @@
-import ClientLayout from "@/app/components/layouts/ClientLayout";
+import ClientLayout from "@/components/layouts/ClientLayout";
 
 export default function BrandLayout({
   children,

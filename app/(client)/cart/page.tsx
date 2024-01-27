@@ -1,11 +1,11 @@
 import React from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { getCarts } from "@/app/lib/utils/action/Cartactions";
 import Image from "next/image";
 import Link from "next/link";
-import CountCart from "@/app/components/cart/CountCart";
-import DeleteBtnCart from "@/app/components/cart/DeleteBtnCart";
-import ToCheckoutBtn from "@/app/components/cart/ToCheckoutBtn";
+import { getCarts } from "@/lib/utils/action/Cartactions";
+import DeleteBtnCart from "@/components/cart/DeleteBtnCart";
+import ToCheckoutBtn from "@/components/cart/ToCheckoutBtn";
+import CountCart from "@/components/cart/CountCart";
 
 export default async function CartPage() {
   const getCartDatas = await getCarts();
@@ -65,7 +65,8 @@ export default async function CartPage() {
                             product.variants !== null &&
                             product.variants.variant_image !== null
                               ? product.variants.variant_image.image_url
-                              : product.item_gifts.item_gift_images[0]
+                              : product.item_gifts.item_gift_images.length &&
+                                product.item_gifts.item_gift_images[0]
                                   .item_gift_image_url &&
                                 product.item_gifts.item_gift_images[0]
                                   .item_gift_image_url !== ""
@@ -97,6 +98,7 @@ export default async function CartPage() {
                           </p>
                         </div>
                         <div className="flex items-center">
+                          counter
                           <CountCart
                             scale={75}
                             count={product.cart_quantity}

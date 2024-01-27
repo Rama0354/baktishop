@@ -16,7 +16,7 @@ export default withAuth(
           return token?.roles[0] === "admin";
         }
         if (req.nextUrl.pathname === "/users" || req.nextUrl.pathname === "/users/(.*)" || req.nextUrl.pathname === "/message" || req.nextUrl.pathname === "/cart") {
-          return token?.roles[0] === "customer";
+          return token?.email !== null
         }
         // `/account` only requires the user to be logged in
         // return !!token;

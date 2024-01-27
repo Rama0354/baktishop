@@ -1,7 +1,7 @@
 import React from "react";
-import SelectSort from "@/app/components/SelectSort";
-import { getGiftCards } from "@/app/lib/utils/action/GiftActions";
-import GiftCard from "@/app/components/gifts/GiftCard";
+import SelectSort from "@/components/SelectSort";
+import { getGiftCards } from "@/lib/utils/action/GiftActions";
+import GiftCard from "@/components/gifts/GiftCard";
 import Image from "next/image";
 
 export default async function SearchPage({

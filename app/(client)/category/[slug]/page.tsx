@@ -1,15 +1,15 @@
 import React from "react";
-import CatAndBrLayout from "@/app/components/layouts/CatAndBrLayout";
-import GiftList from "@/app/components/GiftList";
-import CategoryListContainer from "@/app/components/category/CategoryListContainer";
-import SelectSort from "@/app/components/SelectSort";
-import Sidebar from "@/app/components/Sidebar";
 import Image from "next/image";
 import {
   getAllItemByCategory,
   getCategoryBySlug,
-} from "@/app/lib/utils/action/CategoryActions";
-import GiftCard from "@/app/components/gifts/GiftCard";
+} from "@/lib/utils/action/CategoryActions";
+import GiftCard from "@/components/gifts/GiftCard";
+import GiftList from "@/components/GiftList";
+import SelectSort from "@/components/SelectSort";
+import Sidebar from "@/components/Sidebar";
+import CatAndBrLayout from "@/components/layouts/CatAndBrLayout";
+import CategoryListContainer from "@/components/category/CategoryListContainer";
 
 export default async function CategoryPage({
   params,

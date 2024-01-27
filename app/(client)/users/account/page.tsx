@@ -1,5 +1,5 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
-import AccountClient from "@/app/components/users/account/AccountClient";
+import AccountClient from "@/components/users/account/AccountClient";
 import axios from "axios";
 import { getServerSession } from "next-auth";
 import React from "react";

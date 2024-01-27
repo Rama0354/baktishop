@@ -1,27 +1,46 @@
 "use client";
-import { LoginFom, LoginForm } from "@/app/lib/types/auth";
+import { LoginFom, LoginForm } from "@/lib/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import Image from "next/image";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function Login() {
   const router = useRouter();
-  // const { status } = useSession();
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
-    setValue,
-  } = useForm<LoginForm>({
+  const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFom),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
+  const isLoading = form.formState.isSubmitting;
   const onSubmit = async (data: LoginForm) => {
-    if (isSubmitSuccessful) {
+    try {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -35,80 +54,93 @@ export default function Login() {
           toast.error("Email atau password anda salah");
         }
       });
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  // useEffect(() => {
-  //   if (status === "unauthenticated") {
-  //     console.log("No JWT");
-  //     //   console.log(status);
-  //     //   void signIn("okta");
-  //   } else if (status === "authenticated") {
-  //     void router.push("/");
-  //   }
-  // }, [router, status]);
-
   return (
-    <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-64 flex flex-col py-3 gap-3 border-t border-slate-200"
-      >
-        <div className="group flex flex-col gap-1">
-          <label
-            htmlFor="email"
-            className="text-sm group-focus:text-purple-500"
+    <Card className="w-80 shadow-md">
+      <CardHeader>
+        <CardTitle>
+          <Link
+            href={"/"}
+            className="w-full flex justify-center items-end px-1"
           >
-            E-Mail
-          </label>
-          <input
-            type="text"
-            id="email"
-            {...register("email")}
-            className="border border-primary-dark outline-secondary-dark px-3 py-2 rounded-md"
-          />
-          {errors.email && (
-            <p className="text-xs italic text-red-500 mt-2">
-              {" "}
-              {errors.email?.message}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="text-sm">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            {...register("password")}
-            className="border border-primary-dark outline-secondary-dark px-3 py-2 rounded-md"
-          />
-          {errors.password && (
-            <p className="text-xs italic text-red-500 mt-2">
-              {" "}
-              {errors.password?.message}
-            </p>
-          )}
-        </div>
-        <div className="bg-slate-200 mt-3">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="text-white bg-primary-dark hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:bg-slate-500 font-medium rounded-lg text-sm w-full sm:max-w-xs px-5 py-2.5 text-center "
+            <Image
+              src={"/assets/icon/logo.png"}
+              alt="logo"
+              width={250}
+              height={250}
+              className="object-contain w-16 lg:w-24"
+            />
+            <h1 className="font-semibold text-2xl py-1">Shop</h1>
+          </Link>
+        </CardTitle>
+        <CardDescription className="text-center text-xl font-bold">
+          Login
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="example@mail.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput disabled={isLoading} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              size={"lg"}
+              className="w-full"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Proses" : "Masuk"}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter className="w-full flex justify-center">
+        <p className="text-sm">
+          <Link
+            className="font-bold text-primary dark:text-white"
+            href={"/register"}
           >
-            {isSubmitting ? "Proses" : "Masuk"}
-          </button>
-        </div>
-      </form>
-      <div className="w-full mx-auto text-center">
-        <p className="font-semibold text-sm text-slate-500">
-          Belum punya akun?{" "}
-          <Link className="font-bold text-primary-dark" href={"/register"}>
             Daftar
+          </Link>{" "}
+          atau{" "}
+          <Link
+            className="font-bold text-primary dark:text-white"
+            href={"/forgot-password"}
+          >
+            Lupa Password?
           </Link>
         </p>
-      </div>
-    </>
+      </CardFooter>
+    </Card>
   );
 }
