@@ -5,24 +5,7 @@ import GiftRating from "../GiftRating";
 import Link from "next/link";
 import WishBtn from "./WishBtn";
 import { GiftCardType } from "@/lib/types/gifts";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 const GiftCard = ({ gift }: { gift: GiftCardType }) => {
   const priceText = gift.fitem_gift_point.split(" ~ ");
@@ -31,7 +14,7 @@ const GiftCard = ({ gift }: { gift: GiftCardType }) => {
     <Card className="max-w-[350px] hover:shadow-md">
       <CardContent className="w-full">
         <Link href={gift.item_gift_slug}>
-          <div className="flex items-center justify-center w-full h-40 overflow-hidden py-2">
+          <div className="flex items-center justify-center rounded-md w-full h-40 overflow-hidden py-2 my-3">
             <Image
               src={
                 images[0] !== undefined
@@ -44,13 +27,13 @@ const GiftCard = ({ gift }: { gift: GiftCardType }) => {
                   : "/assets/img/no-image.jpg"
               }
               placeholder="blur"
-              width={160}
-              height={160}
-              className="object-contain h-full w-auto"
+              width={6400}
+              height={360}
+              className="object-cover w-full h-auto"
               alt="product"
             />
           </div>
-          <p className="font-semibold text-sm md:text-base line-clamp-1 py-2">
+          <p className="font-semibold text-sm md:text-base line-clamp-1">
             {gift.item_gift_name}
           </p>
         </Link>

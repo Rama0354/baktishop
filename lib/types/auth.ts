@@ -43,9 +43,6 @@ const RegisterSchema = z.object({
   birthdate: z.string().nonempty("Tanggal Lahir Tidak Boleh kosong"),
 });
 
-export const LoginFom = EmailSchema.merge(PasswordSchema);
-export type LoginForm = z.infer<typeof LoginSchema>;
-
 export const FormRegister = FormRegisterSchema.merge(ConfirmPassword).refine(
   (data) => data.password === data.password_confirmation,
   {
@@ -59,18 +56,22 @@ export const RegisterActionSchema = RegisterSchema.merge(
   message: "Password tidak sama!",
   path: ["password_confirmation"],
 });
-export type FormRegister = z.infer<typeof FormRegister>;
-export type RegisterActionSchema = z.infer<typeof RegisterActionSchema>;
 
+export const LoginFom = EmailSchema.merge(PasswordSchema);
 export const FormForgotPass = EmailSchema;
-export const FormResetPass = z
-  .object({ email: z.string().email().optional() })
+export const FormResetPass = EmailSchema.extend({
+  token: z.string(),
+})
   .merge(ConfirmPassword)
-  .extend({ token: z.string().optional() })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Password tidak sama!",
     path: ["password_confirmation"],
   });
+
+export type LoginForm = z.infer<typeof LoginSchema>;
+
+export type FormRegister = z.infer<typeof FormRegister>;
+export type RegisterActionSchema = z.infer<typeof RegisterActionSchema>;
 
 export type FormForgotPass = z.infer<typeof FormForgotPass>;
 export type FormResetPass = z.infer<typeof FormResetPass>;

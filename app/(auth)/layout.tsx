@@ -23,7 +23,7 @@ export default async function AuthRootLayout({
     return redirect("/");
   }
   return (
-    <section className="w-full min-h-screen flex justify-center items-center bg-gradient-tl from-secondary/25 to-primary/25">
+    <section className="w-full min-h-screen flex justify-center items-center bg-secondary">
       {children}
     </section>
   );

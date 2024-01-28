@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
-import GiftRating from "./GiftRating";
+import GiftRating from "../GiftRating";
 import Link from "next/link";
-import WishButton from "./WishButton";
+import WishButton from "../WishButton";
 import { Fragment, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -12,8 +12,8 @@ import { setUrlDetail } from "@/lib/redux/slice/detailSlice";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { getCart, setSingleCart } from "@/lib/redux/slice/cartSlice";
-import CountDetail from "./CountDetail";
-import GiftsReviewContainer from "./reviews/GiftsReviewContainer";
+import CountDetail from "../CountDetail";
+import GiftsReviewContainer from "../reviews/GiftsReviewContainer";
 import { signIn, useSession } from "next-auth/react";
 import { addCart } from "@/lib/utils/action/Cartactions";
 
@@ -217,9 +217,9 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
     }
   };
   return (
-    <section id="maincontent" className="container text-slate-700 bg-white">
+    <section id="maincontent" className="container">
       {/* breadcrumb */}
-      <div className="w-full h-12 px-6 py-3 mb-3 border-b border-slate-200">
+      <div className="w-full h-12 px-6 py-3 mb-3 border-b border-border">
         <Link href={"/"}>Product</Link>
         {` > ${
           detail
@@ -248,8 +248,8 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
                     key={image.id}
                     className={`relative w-16 h-16 shrink-0 border-2 rounded-md cursor-pointer overflow-hidden ${
                       selectedVariantImage === image.item_gift_image_url
-                        ? "border-purple-500"
-                        : "border-slate-300"
+                        ? "border-primary"
+                        : "border-border"
                     }`}
                   >
                     <Image
@@ -284,18 +284,18 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
               scale={20}
             />
             <div className="w-full">
-              <p className="text-sm text-slate-400">
+              <p className="text-sm">
                 {detail && detail.item_gifts.total_reviews} reviewers
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <p className="font-bold text-2xl text-purple-500">
+            <p className="font-bold text-2xl text-primary">
               {detail ? rupiahCurrency(detail.variant_point) : 0}
             </p>
           </div>
           <div className="w-full">
-            <div className="w-min py-0.5 border-b border-slate-700">
+            <div className="w-min py-0.5 border-b border-border">
               <h2 className="font-semibold text-lg">Detail</h2>
             </div>
             <div className="flex flex-col gap-1 pt-1">
@@ -351,9 +351,9 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
                             href={`${v.variant_slug}`}
                             className={`${
                               pathname === "/" + v.variant_slug
-                                ? "border-purple-500"
-                                : "border-purple-200"
-                            } py-1 px-3 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
+                                ? "border-primary"
+                                : "border-border"
+                            } py-1 px-3 border-2 hover:border-primary rounded-md hover:shadow-md`}
                           >
                             {v.variant_name}
                           </Link>
@@ -363,9 +363,9 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
                             href={`${detail.item_gifts.item_gift_slug}`}
                             className={`${
                               pathname === "/" + v.variant_slug
-                                ? "border-purple-500"
-                                : "border-purple-200"
-                            } py-1 px-3 bg-white border-2 hover:border-purple-500 rounded-md hover:shadow-md`}
+                                ? "border-primary"
+                                : "border-border"
+                            } py-1 px-3  border-2 hover:border-primary rounded-md hover:shadow-md`}
                           >
                             {v.variant_name}
                           </Link>
@@ -403,8 +403,8 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
       <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
         {detail && detail.item_gifts.item_gift_spesification.length > 0 ? (
           <div className="relative w-full">
-            <div className="w-full border-b border-purple-500">
-              <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
+            <div className="w-full border-b border-primary">
+              <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
                 Spesifikasi Produk
               </p>
             </div>
@@ -428,8 +428,8 @@ const GiftDetailByVariant = ({ slug }: { slug: string }) => {
         ) : null}
 
         <div className="relative w-full">
-          <div className="w-full border-b border-purple-500">
-            <p className="inline-block h-full py-2 px-5 text-base font-bold text-purple-500 border-b-2 border-purple-500">
+          <div className="w-full border-b border-primary">
+            <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
               Deskripsi Produk
             </p>
           </div>

@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
 
 type Props = {
   scale?: number;
@@ -22,30 +24,22 @@ const CountDetail = ({ count, setCountItem, scale }: Props) => {
     <div
       className={`w-48 ${
         scale ? "scale-0 md:scale-" + scale : ""
-      } grid grid-cols-3 border border-slate-200 rounded-lg`}
+      } grid grid-cols-3`}
     >
-      <button
-        type="button"
-        onClick={handleDecrement}
-        className="bg-slate-200 text-slate-600 font-bold text-xl"
-      >
+      <Button type="button" onClick={handleDecrement}>
         -
-      </button>
-      <input
+      </Button>
+      <Input
         type="text"
         value={count}
         id="jumlah"
         name="jumlah"
         readOnly
-        className="appearance-none text-slate-600 text-center font-bold text-lg p-1 pointer-events-none"
+        className="appearance-none text-center font-bold pointer-events-none"
       />
-      <button
-        type="button"
-        onClick={handleIncrement}
-        className="bg-slate-200 text-slate-600 font-bold text-xl"
-      >
+      <Button type="button" onClick={handleIncrement}>
         +
-      </button>
+      </Button>
     </div>
   );
 };

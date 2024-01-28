@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { RegisterActionSchema } from "@/lib/types/auth";
+import { FormForgotPass, RegisterActionSchema } from "@/lib/types/auth";
 import axios, { axiosAuthServer } from "@/lib/axios";
 
 export async function LogoutAction() {
@@ -26,25 +26,31 @@ export async function ResendEmailVerificationAction(data: EmailVerification) {
 
 export async function RegisterAction(data: RegisterActionSchema) {
   try {
-    const res = await axios.post(
-      `/register`,
-      {
-        name: data.name,
-        username: data.username,
-        email: data.email,
-        birthdate: data.birthdate,
-        password: data.password,
-        password_confirmation: data.password_confirmation,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await axios.post(`/register`, data);
     return res.data;
   } catch (error: any) {
-    console.log(error);
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export async function ForgotPasswordActions(data: FormForgotPass) {
+  try {
+    const res = await axios.post(`/forget/password`, data);
+    return res.data;
+  } catch (error: any) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export async function ResetPasswordActions(data: FormForgotPass) {
+  try {
+    const res = await axios.post(`/reset/password`, data);
+    return res.data;
+  } catch (error: any) {
+    console.log(error.response.data);
+    return error.response.data;
   }
 }
 

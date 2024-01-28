@@ -1,5 +1,5 @@
 import React from "react";
-import GiftDetail from "@/components/GiftDetail";
+import GiftDetail from "@/components/gifts/GiftDetail";
 import axios from "axios";
 import { getQueryClient } from "@/lib/getQueryClient";
 import { options } from "@/app/api/auth/[...nextauth]/options";
@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "@/lib/Hydrate";
 import { notFound } from "next/navigation";
-import GiftDetailByVariant from "@/components/GiftDetailByVariant";
+import GiftDetailByVariant from "@/components/gifts/GiftDetailByVariant";
 
 export async function generateStaticParams() {
   const res = await axios
