@@ -1,7 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { FormDeleteAddress } from "@/lib/types/address";
 import { deleteAddress } from "@/lib/utils/action/AddressActions";
 import React, { useTransition } from "react";
+import toast from "react-hot-toast";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
 
@@ -10,15 +12,23 @@ export default function DeleteAddressBtn(id: FormDeleteAddress) {
   const dispatch = useDispatch();
 
   return (
-    <button
+    <Button
       disabled={isPending}
-      aria-label="hapus alamat"
+      variant={"ghost"}
       onClick={async () => {
-        startTransition(async () => await deleteAddress(id));
+        startTransition(
+          async () =>
+            await deleteAddress(id).then((res) => {
+              if (res.error === 0) {
+                toast.success("Berhasil dihapus");
+              } else {
+                toast.error(res.error.error);
+              }
+            })
+        );
       }}
-      className="w-max h-max p-2 flex items-center hover:bg-primary-light disabled:text-primary-light cursor-pointer disabled:pointer-events-none gap-3 text-sm text-primary-dark font-semibold rounded-full"
     >
       <MdOutlineDeleteOutline className={"w-6 h-6"} />
-    </button>
+    </Button>
   );
 }

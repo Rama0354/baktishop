@@ -6,6 +6,7 @@ import { getAddresses } from "@/lib/utils/action/AddressActions";
 import CheckoutCountDetails from "@/components/checkout/CheckoutCountDetails";
 import AddAddressBtn from "@/components/users/address/AddAddressBtn";
 import CheckoutItems from "@/components/checkout/CheckoutItems";
+import { Button } from "@/components/ui/button";
 
 export default async function CheckoutPage() {
   const getCartDatas = await getCarts();
@@ -45,10 +46,10 @@ export default async function CheckoutPage() {
       )
     : 0;
   return (
-    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-white border border-slate-300 rounded-md shadow-md">
-      <div className="w-full flex items-center gap-3 border-b-2 border-slate-300 py-1 px-6 md:py-2">
-        <AiOutlineShoppingCart className="text-slate-700 stroke-2 w-6 h-6" />
-        <h1 className="py-2 font-semibold text-xl text-slate-700">Checkout</h1>
+    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-secondary/25 border border-border rounded-md shadow-md">
+      <div className="w-full flex items-center gap-3 border-b-2 py-1 px-6 md:py-2">
+        <AiOutlineShoppingCart className="stroke-2 w-6 h-6" />
+        <h1 className="py-2 font-semibold text-xl ">Checkout</h1>
       </div>
       <div className="w-full py-3 px-6 flex flex-col sm:flex-row gap-12 sm:gap-3">
         <div className="w-full sm:1/2 md:w-2/3">
@@ -66,14 +67,12 @@ export default async function CheckoutPage() {
                 terlebih dahulu
               </p>
               <AddAddressBtn>
-                <button className="w-max h-max p-2 gap-3 flex items-center bg-primary-dark cursor-pointer text-sm text-white font-semibold rounded-md">
-                  <p className="hidden sm:block">Buat disini</p>
-                </button>
+                <Button size={"sm"}>Buat Alamat</Button>
               </AddAddressBtn>
             </div>
           )}
         </div>
-        <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1 py-1 px-3 border-primary-light border-t border-l-0 sm:border-l sm:border-t-0 mb-12">
+        <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1 py-1 px-3 border-primary border-t border-l-0 sm:border-l sm:border-t-0 mb-12">
           <CheckoutCountDetails cartData={cartData} weight={weightTotal} />
         </div>
       </div>

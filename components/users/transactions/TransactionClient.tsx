@@ -13,7 +13,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence } from "framer-motion";
-import ModalContent from "../ModalContent";
+import ModalContent from "../../ModalContent";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import ReceiveButton from "./receive-button";
 
 export default function TransactionClient({ redeem }: any) {
   let [isOpen, setIsOpen] = useState(false);
@@ -68,14 +71,14 @@ export default function TransactionClient({ redeem }: any) {
   };
   return (
     <section className="w-full h-screen">
-      <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-accent">
+      <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-secondary/50">
         <AiOutlineSchedule className={"w-6 h-6 stroke-2"} />
         <h2 className="font-semibold text-lg">Riwayat Transaksi</h2>
       </div>
       <div className="relative w-full px-1 sm:px-3 ">
         <div className="w-full overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-500 border border-slate-200 rounded-md overflow-hidden">
-            <thead className="text-xs text-gray-700 uppercase bg-primary-light">
+          <table className="w-full text-sm text-left border rounded-md overflow-hidden">
+            <thead className="text-xs uppercase bg-primary text-white">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Aksi
@@ -97,28 +100,28 @@ export default function TransactionClient({ redeem }: any) {
             <tbody>
               {redeem && redeem.data.length !== 0 ? (
                 redeem.data.map((r: any, idx: number) => (
-                  <tr key={idx} className="bg-white border-b ">
+                  <tr key={idx} className=" border-b ">
                     <td className="px-6 py-4 flex gap-3 float-right">
                       {r.redeem_status === "pending" ||
                       r.redeem_status === "failure" ? (
-                        <button
+                        <Button
+                          variant={"destructive"}
                           onClick={() => handlePay(r.snap_token)}
-                          className="block w-max px-3 py-1 text-sm font-medium text-white bg-rose-600 hover:bg-rose-800 rounded-full"
                         >
                           Bayar
-                        </button>
+                        </Button>
                       ) : null}
-                      <button
+                      <Button
                         type="button"
                         onClick={() => openModal(r)}
-                        className="px-3 py-1 text-sm font-medium text-white bg-primary-dark hover:bg-secondary-dark rounded-full"
+                        className="px-3 py-1 text-sm font-medium bg-primary"
                       >
                         Detail
-                      </button>
+                      </Button>
                     </td>
                     <td
                       scope="row"
-                      className="px-1 sm:px-6 py-4 font-medium text-gray-900 sm:min-w-[368px] whitespace-nowrap sm:whitespace-normal"
+                      className="px-1 sm:px-6 py-4 font-medium sm:min-w-[368px] whitespace-nowrap sm:whitespace-normal"
                     >
                       {r.redeem_item_gifts &&
                         r.redeem_item_gifts
@@ -193,10 +196,8 @@ export default function TransactionClient({ redeem }: any) {
         <nav className="w-full py-2 px-3 flex gap-3">
           <Link
             className={`${
-              metapage.current_page === 1
-                ? " pointer-events-none text-slate-300 border-slate-300"
-                : ""
-            } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:shadow-mds`}
+              metapage.current_page === 1 ? " pointer-events-none" : ""
+            } block py-1 px-3 border border-primary text-base font-semibold text-primary rounded-md hover:shadow-mds`}
             href={`?page=${metapage.current_page - 1}`}
           >
             Prev
@@ -259,9 +260,9 @@ const CheckoutDetail = ({
   }
   return (
     <ModalContent closeModal={closeModal} title="Detail Pesanan">
-      <div>
+      <ScrollArea className="h-[360px]">
         <div className="mt-3">
-          <div className="flex gap-1 justify-between items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <div className="flex gap-1 justify-between items-center py-1 px-3 font-semibold text-base border">
             <h2 className="flex gap-1 items-center font-semibold text-base">
               <MdInfo /> No Pesanan
             </h2>
@@ -318,44 +319,46 @@ const CheckoutDetail = ({
             </div>
           </div>
           <div className="w-full flex justify-between px-1">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm">
               {details && details.redeem_code !== "" && details.redeem_code}
             </p>
           </div>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
-            <MdInfo /> Status
-          </h2>
-          <div className="w-full flex justify-between px-1"></div>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
             <MdLocalShipping /> Info Pengiriman
           </h2>
-          <div className="w-full flex justify-between px-1">
-            <p className="text-sm text-gray-500">Metode Pengiriman</p>
-            <p className="text-sm text-gray-500 flex gap-1">
-              <span className="uppercase">
+          <div className="w-full flex flex-col px-3">
+            {details && details.shippings.shipping_resi !== null ? (
+              <div className="flex justify-between">
+                <p className="text-sm">No. Resi</p>
+                {details && details.shippings.shipping_resi}
+              </div>
+            ) : null}
+            <div className="flex justify-between">
+              <p className="text-sm">Metode Pengiriman</p>
+              <p className="text-sm flex gap-1">
+                <span className="uppercase">
+                  {details &&
+                  details.shippings &&
+                  details.shippings.shipping_courier !== ""
+                    ? details.shippings.shipping_courier
+                    : "unknown"}
+                </span>
                 {details &&
                 details.shippings &&
-                details.shippings.shipping_courier !== ""
-                  ? details.shippings.shipping_courier
+                details.shippings.shipping_description !== ""
+                  ? details.shippings.shipping_description
                   : "unknown"}
-              </span>
-              {details &&
-              details.shippings &&
-              details.shippings.shipping_description !== ""
-                ? details.shippings.shipping_description
-                : "unknown"}
-            </p>
+              </p>
+            </div>
           </div>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
             <MdMap /> Alamat Pengiriman
           </h2>
-          <p className="text-sm text-gray-500 px-1">
+          <p className="text-sm px-1">
             <span className="font-semibold">Penerima : </span>
             {`${
               details !== null && details.users.address.person_name !== ""
@@ -363,7 +366,7 @@ const CheckoutDetail = ({
                 : ""
             }`}
           </p>
-          <p className="text-sm text-gray-500 px-1">
+          <p className="text-sm px-1">
             <span className="font-semibold">Nomor : </span>
             {`${
               details !== null &&
@@ -373,7 +376,7 @@ const CheckoutDetail = ({
                 : ""
             }`}
           </p>
-          <p className="text-sm text-gray-500 px-1">
+          <p className="text-sm px-1">
             <span className="font-semibold">Alamat : </span>
             {`${
               details !== null && details.users.address.address !== ""
@@ -405,20 +408,20 @@ const CheckoutDetail = ({
           </p>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
             <MdSpeakerNotes /> Catatan
           </h2>
           <div className="w-full px-1">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm">
               {details && details.note !== null ? details.note : "no note"}
             </p>
           </div>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border ">
             <MdShoppingBag /> Daftar Produk
           </h2>
-          <ul className="border-2 border-slate-100">
+          <ul className="border-2 ">
             {details && details.redeem_item_gifts.length !== 0 ? (
               details.redeem_item_gifts.map((r: any, idx: number) => (
                 <li key={idx} className="flex gap-1 py-1 px-3">
@@ -434,7 +437,7 @@ const CheckoutDetail = ({
                     alt="product"
                   />
                   <div className="w-full">
-                    <div className="w-full flex justify-between items-start text-slate-700">
+                    <div className="w-full flex justify-between items-start">
                       <p className="text-sm font-semibold">
                         {r.item_gifts && r.item_gifts.item_gift_name !== ""
                           ? r.item_gifts.item_gift_name
@@ -448,7 +451,7 @@ const CheckoutDetail = ({
                       </p>
                     </div>
                     {r.variants && (
-                      <p className="text-xs py-1 px-2 bg-slate-100 text-slate-700 rounded-md w-max">
+                      <p className="text-xs py-1 px-2 rounded-md w-max">
                         {r.variants.variant_name !== ""
                           ? r.variants.variant_name
                           : ""}
@@ -469,10 +472,8 @@ const CheckoutDetail = ({
                 <p>Tidak ada Barang</p>
               </li>
             )}
-            <li className="flex justify-between items-center gap-1 py-2 px-3 border-t border-slate-100">
-              <p className="font-semibold text-sm text-slate-700">
-                Subtotal Produk
-              </p>
+            <li className="flex justify-between items-center gap-1 py-2 px-3 border-t ">
+              <p className="font-semibold text-sm ">Subtotal Produk</p>
               <p className="font-bold text-base text-amber-500">
                 {rupiahCurrency(
                   details && details.total_point !== 0 ? details.total_point : 0
@@ -482,17 +483,17 @@ const CheckoutDetail = ({
           </ul>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border ">
             <MdPayments /> Metode Pembayaran
           </h2>
           <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm">
               {details && details.payments !== null
                 ? transformText(details.payments.payment_type)
                 : "Belum memilih pembayaran"}
             </p>
             {details && details.payments !== null && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm">
                 {details && details.payments.payment_status === "settlement"
                   ? "Terbayar"
                   : details && details.payments.payment_status === "pending"
@@ -503,33 +504,37 @@ const CheckoutDetail = ({
           </div>
         </div>
         <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base text-slate-600 border border-slate-200">
+          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
             <MdPaid /> Total Pembayaran
           </h2>
           <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm text-gray-500">Sub Total</p>
-            <p className="text-sm text-gray-500">
-              {details && details.ftotal_point}
-            </p>
+            <p className="text-sm">Sub Total</p>
+            <p className="text-sm">{details && details.ftotal_point}</p>
           </div>
           <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm text-gray-500">Diskon</p>
-            <p className="text-sm text-gray-500">Rp 0</p>
+            <p className="text-sm">Diskon</p>
+            <p className="text-sm">Rp 0</p>
           </div>
           <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm text-gray-500">Pengiriman</p>
-            <p className="text-sm text-gray-500">
-              {details && details.fshipping_fee}
-            </p>
+            <p className="text-sm">Pengiriman</p>
+            <p className="text-sm">{details && details.fshipping_fee}</p>
           </div>
-          <div className="w-full flex justify-between items-center py-1 px-3 border-t border-slate-100">
-            <p className="text-base font-semibold text-gray-500">Semua Total</p>
-            <p className="text-base font-semibold text-gray-500">
+          <div className="w-full flex justify-between items-center py-1 px-3 border-t ">
+            <p className="text-base font-semibold">Semua Total</p>
+            <p className="text-base font-semibold">
               {details && details.ftotal_amount}
             </p>
           </div>
         </div>
-      </div>
+      </ScrollArea>
+      {details && details.redeem_status !== "success" ? (
+        <div className="mt-3">
+          <ReceiveButton
+            checkoutId={details && details.id}
+            noResi={details && details.shippings.shipping_resi}
+          />
+        </div>
+      ) : null}
     </ModalContent>
   );
 };

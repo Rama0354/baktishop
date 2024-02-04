@@ -2,14 +2,15 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
-import { RootState } from "../lib/redux/store";
+import { RootState } from "../../lib/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { getCart } from "@/lib/redux/slice/cartSlice";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
-import DeleteBtnCart from "./cart/DeleteBtnCart";
+import DeleteBtnCart from "./DeleteBtnCart";
+import { Badge } from "../ui/badge";
 
 export default function CartButton() {
   const [cartBtn, setCartBtn] = useState(false);
@@ -31,17 +32,17 @@ export default function CartButton() {
       <Link
         href={"/cart"}
         aria-label="keranjang belanja"
-        className="block p-2 group-hover:bg-primary-light transition duration-300 ease-in-out rounded-full"
+        className="block p-2 transition duration-300 ease-in-out rounded-full"
       >
-        <AiOutlineShoppingCart className="text-white stroke-2 w-6 h-6" />
-        <span
+        <AiOutlineShoppingCart className="text-white stroke-2 w-[1.5rem] h-[1.5rem]" />
+        <Badge
+          variant={"destructive"}
           className={`${
             cartItems.length === 0 ? "hidden" : ""
-          } absolute top-0 right-0 flex shrink-0 justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full text-primary-dark bg-white`}
+          } absolute top-0 right-0 rounded-full`}
         >
-          {/* {totalAmount(cartItems)} */}
           {totalCartQty}
-        </span>
+        </Badge>
       </Link>
       <div className="absolute right-0 top-9 sm:group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
         <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">

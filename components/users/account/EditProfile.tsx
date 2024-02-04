@@ -7,6 +7,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ModalContent from "@/components/ModalContent";
 import { editProfile } from "@/lib/utils/action/profileAction";
 import toast from "react-hot-toast";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function EditProfile({
   onClose,
@@ -15,41 +25,89 @@ export default function EditProfile({
   onClose: () => void;
   data: Profile;
 }) {
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
-    setValue,
-  } = useForm<FormEditProfile>({
+  const form = useForm<FormEditProfile>({
     resolver: zodResolver(FormEditProfile),
   });
+  const isLoading = form.formState.isLoading;
 
   useEffect(() => {
     if (data !== null) {
-      setValue("id", data.id);
-      setValue("name", data.name);
-      setValue("phone_number", data.phone_number);
-      setValue("birthdate", data.birthdate);
+      form.setValue("id", data.id);
+      form.setValue("name", data.name);
+      form.setValue("phone_number", data.phone_number);
+      form.setValue("birthdate", data.birthdate);
     }
-  }, [data, setValue]);
+  }, [data, form]);
 
   const onSubmit = async (data: FormEditProfile) => {
-    if (isSubmitSuccessful) {
-      await editProfile(data)
-        .then(() => {
-          toast.success("Berhasil Diubah");
-          onClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.error("Ada Masalah");
-        });
-    }
+    await editProfile(data)
+      .then(() => {
+        toast.success("Berhasil Diubah");
+        onClose();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Ada Masalah");
+      });
   };
   return (
     <ModalContent closeModal={onClose} title="Ubah Profile">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nama</FormLabel>
+                <FormControl>
+                  <Input disabled={isLoading} placeholder="Budi" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>No. Telp</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isLoading}
+                    placeholder="0813 1231 23123"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="birthdate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tgl. Lahir</FormLabel>
+                <FormControl>
+                  <Input disabled={isLoading} type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            size={"lg"}
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Proses" : "Simpan"}
+          </Button>
+        </form>
+      </Form>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <input type="text" className="hidden" {...register("id")} />
         {errors.id && (
           <p className="text-xs italic text-red-500 mt-2">
@@ -131,7 +189,7 @@ export default function EditProfile({
           </button>
         </div>
         <DevTool control={control} />
-      </form>
+      </form> */}
     </ModalContent>
   );
 }

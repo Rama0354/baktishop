@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { Button } from "../ui/button";
 
 export default function CheckoutCountDetails({
   cartData,
@@ -72,24 +73,27 @@ export default function CheckoutCountDetails({
 
   const handlePay = (snap: string) => {
     window.snap.pay(snap, {
-      // onSuccess: function (result: any) {
-      //   /* You may add your own implementation here */
-      //   alert("payment success!");
-      //   console.log(result);
-      // },
-      // onPending: function (result: any) {
-      //   /* You may add your own implementation here */
-      //   alert("wating your payment!");
-      //   console.log(result);
-      // },
-      // onError: function (result: any) {
-      //   /* You may add your own implementation here */
-      //   alert("payment failed!");
-      //   console.log(result);
-      // },
+      onSuccess: function (result: any) {
+        /* You may add your own implementation here */
+        router.push("/success-payment");
+        console.log(result);
+      },
+      onPending: function (result: any) {
+        /* You may add your own implementation here */
+        toast.loading("Pembayaran anda sedang kami proses mohon bersabar!");
+        router.push("/users");
+        console.log(result);
+      },
+      onError: function (result: any) {
+        /* You may add your own implementation here */
+        toast.error(
+          "Pembayaran anda Gagal!,\n pastikan anda melakukan langkah- langkah pembayaran dengan benar!"
+        );
+        console.log(result);
+      },
       onClose: function () {
         /* You may add your own implementation here */
-        alert(
+        toast.success(
           "Pesananmu Berhasil dibuat anda dapat membayarnya nanti pada halaman detail Transaksi"
         );
         router.push("/users");
@@ -97,33 +101,33 @@ export default function CheckoutCountDetails({
     });
   };
   return (
-    <>
-      <div className="flex justify-between items-center text-slate-700">
-        <p className="font-medium text-sm">Subtotal</p>
+    <div className="text-sm">
+      <div className="flex justify-between items-center ">
+        <p className="font-medium">Subtotal</p>
         <p>{rupiahCurrency(subTotal)}</p>
       </div>
-      <div className="flex justify-between items-center text-slate-700">
-        <p className="font-medium text-sm">Jumlah</p>
+      <div className="flex justify-between items-center ">
+        <p className="font-medium">Jumlah</p>
         <p>{qtyTotal}</p>
       </div>
-      <div className="flex justify-between items-center text-slate-700">
-        <p className="font-medium text-sm">Berat</p>
+      <div className="flex justify-between items-center ">
+        <p className="font-medium">Berat</p>
         <p>
           {singleCartData && singleCartData.length ? weightTotal : weight} Gram
         </p>
       </div>
-      <div className="flex justify-between items-center text-slate-700">
-        <p className="font-medium text-sm">Pengiriman</p>
+      <div className="flex justify-between items-center ">
+        <p className="font-medium">Pengiriman</p>
         <p>{rupiahCurrency(ongkir)}</p>
       </div>
-      <div className="flex my-3 justify-between items-center text-slate-700 border-t-2 border-slate-500">
+      <div className="flex my-3 justify-between items-center  border-t-2 border-slate-500">
         <p className="font-semibold text-base">Harga Total</p>
         <p className="font-semibold text-base">
           {rupiahCurrency(subTotal + ongkir)}
         </p>
       </div>
       <div className="flex gap-3">
-        <button
+        <Button
           disabled={isPending || ongkir === 0}
           onClick={() => {
             startTransition(async () => {
@@ -131,25 +135,26 @@ export default function CheckoutCountDetails({
                 toast.error("Maaf, Akun anda belum terverifikasi!");
               } else {
                 await createCheckout(checkotData)
-                  .then((res: any) => {
+                  .then((res) => {
                     dispatch(getCart() as any);
-                    if (res !== undefined) {
+                    if (res.status === 200) {
+                      toast.success(res.message);
                       handlePay(res.data.snap_token);
                     } else {
-                      toast.error("ada masalah");
+                      toast.error(res.error.error);
                     }
                   })
                   .catch((error) => {
-                    toast.error(error.response.message);
+                    toast.error("ada masalah");
                   });
               }
             });
           }}
-          className="w-full py-1 px-3 font-semibold bg-primary-dark disabled:bg-slate-500 disabled:pointer-events-none text-white border-2 border-primary-dark hover:bg-secondary-dark hover:border-secondary-dark rounded-md"
+          className="w-full"
         >
           {isPending ? "Proses.." : "Pesan Sekarang"}
-        </button>
+        </Button>
       </div>
-    </>
+    </div>
   );
 }

@@ -22,15 +22,13 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
   }, [cartItems, router, singleCartData]);
   return (
     <div className="py-1">
-      <h2 className="py-1 px-3 text-primary-dark text-sm font-medium">
-        Semua Produk
-      </h2>
+      <h2 className="py-1 px-3 text-sm font-medium">Semua Produk</h2>
       <ul className="flex flex-col gap-2">
         {singleCartData.length !== 0 ? (
           singleCartData.map((product, idx: number) => (
             <li
               key={idx}
-              className="flex gap-1 border-primary-light text-primary-dark border rounded-md overflow-hidden py-1 px-3 shadow-md"
+              className="flex gap-1 dark:bg-secondary border rounded-md overflow-hidden py-2 px-3 shadow-md"
             >
               <div className="shrink-0 max-h-20 w-20">
                 <Image
@@ -80,7 +78,7 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
           cartItems.map((product: any, idx: number) => (
             <li
               key={idx}
-              className="flex gap-1 border-primary-light text-primary-dark border rounded-md overflow-hidden py-1 px-3 shadow-md"
+              className="flex gap-1 dark:bg-secondary border rounded-md overflow-hidden p-3 shadow-md"
             >
               <div className="shrink-0 max-h-20 w-20">
                 <Image
@@ -89,7 +87,8 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
                     product.variants !== null &&
                     product.variants.variant_image !== null
                       ? product.variants.variant_image.image_url
-                      : product.item_gifts.item_gift_images[0]
+                      : product.item_gifts.item_gift_images.length &&
+                        product.item_gifts.item_gift_images[0]
                           .item_gift_image_url &&
                         product.item_gifts.item_gift_images[0]
                           .item_gift_image_url !== ""

@@ -19,6 +19,31 @@ import {
 } from "@/lib/types/address";
 import toast from "react-hot-toast";
 import ModalContent from "@/components/ModalContent";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function EditAddressForm({
   onClose,
@@ -33,46 +58,39 @@ export default function EditAddressForm({
   const [provinceSelected, setProvinceSelected] = useState<number>(0);
   const [citySelected, setCitySelected] = useState<number>(0);
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
-    setValue,
-    watch,
-    reset,
-  } = useForm<FormEditAddress>({
+  const form = useForm<FormEditAddress>({
     resolver: zodResolver(FormEditAddressSchema),
   });
+  const isLoading = form.formState.isLoading;
 
   useEffect(() => {
     if (data !== null) {
-      setValue("id", data.id);
-      setValue("person_name", data.person_name);
-      setValue("person_phone", data.person_phone);
+      form.setValue("id", data.id);
+      form.setValue("person_name", data.person_name);
+      form.setValue("person_phone", data.person_phone);
       if (provinceSelected !== 0) {
-        setValue("province_id", provinceSelected);
+        form.setValue("province_id", provinceSelected);
       } else {
-        setValue("province_id", data.province.id);
+        form.setValue("province_id", data.province.id);
       }
-      setValue("postal_code", data.postal_code);
-      setValue("address", data.address);
+      form.setValue("postal_code", data.postal_code);
+      form.setValue("address", data.address);
       if (cities.length !== 0 && provinceSelected === 0 && citySelected === 0) {
-        setValue("city_id", data.city.id);
+        form.setValue("city_id", data.city.id);
       } else {
-        setValue("city_id", citySelected);
+        form.setValue("city_id", citySelected);
       }
       if (
         subdistricts.length !== 0 &&
         provinceSelected === 0 &&
         citySelected === 0
       ) {
-        setValue("subdistrict_id", data.subdistrict.id);
+        form.setValue("subdistrict_id", data.subdistrict.id);
       } else {
-        setValue("subdistrict_id", 0);
+        form.setValue("subdistrict_id", 0);
       }
     }
-  }, [cities, subdistricts, provinceSelected, citySelected, data, setValue]);
+  }, [cities, subdistricts, provinceSelected, citySelected, data, form]);
 
   useEffect(() => {
     getAllProvince()
@@ -131,22 +149,316 @@ export default function EditAddressForm({
     }
   }, [data, citySelected]);
   const onSubmit = async (data: FormEditAddress) => {
-    if (isSubmitSuccessful) {
-      await editAddress(data)
-        .then(() => {
-          toast.success("Berhasil Diubah");
-          onClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.error("Ada Masalah");
-        });
-    }
+    await editAddress(data)
+      .then(() => {
+        toast.success("Berhasil Diubah");
+        onClose();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Ada Masalah");
+      });
   };
 
   return (
     <ModalContent closeModal={onClose} title="Edit Alamat">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <FormField
+              control={form.control}
+              name="person_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama</FormLabel>
+                  <FormControl>
+                    <Input disabled={isLoading} placeholder="Budi" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="person_phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>No. Telp</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="0813123123123"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="province_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Provinsi</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? provinces.find(
+                                (province) =>
+                                  province.province_id === field.value
+                              )?.province_name
+                            : "Pilih Provinsi"}
+                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent side="bottom" className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Cari Provinsi..."
+                          className="h-9"
+                        />
+                        <CommandEmpty>Provinsi tidak ada.</CommandEmpty>
+                        <CommandGroup>
+                          {provinces.length !== 0 ? (
+                            <ScrollArea className="h-48">
+                              {provinces.map((province) => (
+                                <CommandItem
+                                  value={province.province_id as any}
+                                  key={province.province_id}
+                                  onSelect={() => {
+                                    form.setValue(
+                                      "province_id",
+                                      province.province_id
+                                    );
+                                    setProvinceSelected(
+                                      parseInt(province.province_id as any)
+                                    );
+                                    form.setValue("city_id", 0);
+                                    form.setValue("subdistrict_id", 0);
+                                  }}
+                                >
+                                  {province.province_name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      province.province_id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </ScrollArea>
+                          ) : (
+                            <CommandItem> Loading...</CommandItem>
+                          )}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kota/Kabupaten</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? cities.find(
+                                (city) => city.city_id === field.value
+                              )?.city_name
+                            : "Pilih Kota"}
+                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent side="bottom" className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Cari Kota..."
+                          className="h-9"
+                        />
+                        <CommandEmpty>Tidak ada Kota/Kab.</CommandEmpty>
+                        <CommandGroup>
+                          {cities.length !== 0 ? (
+                            <ScrollArea className="h-48">
+                              {cities.map((city) => (
+                                <CommandItem
+                                  value={city.city_id as any}
+                                  key={city.city_id}
+                                  onSelect={() => {
+                                    form.setValue("city_id", city.city_id);
+                                    setCitySelected(
+                                      parseInt(city.city_id as any)
+                                    );
+                                    form.setValue("subdistrict_id", 0);
+                                  }}
+                                >
+                                  {city.city_name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      city.city_id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </ScrollArea>
+                          ) : (
+                            <CommandItem> Loading...</CommandItem>
+                          )}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="subdistrict_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kecamatan</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? subdistricts.find(
+                                (subdistrict) =>
+                                  subdistrict.subdistrict_id === field.value
+                              )?.subdistrict_name
+                            : "Pilih Kecamatan"}
+                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opasubdistrict-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent side="bottom" className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Cari Kecamatan..."
+                          className="h-9"
+                        />
+                        <CommandEmpty>Tidak ada Kecamatan.</CommandEmpty>
+                        <CommandGroup>
+                          {subdistricts.length !== 0 ? (
+                            <ScrollArea className="h-48">
+                              {subdistricts.map((subdistrict) => (
+                                <CommandItem
+                                  value={subdistrict.subdistrict_id as any}
+                                  key={subdistrict.subdistrict_id}
+                                  onSelect={() => {
+                                    form.setValue(
+                                      "subdistrict_id",
+                                      subdistrict.subdistrict_id
+                                    );
+                                  }}
+                                >
+                                  {subdistrict.subdistrict_name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      subdistrict.subdistrict_id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </ScrollArea>
+                          ) : (
+                            <CommandItem> Loading...</CommandItem>
+                          )}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postal_code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kode Pos</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="60000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alamat Lengkap</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full"
+                    disabled={isLoading}
+                    placeholder="Jl. Raya harapan No. 0, RT 00 RW 00"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            size={"lg"}
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Proses" : "Simpan"}
+          </Button>
+        </form>
+      </Form>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <input
             type="text"
@@ -341,7 +653,7 @@ export default function EditAddressForm({
           </button>
         </div>
       </form>
-      <DevTool control={control} />
+      <DevTool control={control} /> */}
     </ModalContent>
   );
 }

@@ -25,12 +25,12 @@ export default async function SearchPage({
   const filters = sort !== "" ? "&" + sort : "";
   const items = await getGiftCards(filters);
   return (
-    <div className="container px-3 md:px-9 min-h-screen bg-white">
-      <div id="maincontent" className="w-full flex gap-6 text-slate-700 mb-12">
+    <div className="container px-3 md:px-9 min-h-screen">
+      <div id="maincontent" className="w-full flex gap-6">
         {/* <Sidebar /> */}
         <div className="w-full">
           {/* main content */}
-          <div className="w-full sticky top-16 lg:top-18 z-30 flex items-center justify-between p-3 border-b-2 bg-white border-slate-200">
+          <div className="w-full sticky top-16 lg:top-18 z-30 flex items-center justify-between p-3 border-b-2 border-primary bg-secondary">
             <div className="w-full">
               <p className="font-semibold text-base">Product List</p>
             </div>
@@ -38,27 +38,25 @@ export default async function SearchPage({
               <SelectSort />
             </div>
           </div>
-          <div className="w-full pb-12">
-            <section className="w-full flex py-2 justify-center">
-              {items && items.data.length !== 0 ? (
-                <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
-                  {items.data.map((item, idx: number) => (
-                    <GiftCard gift={item} key={idx} />
-                  ))}
-                </div>
-              ) : (
-                <div className="w-full h-full flex justify-center items-center">
-                  <Image
-                    src={"/assets/img/not-found-product.jpg"}
-                    width={200}
-                    height={200}
-                    className="sm:w-64"
-                    alt="product-not-found"
-                  />
-                </div>
-              )}
-            </section>
-          </div>
+          <section className="bg-secondary/25 w-full flex justify-center pt-3 px-6 pb-12">
+            {items && items.data.length !== 0 ? (
+              <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
+                {items.data.map((item, idx: number) => (
+                  <GiftCard gift={item} key={idx} />
+                ))}
+              </div>
+            ) : (
+              <div className="w-full h-full flex justify-center items-center">
+                <Image
+                  src={"/assets/img/not-found-product.jpg"}
+                  width={200}
+                  height={200}
+                  className="sm:w-64"
+                  alt="product-not-found"
+                />
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>

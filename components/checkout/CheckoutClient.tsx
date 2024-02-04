@@ -24,6 +24,7 @@ import { CheckoutGifts } from "@/lib/types/checkout";
 import { debounce } from "lodash";
 import Image from "next/image";
 import { RootState } from "@/lib/redux/store";
+import { Textarea } from "../ui/textarea";
 
 type Expeditions = {
   id: number;
@@ -207,14 +208,12 @@ export default function CheckoutClient({
         >
           Catatan
         </label>
-        <textarea
+        <Textarea
           id="note"
-          rows={4}
           name="note"
+          placeholder="Catatan untuk penjual...(Opsional)."
           onChange={handleDetailsNote}
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Catatan untuk penjual...(Opsional)"
-        ></textarea>
+        />
 
         {/* <div className="py-2 px-3">
           <h2 className="font-semibold text-base text-primary-dark">Catatan</h2>
@@ -247,13 +246,9 @@ export default function CheckoutClient({
                         key={idx}
                         value={address}
                         className={({ active, checked }) =>
-                          ` ${
-                            active
-                              ? "ring-2 ring-white/60 ring-offset-2 ring-offset-primary-light"
-                              : ""
-                          }
-                  ${checked ? "bg-primary-dark text-white" : "bg-white"}
-                    relative w-full max-w-sm shrink-0 h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border border-primary-light`
+                          ` 
+                  ${checked ? "bg-primary text-white" : ""}
+                    relative w-full max-w-sm shrink-0 h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border`
                         }
                       >
                         {({ active, checked }) => (
@@ -263,8 +258,8 @@ export default function CheckoutClient({
                                 <div className="text-sm">
                                   <RadioGroup.Label
                                     as="p"
-                                    className={`font-medium uppercase  ${
-                                      checked ? "text-white" : "text-gray-900"
+                                    className={`uppercase  ${
+                                      checked ? "font-bold" : ""
                                     }`}
                                   >
                                     <span className="capitalize">
@@ -408,17 +403,13 @@ export default function CheckoutClient({
                         key={idx}
                         value={exp}
                         className={({ active, checked }) =>
-                          ` ${
-                            active
-                              ? "ring-2 ring-white/60 ring-offset-2 ring-offset-primary-light"
-                              : ""
-                          }
+                          `
                   ${
                     checked
-                      ? "border-primary-dark"
-                      : "bg-white border-transparent "
+                      ? "border-primary text-primary dark:bg-primary dark:text-white"
+                      : ""
                   }
-                    relative w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border k`
+                    relative w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md font-bold focus:outline-none border`
                         }
                       >
                         {({ active, checked }) => (
@@ -558,13 +549,13 @@ export default function CheckoutClient({
                         key={idx}
                         value={courier}
                         className={({ active, checked }) =>
-                          ` mt-2 ${
-                            active
-                              ? "ring-2 ring-white/60 ring-offset-2 ring-offset-primary-light"
-                              : ""
-                          }
-                  ${checked ? "bg-primary-dark text-white" : "bg-white"}
-                    relative shrink-0 w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border border-primary-light`
+                          `
+                  ${
+                    checked
+                      ? "border-primary text-primary dark:bg-primary dark:text-white"
+                      : ""
+                  }
+                    relative shrink-0 w-max h-auto flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none border`
                         }
                       >
                         {({ active, checked }) => (
@@ -574,8 +565,8 @@ export default function CheckoutClient({
                                 <div className="text-sm">
                                   <RadioGroup.Label
                                     as="p"
-                                    className={`font-medium uppercase  ${
-                                      checked ? "text-white" : "text-gray-900"
+                                    className={`uppercase  ${
+                                      checked ? "font-bold" : ""
                                     }`}
                                   >
                                     {couriers.length !== 0 && couriers[0].code}{" "}
@@ -586,9 +577,7 @@ export default function CheckoutClient({
                                   </RadioGroup.Label>
                                   <RadioGroup.Description
                                     as="span"
-                                    className={`inline ${
-                                      checked ? "text-sky-100" : "text-gray-500"
-                                    }`}
+                                    className={`inline `}
                                   >
                                     <span>
                                       {courier.cost.map((cost) =>

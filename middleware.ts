@@ -1,6 +1,6 @@
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { redirect } from "next/navigation";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(request: NextRequest) {
@@ -15,8 +15,13 @@ export default withAuth(
         if (req.nextUrl.pathname === "/dashboard") {
           return token?.roles[0] === "admin";
         }
-        if (req.nextUrl.pathname === "/users" || req.nextUrl.pathname === "/users/(.*)" || req.nextUrl.pathname === "/message" || req.nextUrl.pathname === "/cart") {
-          return token?.email !== null
+        if (
+          req.nextUrl.pathname === "/users" ||
+          req.nextUrl.pathname === "/users/(.*)" ||
+          req.nextUrl.pathname === "/message" ||
+          req.nextUrl.pathname === "/cart"
+        ) {
+          return token?.email !== null;
         }
         // `/account` only requires the user to be logged in
         // return !!token;
@@ -27,5 +32,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/users","/users/(.*)", "/message", "/cart",'/dashboard'],
+  matcher: ["/users", "/users/(.*)", "/message", "/cart", "/dashboard"],
 };

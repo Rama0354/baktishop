@@ -37,16 +37,16 @@ export default async function CartPage() {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
   return (
-    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col bg-white border border-slate-300 rounded-md shadow-md">
-      <div className="w-full flex items-center gap-3 border-b-2 border-slate-300 py-1 px-6 md:py-2">
-        <MdOutlineShoppingCart className="text-slate-700 w-6 h-6" />
-        <h1 className="py-2 font-semibold text-xl text-slate-700">Keranjang</h1>
+    <section className="container px-3 mt-3 mb-12 min-h-screen flex flex-col border border-border rounded-md shadow-md">
+      <div className="w-full flex items-center gap-3 border-b-2 border-border py-1 px-6 md:py-2">
+        <MdOutlineShoppingCart className=" w-6 h-6" />
+        <h1 className="py-2 font-semibold text-xl ">Keranjang</h1>
       </div>
       {/* <CartContainer cartItems={cartData && cartData.data} /> */}
       <div className="w-full py-3 px-0 sm:px-6 flex flex-col lg:flex-row gap-12 sm:gap-3">
         <div className="w-full lg:w-2/3">
-          <table className="w-full min-w-min overflow-x-auto text-sm text-left text-gray-500 border border-slate-200">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+          <table className="w-full min-w-min overflow-x-auto text-sm text-left border border-border">
+            <thead className="text-xs uppercase bg-secondary">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Produk
@@ -56,8 +56,11 @@ export default async function CartPage() {
             <tbody>
               {cartItems && cartItems.length > 0 ? (
                 cartItems.map((product, idx: number) => (
-                  <tr key={idx} className="bg-white border-b ">
-                    <td className="h-full flex items-start sm:items-center justify-between gap-1 sm:gap-3 px-1 sm:px-6 py-3 text-slate-700">
+                  <tr
+                    key={idx}
+                    className=" border-b dark:hover:bg-secondary/25"
+                  >
+                    <td className="h-full flex items-start sm:items-center justify-between gap-1 sm:gap-6 px-1 sm:px-3 py-3">
                       <div className="shrink-0 max-h-20 w-12 sm:w-20">
                         <Image
                           src={
@@ -81,11 +84,16 @@ export default async function CartPage() {
                       </div>
                       <div className="w-full flex flex-col gap-3 md:flex-row justify-between">
                         <div className="w-full">
-                          <h2 className="text-sm sm:text-lg font-medium">
-                            {product && product.item_gifts.item_gift_name}
-                          </h2>
+                          <Link
+                            href={`/${product.item_gifts.item_gift_slug}`}
+                            className="hover:text-primary dark:hover:text-white hover:font-bold object-contain"
+                          >
+                            <h2 className="text-sm sm:text-lg">
+                              {product && product.item_gifts.item_gift_name}
+                            </h2>
+                          </Link>
                           {product && product.variants !== null ? (
-                            <p className="text-xs font-medium py-1 px-2 w-max bg-slate-100 rounded-md">
+                            <p className="text-xs font-medium py-1 px-2 w-max rounded-md">
                               {product.variants.variant_name}
                             </p>
                           ) : null}
@@ -97,14 +105,10 @@ export default async function CartPage() {
                               : "Rp 0"}
                           </p>
                         </div>
-                        <div className="flex items-center">
-                          counter
-                          <CountCart
-                            scale={75}
-                            count={product.cart_quantity}
-                            cartId={product.id}
-                          />
-                        </div>
+                        <CountCart
+                          count={product.cart_quantity}
+                          cartId={product.id}
+                        />
                       </div>
                       <div className="flex items-start">
                         <DeleteBtnCart cartid={product.id} />
@@ -113,10 +117,10 @@ export default async function CartPage() {
                   </tr>
                 ))
               ) : (
-                <tr className="bg-white border-b ">
+                <tr className="border-b ">
                   <td
                     scope="row"
-                    className="flex items-center justify-center gap-3 px-6 py-3 text-slate-700"
+                    className="flex items-center justify-center gap-3 px-6 py-3"
                   >
                     <p className=" italic">Tidak ada Barang yang dipesan</p>
                   </td>
@@ -125,25 +129,27 @@ export default async function CartPage() {
             </tbody>
           </table>
         </div>
-        <div className="w-full lg:w-1/3 flex flex-col gap-1">
-          <div className="flex justify-between items-center text-slate-700">
-            <p className="font-medium text-sm">Total Sementara</p>
-            <p>{rupiahCurrency(subTotal)}</p>
+        <div className="w-full lg:w-1/3 flex flex-col gap-3">
+          <div className="bg-secondary/25 rounded-md p-3">
+            <div className="flex justify-between items-center">
+              <p className="font-medium text-sm">Total Sementara</p>
+              <p>{rupiahCurrency(subTotal)}</p>
+            </div>
+            <div className="flex justify-between items-center ">
+              <p className="font-medium text-sm">Jumlah</p>
+              <p>{qtyTotal}</p>
+            </div>
+            <div className="flex my-3 justify-between items-center  border-t-2 border-border">
+              <p className="font-semibold text-base">Harga Total</p>
+              <p className="font-semibold text-base">
+                {rupiahCurrency(subTotal)}
+              </p>
+            </div>
           </div>
-          <div className="flex justify-between items-center text-slate-700">
-            <p className="font-medium text-sm">Jumlah</p>
-            <p>{qtyTotal}</p>
-          </div>
-          <div className="flex my-3 justify-between items-center text-slate-700 border-t-2 border-slate-500">
-            <p className="font-semibold text-base">Harga Total</p>
-            <p className="font-semibold text-base">
-              {rupiahCurrency(subTotal)}
-            </p>
-          </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 justify-between">
             <Link
               href={"/"}
-              className="w-full py-1 px-3 font-semibold bg-white text-center text-primary-dark border-2 border-primary-dark rounded-md"
+              className="py-1 px-3 font-semibold text-center text-primary dark:text-white border-2 border-primary dark:border-white rounded-md"
             >
               Lanjut Belanja
             </Link>

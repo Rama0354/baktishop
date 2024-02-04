@@ -41,7 +41,7 @@ export default function ModalContent({
             opacity: 0,
             transition: { duration: 0.3, ease: [0.36, 0.66, 0.04, 1] },
           }}
-          className="fixed inset-0 bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 bg-background/25 backdrop-blur-md"
         />
         <motion.div
           initial={{ y: "100%" }}
@@ -53,13 +53,11 @@ export default function ModalContent({
             y: "100%",
             transition: { duration: 0.3, ease: [0.36, 0.66, 0.04, 1] },
           }}
-          className="flex justify-center items-center h-full"
+          className="flex justify-center mt-3"
         >
-          <Dialog.Panel className="w-full max-w-lg rounded-lg bg-white text-left shadow-xl p-3">
-            <div className="w-full flex justify-between items-center border-b border-slate-200 mb-1 py-2 px-3">
-              <h3 className="text-xl font-medium leading-6 text-gray-800">
-                {title}
-              </h3>
+          <Dialog.Panel className="w-full max-w-lg rounded-lg bg-background text-left shadow-xl p-3">
+            <div className="w-full flex justify-between border-b border-border mb-1 py-2 px-3">
+              <h3 className="text-xl font-medium leading-6">{title}</h3>
               <button
                 type="button"
                 onClick={() => {

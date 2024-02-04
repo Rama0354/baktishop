@@ -1,5 +1,4 @@
 "use client";
-import { FormResetPass } from "@/lib/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { ResetPasswordActions } from "@/lib/utils/action/AuthActions";
 import toast from "react-hot-toast";
+import { FormResetPass } from "@/lib/types/auth";
 
 export default function ResetPasswordPage() {
   const searchparams = useSearchParams();
@@ -83,23 +83,6 @@ export default function ResetPasswordPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="example@mail.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="password"

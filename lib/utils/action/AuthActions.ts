@@ -1,7 +1,11 @@
 "use server";
 
 import { z } from "zod";
-import { FormForgotPass, RegisterActionSchema } from "@/lib/types/auth";
+import {
+  FormForgotPass,
+  FormResetPass,
+  RegisterActionSchema,
+} from "@/lib/types/auth";
 import axios, { axiosAuthServer } from "@/lib/axios";
 
 export async function LogoutAction() {
@@ -44,7 +48,7 @@ export async function ForgotPasswordActions(data: FormForgotPass) {
   }
 }
 
-export async function ResetPasswordActions(data: FormForgotPass) {
+export async function ResetPasswordActions(data: FormResetPass) {
   try {
     const res = await axios.post(`/reset/password`, data);
     return res.data;
@@ -54,10 +58,10 @@ export async function ResetPasswordActions(data: FormForgotPass) {
   }
 }
 
-export async function VerifedStatus(id: number) {
+export async function VerifedStatus(id: string) {
   try {
-    const res = await axiosAuthServer.get(`/user/${id}`);
-    return res.data.email_status;
+    const res = await axiosAuthServer.get(`/users/${id}`);
+    return res.data.data.email_status;
   } catch (error: any) {
     console.log(error);
   }

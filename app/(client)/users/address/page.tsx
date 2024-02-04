@@ -18,7 +18,7 @@ export default async function AddressPage({
       : [];
   return (
     <section className="w-full h-screen">
-      <div className="w-full flex items-center justify-between gap-3 py-3 px-1 sm:px-6 mb-3 border-b-2 bg-accent">
+      <div className="w-full flex items-center justify-between gap-3 py-3 px-1 sm:px-6 mb-3 border-b-2 bg-secondary/50">
         <div className="flex items-center gap-3">
           <AiOutlineEnvironment className={" stroke-2 w-6 h-6"} />
           <h2 className="font-semibold text-lg">Daftar Alamat</h2>

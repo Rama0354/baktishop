@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { MdModeEditOutline } from "react-icons/md";
 import { AddressData, FullAddressData } from "@/lib/types/address";
 import EditAddressForm from "./EditAddress";
+import { Button } from "@/components/ui/button";
 
 export default function EditAddressBtn({ data }: { data: AddressData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,13 +21,9 @@ export default function EditAddressBtn({ data }: { data: AddressData }) {
   };
   return (
     <>
-      <button
-        aria-label="ubah alamat"
-        onClick={() => openModal(data)}
-        className="w-max h-max p-2 flex items-center hover:bg-primary-light cursor-pointer gap-3 text-sm text-primary-dark font-semibold rounded-full"
-      >
+      <Button variant={"ghost"} onClick={() => openModal(data)}>
         <MdModeEditOutline className={"w-6 h-6"} />
-      </button>
+      </Button>
 
       <AnimatePresence>
         {isModalOpen && (

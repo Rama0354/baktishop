@@ -7,34 +7,84 @@ import ModalContent from "../../ModalContent";
 import toast from "react-hot-toast";
 import { FormEditPassword } from "@/lib/types/user";
 import { changePassword } from "@/lib/utils/action/UserActions";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { Button } from "@/components/ui/button";
 
 export default function EditUserPassword({ onClose }: { onClose: () => void }) {
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
-    setValue,
-  } = useForm<FormEditPassword>({
+  const form = useForm<FormEditPassword>({
     resolver: zodResolver(FormEditPassword),
   });
+  const isLoading = form.formState.isLoading;
 
   const onSubmit = async (data: FormEditPassword) => {
-    if (isSubmitSuccessful) {
-      await changePassword(data)
-        .then(() => {
-          toast.success("Berhasil Diubah");
-          onClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.error("Ada Masalah");
-        });
-    }
+    await changePassword(data)
+      .then(() => {
+        toast.success("Berhasil Diubah");
+        onClose();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Ada Masalah");
+      });
   };
   return (
     <ModalContent closeModal={onClose} title="Ubah Password">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password Baru</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    disabled={isLoading}
+                    placeholder="Budi"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password Baru</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    disabled={isLoading}
+                    placeholder="Budi"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            size={"lg"}
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Proses" : "Simpan"}
+          </Button>
+        </form>
+      </Form>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative z-0 w-full mb-6 group">
           <label
             htmlFor="password"
@@ -87,7 +137,7 @@ export default function EditUserPassword({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <DevTool control={control} />
-      </form>
+      </form> */}
     </ModalContent>
   );
 }

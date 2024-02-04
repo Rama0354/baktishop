@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import axios from "axios";
-import TransactionClient from "@/components/users/TransactionClient";
+import TransactionClient from "@/components/users/transactions/TransactionClient";
 import { axiosAuthServer } from "@/lib/axios";
 
 async function getRedeem({ page }: { page: number }) {

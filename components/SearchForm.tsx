@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function SearchForm() {
   const dispatch = useDispatch();
@@ -37,18 +38,18 @@ export default function SearchForm() {
         name="searchtext"
         value={inputValue}
         onChange={handleInputChange}
-        className="w-full py-2 pl-6 pr-12 border-1 border-white text-slate-800 text-base tracking-wide outline-primary-dark rounded-full"
+        className="w-full py-2 pl-6 pr-12 bg-background dark:bg-secondary border-1 text-base tracking-wide outline-white rounded-full"
         placeholder="Cari..."
       />
-      <button
+      <Button
         type="submit"
         aria-label="search button"
         id="searchbutton"
         name="searchbutton"
-        className="absolute top-1 right-1 p-2 bg-primary-dark hover:bg-secondary-dark transition duration-300 ease-in-out rounded-full object-contain"
+        className="absolute top-1 right-1 py-1 px-2 bg-primary hover:bg-secondary transition duration-300 ease-in-out rounded-full w-8 h-8"
       >
-        <AiOutlineSearch className="text-white stroke-2" />
-      </button>
+        <AiOutlineSearch className="stroke-2 font-bold" />
+      </Button>
     </form>
   );
 }

@@ -18,10 +18,10 @@ export default function AuthenticationButton({ type }: { type: string }) {
     <Button
       variant={"ghost"}
       size={"sm"}
-      className="flex gap-1 hover:text-destructive dark:hover:text-white dark:hover:font-bold"
+      className="w-full flex gap-1 hover:text-destructive dark:hover:text-white dark:hover:font-bold"
       onClick={handleLogout}
     >
-      <MdLogout className="w-3 h-3" />
+      <MdLogout />
       <span className="hidden sm:block">Log Out</span>
     </Button>
   ) : (

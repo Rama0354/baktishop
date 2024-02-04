@@ -18,7 +18,7 @@ export default function AccountClient({ userData }: { userData: UserData }) {
 
   return (
     <section className="relative w-full h-screen">
-      <div className="w-full flex items-center gap-3 py-4 px-1 sm:px-6 border-b-2 bg-accent">
+      <div className="w-full flex items-center gap-3 py-4 px-1 sm:px-6 border-b-2 bg-secondary/50">
         <AiOutlineIdcard className={"stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg">Akun</h2>
       </div>

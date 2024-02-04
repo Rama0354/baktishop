@@ -87,7 +87,7 @@ export default function AddressDnD({
         <Droppable droppableId="droppable">
           {(droppableProvided) => (
             <div
-              className="flex flex-col"
+              className="flex flex-col max-w-lg"
               {...droppableProvided.droppableProps}
               ref={droppableProvided.innerRef}
             >
@@ -107,7 +107,7 @@ export default function AddressDnD({
                         ref={draggableProvided.innerRef}
                       >
                         <div
-                          className={`w-full max-w-lg py-2 px-3 flex gap-3 items-center justify-between border bg-white shadow-md rounded-md ${
+                          className={`w-full py-2 px-3 flex gap-3 items-center justify-between bg-secondary border shadow-md rounded-md ${
                             address && address.is_main === 1
                               ? "border-l-4 border-lime-500"
                               : null
@@ -115,8 +115,8 @@ export default function AddressDnD({
                         >
                           <div className="flex flex-col">
                             <div className="flex gap-3 justify-between">
-                              <div className="flex flex-col">
-                                <p className="font-medium text-sm text-slate-500">
+                              <div className="flex flex-col text-sm">
+                                <p>
                                   <span className="font-bold">Penerima : </span>
                                   {`${
                                     address.person_name !== ""
@@ -124,7 +124,7 @@ export default function AddressDnD({
                                       : "Unknown"
                                   } `}
                                 </p>
-                                <p className="font-medium text-sm text-slate-500">
+                                <p>
                                   <span className="font-bold">Nomor : </span>
                                   {`${
                                     address.person_phone !== ""
@@ -132,7 +132,7 @@ export default function AddressDnD({
                                       : "Unknown"
                                   } `}
                                 </p>
-                                <p className="font-medium text-sm text-slate-500">
+                                <p>
                                   <span className="font-bold">Alamat : </span>
                                   {`${
                                     address.address !== ""
@@ -163,7 +163,9 @@ export default function AddressDnD({
                               </div>
                               <div className="w-max flex justify-center items-center gap-3 py-2">
                                 <EditAddressBtn data={address} />
-                                <DeleteAddressBtn id={address.id} />
+                                {address && address.is_main !== 1 ? (
+                                  <DeleteAddressBtn id={address.id} />
+                                ) : null}
                               </div>
                             </div>
                           </div>

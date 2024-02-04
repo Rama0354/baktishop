@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import SigninButton from "../SigninButton";
 import Image from "next/image";
-import CartButton from "../CartButton";
+import CartButton from "../cart/CartButton";
 import NotificationButton from "../NotificationButton";
 import SearchForm from "../SearchForm";
 import ProgressBar from "../Progressbar";
@@ -44,7 +44,7 @@ const AppBar = () => {
                 <CartButton />
               </div>
             </div>
-            <div className="hidden md:flex lg:w-full shrink-0 lg:shrink justify-end gap-3">
+            <div className="hidden md:flex lg:w-full shrink-0 lg:shrink justify-end items-center gap-3">
               <ModeToggle />
               <NotificationButton />
               {/* <MessageButton /> */}

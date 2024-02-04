@@ -13,7 +13,7 @@ export default async function WishlistPage({
   const wishlistData = await getAllWishlist();
   return (
     <section className="w-full h-screen">
-      <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-accent">
+      <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-secondary/50">
         <AiOutlineHeart className={" stroke-2 w-6 h-6"} />
         <h2 className="font-semibold text-lg">Barang Favorit</h2>
       </div>

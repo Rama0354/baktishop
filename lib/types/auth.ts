@@ -59,9 +59,10 @@ export const RegisterActionSchema = RegisterSchema.merge(
 
 export const LoginFom = EmailSchema.merge(PasswordSchema);
 export const FormForgotPass = EmailSchema;
-export const FormResetPass = EmailSchema.extend({
-  token: z.string(),
-})
+export const FormResetPass = z
+  .object({
+    token: z.string(),
+  })
   .merge(ConfirmPassword)
   .refine((data) => data.password === data.password_confirmation, {
     message: "Password tidak sama!",

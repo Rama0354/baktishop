@@ -31,25 +31,18 @@ export const options: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       let dateNow = Date.now();
-      let setDay = 24 * 60 * 60 * 1000;
       if (user) {
         token.user_id = user.data.users.id;
         token.roles = user.data.users.roles;
         token.email = user.data.users.email;
-        token.email_status = user.data.users.email_status;
         token.access_token = user.data.access_token;
         token.refresh_token = user.data.refresh_token;
         token.expires_at = Math.ceil(dateNow + user.data.expires_in * 1000);
       }
-      if (dateNow <= token.expires_at) {
-        return token;
-      }
-      if (dateNow > token.expires_at) {
-        console.log("lakukan refresh token");
-        return await refreshTokenApiCall(token);
-      }
+      return token;
     },
     async session({ session, token }) {
+      let dateNow = Date.now();
       if (token) {
         session.user.id = token.user_id;
         session.user.email = token.email;
@@ -57,7 +50,14 @@ export const options: NextAuthOptions = {
         session.user.roles = token.roles;
         session.accessToken = token.access_token;
       }
-      return session;
+      if (dateNow > token.expires_at) {
+        console.log("lakukan refresh token");
+        return await refreshTokenApiCall(token);
+      }
+      if (dateNow <= token.expires_at) {
+        console.log("token saat ini");
+        return session;
+      }
     },
   },
 };
