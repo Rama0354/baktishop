@@ -58,7 +58,7 @@ export default function Login() {
             toast.success("Berhasil login");
             router.push("/");
           } else {
-            toast.error("Email atau password anda salah");
+            toast.error(res!.error);
           }
         });
       } catch (error) {

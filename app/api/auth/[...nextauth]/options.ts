@@ -18,7 +18,7 @@ export const options: NextAuthOptions = {
       async authorize(credentials) {
         const is_register =
           credentials && credentials.is_register !== null
-            ? credentials.is_register.toString()
+            ? credentials.is_register
             : false;
         try {
           if (is_register === "true") {
