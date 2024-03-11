@@ -50,6 +50,8 @@ export default function Login() {
           password: data.password,
           "g-recaptcha-response": cap,
           grant_type: "password",
+          client_id: process.env.NEXT_PUBLIC_BACKEND_CLIENT_ID,
+          client_secret: process.env.NEXT_PUBLIC_BACKEND_CLIENT_SECRET,
           redirect: false,
           callbackUrl: "/",
         }).then((res) => {
