@@ -62,7 +62,7 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
       city_id: 0,
       subdistrict_id: 0,
       postal_code: "",
-      address: "",
+      street: "",
     },
   });
   const isLoading = form.formState.isLoading;
@@ -184,9 +184,8 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                           >
                             {field.value
                               ? provinces.find(
-                                  (province) =>
-                                    province.province_id === field.value
-                                )?.province_name
+                                  (province) => province.id === field.value
+                                )?.name
                               : "Pilih Provinsi"}
                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -204,25 +203,22 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                               <ScrollArea className="h-48">
                                 {provinces.map((province) => (
                                   <CommandItem
-                                    value={province.province_id as any}
-                                    key={province.province_id}
+                                    value={province.id as any}
+                                    key={province.id}
                                     onSelect={() => {
-                                      form.setValue(
-                                        "province_id",
-                                        province.province_id
-                                      );
+                                      form.setValue("province_id", province.id);
                                       setProvinceSelected(
-                                        parseInt(province.province_id as any)
+                                        parseInt(province.id as any)
                                       );
                                       form.setValue("city_id", 0);
                                       form.setValue("subdistrict_id", 0);
                                     }}
                                   >
-                                    {province.province_name}
+                                    {province.name}
                                     <CheckIcon
                                       className={cn(
                                         "ml-auto h-4 w-4",
-                                        province.province_id === field.value
+                                        province.id === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -259,9 +255,8 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                             )}
                           >
                             {field.value
-                              ? cities.find(
-                                  (city) => city.city_id === field.value
-                                )?.city_name
+                              ? cities.find((city) => city.id === field.value)
+                                  ?.name
                               : "Pilih Kota"}
                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -279,21 +274,19 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                               <ScrollArea className="h-48">
                                 {cities.map((city) => (
                                   <CommandItem
-                                    value={city.city_id as any}
-                                    key={city.city_id}
+                                    value={city.id as any}
+                                    key={city.id}
                                     onSelect={() => {
-                                      form.setValue("city_id", city.city_id);
-                                      setCitySelected(
-                                        parseInt(city.city_id as any)
-                                      );
+                                      form.setValue("city_id", city.id);
+                                      setCitySelected(parseInt(city.id as any));
                                       form.setValue("subdistrict_id", 0);
                                     }}
                                   >
-                                    {city.city_name}
+                                    {city.name}
                                     <CheckIcon
                                       className={cn(
                                         "ml-auto h-4 w-4",
-                                        city.city_id === field.value
+                                        city.id === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -332,8 +325,8 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                             {field.value
                               ? subdistricts.find(
                                   (subdistrict) =>
-                                    subdistrict.subdistrict_id === field.value
-                                )?.subdistrict_name
+                                    subdistrict.id === field.value
+                                )?.name
                               : "Pilih Kecamatan"}
                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opasubdistrict-50" />
                           </Button>
@@ -351,21 +344,20 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
                               <ScrollArea className="h-48">
                                 {subdistricts.map((subdistrict) => (
                                   <CommandItem
-                                    value={subdistrict.subdistrict_id as any}
-                                    key={subdistrict.subdistrict_id}
+                                    value={subdistrict.id as any}
+                                    key={subdistrict.id}
                                     onSelect={() => {
                                       form.setValue(
                                         "subdistrict_id",
-                                        subdistrict.subdistrict_id
+                                        subdistrict.id
                                       );
                                     }}
                                   >
-                                    {subdistrict.subdistrict_name}
+                                    {subdistrict.name}
                                     <CheckIcon
                                       className={cn(
                                         "ml-auto h-4 w-4",
-                                        subdistrict.subdistrict_id ===
-                                          field.value
+                                        subdistrict.id === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -404,7 +396,7 @@ const AddAddressForm = ({ onClose }: { onClose: () => void }) => {
             </div>
             <FormField
               control={form.control}
-              name="address"
+              name="street"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alamat Lengkap</FormLabel>

@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button";
 import { getCart } from "@/lib/redux/slice/cartSlice";
-import { deleteCart } from "@/lib/utils/action/Cartactions";
+import { deleteCart } from "@/lib/utils/action/CartsActions";
 
 export default function DeleteBtnCart({ cartid }: { cartid: string }) {
   const [isPending, startTransition] = useTransition();

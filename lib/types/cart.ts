@@ -1,74 +1,151 @@
-import {z} from 'zod'
+import { z } from "zod";
 
-const CartSchema = z.object({
-    item_gifts: z.object({
-        id: z.number().int().positive(),
-        item_gift_name: z.string(),
-        item_gift_slug: z.string(),
-        item_gift_point: z.number(),
-        fitem_gift_point: z.string(),
-        item_gift_weight: z.number(),
-        fitem_gift_weight: z.string(),
-        item_gift_status: z.string(),
-        item_gift_images: z.array(
-            z.object({
-                item_gift_id: z.number().int().positive(),
-                variant_id: z.number().int().positive().nullable(),
-                item_gift_image_url: z.string(),
-                item_gift_image_thumbnail_url: z.string()
-            }),
-        )
+const productSchema = z.object({
+  products: z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    category: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+        slug: z.string(),
+      })
+      .nullable(),
+    brand: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+        slug: z.string(),
+      })
+      .nullable(),
+    point: z.number(),
+    fpoint: z.string(),
+    weight: z.number(),
+    fweight: z.string(),
+    status: z.string(),
+    product_images: z
+      .array(
+        z.object({
+          product_id: z.number(),
+          variant_id: z.number().int().positive().nullable(),
+          image_url: z.string(),
+          // image_thumbnail_url: z.string(),
+        })
+      )
+      .default([]),
+  }),
+});
+
+const variantSchema = z
+  .object({
+    id: z.number(),
+    name: z.string(),
+    slug: z.string(),
+    quantity: z.number(),
+    point: z.number(),
+    fpoint: z.string(),
+    weight: z.number(),
+    fweight: z.string(),
+    variant_images: z
+      .object({ id: z.number(), image_url: z.string() })
+      .nullable(),
+  })
+  .nullable();
+
+const userSchema = z.object({
+  users: z.object({
+    id: z.number(),
+    username: z.string(),
+    email: z.string(),
+    profile: z.object({
+      id: z.number(),
+      name: z.string(),
+      avatar_url: z.string().nullable(),
     }),
-    variants: z.object({
-        id: z.number().int().positive(),
-        variant_name: z.string(),
-        variant_slug: z.string(),
-        variant_quantity: z.number().int().positive(),
-        variant_point: z.number().int(),
-        fvariant_point: z.string(),
-        variant_weight: z.number().int().positive(),
-        fvariant_weight: z.string(),
-        variant_image: z.object({
-            id: z.number().int().positive(),
-            image_url: z.string(),
-            image_thumb_url: z.string()
-        }).nullable()
-    }).nullable()
-})
+  }),
+});
+
+const cartSchema = z.object({
+  id: z.string(),
+  quantity: z.number(),
+  created_at: z.string(),
+});
+const metaSchema = z.object({
+  current_page: z.number(),
+  from: z.number(),
+  last_page: z.number(),
+  per_page: z.number(),
+  to: z.number(),
+  total: z.number(),
+});
+
+export const cartsSort = z.object({
+  data: z.array(
+    cartSchema.merge(productSchema).extend({ variants: variantSchema })
+  ),
+  meta: metaSchema,
+});
+export const cartListSort = z
+  .array(cartSchema.merge(productSchema).extend({ variants: variantSchema }))
+  .default([]);
+export type cartsSort = z.infer<typeof cartsSort>;
+export type cartListSort = z.infer<typeof cartListSort>;
 
 const FormAddCartSchema = z.object({
-    item_gift_id:z.number().int().positive(),
-    variant_id:z.number().int().positive().nullable(),
-    cart_quantity:z.number().int().positive()
-})
+  product_id: z.number().int().positive(),
+  variant_id: z.number().int().positive().nullable(),
+  quantity: z.number().int().positive(),
+});
 
-const CartId = z.object({id: z.string()})
-const CartQuantity = z.object({cart_quantity: z.number().int().positive()})
+const CartId = z.object({ id: z.string() });
+const CartQuantity = z.object({ cart_quantity: z.number().int().positive() });
 
-export const Cart = CartSchema.merge(CartQuantity).merge(CartId)
-export const CartArray = z.array(CartSchema.merge(CartQuantity).merge(CartId))
+export const FormAddCart = FormAddCartSchema;
+export const CartGiftsCheckout = z.array(FormAddCartSchema);
+export const FormEditCart = CartId.merge(CartQuantity);
+export const FormDeleteCart = CartId;
 
-export type Cart = z.infer<typeof Cart>
-export type CartArray = z.infer<typeof CartArray>
+export type FormAddCart = z.infer<typeof FormAddCart>;
+export type CartGiftsCheckout = z.infer<typeof CartGiftsCheckout>;
+export type FormEditCart = z.infer<typeof FormEditCart>;
+export type FormDeleteCart = z.infer<typeof FormDeleteCart>;
 
-export const FormAddCart = FormAddCartSchema
-export const CartGiftsCheckout = z.array(FormAddCartSchema)
-export const FormEditCart = CartId.merge(CartQuantity)
-export const FormDeleteCart = CartId
+//cart data slice
+export const CartData = z.object({
+  id: z.string(),
+  product_id: z.number(),
+  product_name: z.string(),
+  product_image: z.string(),
+  variant_id: z.number().optional(),
+  variant_name: z.string().optional(),
+  product_weight: z.number(),
+  product_point: z.number(),
+  quantity: z.number(),
+});
+export const CartsData = z.array(CartData);
 
-export type FormAddCart = z.infer<typeof FormAddCart>
-export type CartGiftsCheckout = z.infer<typeof CartGiftsCheckout>
-export type FormEditCart = z.infer<typeof FormEditCart>
-export type FormDeleteCart = z.infer<typeof FormDeleteCart>
+export type CartData = z.infer<typeof CartData>;
+export type CarstData = z.infer<typeof CartsData>;
 
-export type CartType = {
-    cart_id: string;
-    product_id: number;
-    product_name: string;
-    product_image: string;
-    varian_id?: number | null;
-    varian_name?: string | null;
-    product_weight: number;
-    product_quantity: number;
-    product_price: number;
-}
+//add cart data slice
+export const FormAddCartData = z.object({
+  product_id: z.number().int().positive(),
+  variant_id: z.number().int().positive().nullable(),
+  quantity: z.number().int().positive(),
+});
+export type FormAddCartData = z.infer<typeof FormAddCartData>;
+
+export const FormAddCartFull = z.object({
+  id: z.string(),
+  product_id: z.number().positive(),
+  product_name: z.string(),
+  product_image: z.string(),
+  variant_id: z.number().positive().optional(),
+  variant_name: z.number().positive().optional(),
+  product_weight: z.number(),
+  product_point: z.number().positive(),
+  quantity: z.number(),
+});
+export type FormAddCartFull = z.infer<typeof FormAddCartFull>;

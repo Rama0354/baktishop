@@ -2,24 +2,22 @@ import axios from "axios";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-const BASE_URL = process.env.BACKEND_API
+const BASE_URL = process.env.BACKEND_API;
 
 export default axios.create({
-    baseURL:BASE_URL,
-    headers:{'Content-Type':'application/json'}
-})
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+});
 
-export const  axiosAuth = axios.create({
-    baseURL:BASE_URL,
-    headers:{'Content-Type':'application/json'}
-})
-
+export const axiosAuth = axios.create({
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+});
 
 export const axiosAuthServer = axios.create({
   baseURL: BASE_URL, // Replace with your API base URL
-  headers:{'Content-Type':'application/json'}
+  headers: { "Content-Type": "application/json" },
 });
-
 
 // Request interceptor
 axiosAuthServer.interceptors.request.use(
@@ -28,14 +26,13 @@ axiosAuthServer.interceptors.request.use(
     //     axiosAuth.interceptors.request.eject(requestIntercept)
     // }
     // Modify the request config here (add headers, authentication tokens)
-        const session = await getServerSession(options)
-        const accessToken = session?.accessToken
+    const session = await getServerSession(options);
+    const accessToken = session?.user.access_token;
 
-        if(!config.headers['Authorization']){
-            config.headers['Authorization'] = `Bearer ${accessToken}`
-        }
-        return config
-
+    if (!config.headers["Authorization"]) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
   },
   (error) => {
     // Handle request errors here
@@ -44,8 +41,6 @@ axiosAuthServer.interceptors.request.use(
   }
 );
 // End of Request interceptor
-
-
 
 // Response interceptor
 // axiosAuthServer.interceptors.response.use(

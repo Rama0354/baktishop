@@ -13,73 +13,70 @@ export const options: NextAuthOptions = {
           placeholder: "example@mail.com",
         },
         password: { label: "Password", type: "password" },
+        is_register: { type: "string" },
       },
       async authorize(credentials) {
+        const is_register =
+          credentials && credentials.is_register !== null
+            ? credentials.is_register.toString()
+            : false;
         try {
-          const res = await axios.post(`/login`, credentials);
-          return res.data;
+          if (is_register === "true") {
+            const res = await axios.post(`/oauth/token/register`, {
+              credentials,
+            });
+            return res.data.data;
+          } else {
+            const res = await axios.post(`/oauth/token`, credentials);
+            return res.data.data;
+          }
         } catch (error: any) {
-          console.log(error.response.data.message);
+          console.log(error.response.data);
+          throw new Error(error.response.data.error.message);
         }
       },
     }),
+    // {
+    //   id:'google',
+    //   name:'Google',
+    //   type:'oauth',
+    //   wellKnown: "https://accounts.google.com/.well-known/openid-configuration",
+    //   authorization: { params: { scope: "openid email profile" } },
+    //   idToken: true,
+    //   checks: ["pkce", "state"],
+    //   profile(profile:any) {
+    //     return {
+    //       id: profile.sub,
+    //       name: profile.name,
+    //       email: profile.email,
+    //       image: profile.picture,
+    //     }
+    //   },
+    // }
   ],
   pages: {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session, account }) {
       let dateNow = Date.now();
       if (user) {
-        token.user_id = user.data.users.id;
-        token.roles = user.data.users.roles;
-        token.email = user.data.users.email;
-        token.access_token = user.data.access_token;
-        token.refresh_token = user.data.refresh_token;
-        token.expires_at = Math.ceil(dateNow + user.data.expires_in * 1000);
+        token.id = user.users.id;
+        token.roles = user.users.roles;
+        token.email = user.users.email;
+        token.access_token = user.access_token;
+        token.refresh_token = user.refresh_token;
+        token.expires_at = Math.ceil(dateNow + user.expires_in * 1000);
+      }
+      if (trigger === "update") {
+        console.log("lakukan refresh token");
+        return { ...token, ...session.user };
       }
       return token;
     },
     async session({ session, token }) {
-      let dateNow = Date.now();
-      if (token) {
-        session.user.id = token.user_id;
-        session.user.email = token.email;
-        session.email_status = token.email_status;
-        session.user.roles = token.roles;
-        session.accessToken = token.access_token;
-      }
-      if (dateNow > token.expires_at) {
-        console.log("lakukan refresh token");
-        return await refreshTokenApiCall(token);
-      }
-      if (dateNow <= token.expires_at) {
-        console.log("token saat ini");
-        return session;
-      }
+      return { ...session, user: token };
     },
   },
-};
-
-const refreshTokenApiCall = async (token: any) => {
-  try {
-    const res = await axios.post(`${process.env.BACKEND_API}/refresh-token`, {
-      refresh_token: token.refresh_token,
-    });
-    if (res.status === 200) {
-      return {
-        ...token,
-        access_token: res.data.data.access_token,
-        expires_at: Math.ceil(Date.now() + res.data.data.expires_in * 1000),
-        refresh_token: res.data.data.refresh_token,
-      };
-    } else {
-      console.error("Error refreshing access token", res.status, res.data);
-      return { ...token, error: "RefreshAccessTokenError" as const };
-    }
-  } catch (error) {
-    console.error("Error refreshing access token", error);
-    return { ...token, error: "RefreshAccessTokenError" as const };
-  }
 };

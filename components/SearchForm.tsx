@@ -29,6 +29,7 @@ export default function SearchForm() {
       .replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, "-")
       .toLowerCase();
     router.replace(`/search/${name}`);
+    setInputValue("");
   };
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
@@ -46,7 +47,7 @@ export default function SearchForm() {
         aria-label="search button"
         id="searchbutton"
         name="searchbutton"
-        className="absolute top-1 right-1 py-1 px-2 bg-primary hover:bg-secondary transition duration-300 ease-in-out rounded-full w-8 h-8"
+        className="absolute top-1 right-1 py-1 px-2 bg-primary hover:bg-primary/80 transition duration-300 ease-in-out rounded-full w-8 h-8"
       >
         <AiOutlineSearch className="stroke-2 font-bold" />
       </Button>

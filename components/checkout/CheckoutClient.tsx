@@ -2,25 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Listbox, RadioGroup } from "@headlessui/react";
-import {
-  MdCheck,
-  MdLocationOn,
-  MdOutlineUnfoldMore,
-  MdPerson,
-  MdPhone,
-} from "react-icons/md";
+import { MdCheck, MdLocationOn, MdPerson, MdPhone } from "react-icons/md";
 import { AddressArray, FullAddressData } from "@/lib/types/address";
-import { motion } from "framer-motion";
 import { getCostsExpedition } from "@/lib/utils/action/ExpeditionActions";
 import { ExpeditionArray, ExpeditionDetail } from "@/lib/types/expedition";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAddressDetails,
-  setRedeemDetails,
-  setRedeemItemGiftsDetails,
+  setOrderDetails,
+  setOrderProductsDetails,
   setShippingDetails,
 } from "@/lib/redux/slice/checkoutSlice";
-import { CheckoutGifts } from "@/lib/types/checkout";
+import { CheckoutProducts } from "@/lib/types/checkout";
 import { debounce } from "lodash";
 import Image from "next/image";
 import { RootState } from "@/lib/redux/store";
@@ -39,11 +32,11 @@ const Expedition: Expeditions[] = [
 
 export default function CheckoutClient({
   address,
-  gifts,
+  products,
   weights,
 }: {
   address: AddressArray;
-  gifts: CheckoutGifts;
+  products: CheckoutProducts;
   weights: number;
 }) {
   const [addressSelected, setAddressSelected] = useState(address[0]);
@@ -59,14 +52,14 @@ export default function CheckoutClient({
   );
   const weightTotal =
     singleCartData && singleCartData.length
-      ? singleCartData[0].product_quantity * singleCartData[0].product_weight
+      ? singleCartData[0].quantity * singleCartData[0].product_weight
       : 0;
   const checkout = useSelector((state: RootState) => state.checkout);
 
   //set catatan untuk penjual
   const debouncedDetails = useRef(
     debounce(async (e) => {
-      dispatch(setRedeemDetails({ note: e }));
+      dispatch(setOrderDetails({ note: e }));
     }, 300)
   ).current;
 
@@ -91,7 +84,7 @@ export default function CheckoutClient({
         city_id: addressSelected.city.id,
         subdistrict_id: addressSelected.subdistrict.id,
         postal_code: addressSelected.postal_code,
-        address: addressSelected.address,
+        street: addressSelected.street,
       })
     );
   }, [addressSelected, dispatch]);
@@ -102,16 +95,16 @@ export default function CheckoutClient({
     if (singleCartData && singleCartData.length) {
       const singleGift = [
         {
-          item_gift_id: singleCartData[0].product_id,
-          redeem_quantity: singleCartData[0].product_quantity,
-          variant_id: singleCartData[0].varian_id,
+          product_id: singleCartData[0].product_id,
+          variant_id: singleCartData[0].variant_id,
+          quantity: singleCartData[0].quantity,
         },
       ];
-      dispatch(setRedeemItemGiftsDetails(singleGift));
+      dispatch(setOrderProductsDetails(singleGift));
     } else {
-      dispatch(setRedeemItemGiftsDetails(gifts));
+      dispatch(setOrderProductsDetails(products));
     }
-  }, [singleCartData, gifts, dispatch]);
+  }, [singleCartData, products, dispatch]);
 
   useEffect(() => {
     if (expeditionSelected !== null) {
@@ -161,27 +154,27 @@ export default function CheckoutClient({
     if (courierSelected !== null && expeditionSelected !== null) {
       dispatch(
         setShippingDetails({
-          shipping_courier: expeditionSelected.name,
-          shipping_service: courierSelected.service,
-          shipping_description: courierSelected.description,
-          shipping_destination: addressSelected.city.id,
-          shipping_cost: courierSelected.cost[0].value,
-          shipping_weight:
+          courier: expeditionSelected.name,
+          service: courierSelected.service,
+          description: courierSelected.description,
+          destination: addressSelected.city.id,
+          cost: courierSelected.cost[0].value,
+          weight:
             singleCartData && singleCartData.length ? weightTotal : weights,
-          shipping_etd: courierSelected.cost[0].etd,
+          etd: courierSelected.cost[0].etd,
         })
       );
     }
     if (expeditionSelected === null) {
       dispatch(
         setShippingDetails({
-          shipping_destination: 0,
-          shipping_courier: "",
-          shipping_service: "",
-          shipping_description: "",
-          shipping_cost: 0,
-          shipping_weight: 0,
-          shipping_etd: "",
+          destination: 0,
+          courier: "",
+          service: "",
+          description: "",
+          cost: 0,
+          weight: 0,
+          etd: "",
         })
       );
     }
@@ -214,18 +207,6 @@ export default function CheckoutClient({
           placeholder="Catatan untuk penjual...(Opsional)."
           onChange={handleDetailsNote}
         />
-
-        {/* <div className="py-2 px-3">
-          <h2 className="font-semibold text-base text-primary-dark">Catatan</h2>
-        </div>
-        <div className="w-full">
-          <input
-            type="text"
-            name="note"
-            onChange={handleDetailsNote}
-            className="shadow-sm bg-gray-50 border border-primary-dark text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
-          />
-        </div> */}
       </div>
       <div className="w-full flex flex-col gap-3 mt-3">
         <div className="w-full">
@@ -291,7 +272,7 @@ export default function CheckoutClient({
                                       <span className="shrink-0 py-1">
                                         <MdLocationOn />
                                       </span>
-                                      <span className="block flex-wrap">{`${address.address}, ${address.subdistrict.subdistrict_name}, ${address.city.city_name}, ${address.province.province_name}, ${address.postal_code}`}</span>
+                                      <span className="block flex-wrap">{`${address.street}, ${address.subdistrict.name}, ${address.city.name}, ${address.province.name}, ${address.postal_code}`}</span>
                                     </p>
                                   </RadioGroup.Description>
                                 </div>
@@ -434,7 +415,7 @@ export default function CheckoutClient({
                               </div>
                               <div className="shrink-0 w-6">
                                 {checked && (
-                                  <div className="w-6 h-6 flex justify-center items-center text-primary-dark bg-primary-light rounded-full">
+                                  <div className="w-6 h-6 flex justify-center items-center text-primary bg-primary/25 dark:text-white dark:bg-white/25 rounded-full">
                                     <MdCheck className="w-4 h-4" />
                                   </div>
                                 )}
@@ -591,7 +572,7 @@ export default function CheckoutClient({
                                   </RadioGroup.Description>
                                 </div>
                               </div>
-                              <div className="shrink-0 text-white w-6">
+                              <div className="shrink-0 text-primary bg-primary/25 dark:text-white dark:bg-white/25 w-6 rounded-full">
                                 {checked && <CheckIcon className="h-6 w-6" />}
                               </div>
                             </div>

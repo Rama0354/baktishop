@@ -2,14 +2,12 @@
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { AiFillCaretDown, AiOutlineCheck } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const sorts = [
-  { id: 1, name: "Terbaru", value: "" },
-  { id: 2, name: "Nama (A-Z)", value: "nameUp" },
-  { id: 3, name: "Nama (Z-A)", value: "nameDown" },
+  { id: 1, name: "Terbaru", value: "new" },
+  { id: 2, name: "Nama (A-Z)", value: "a" },
+  { id: 3, name: "Nama (Z-A)", value: "z" },
   { id: 4, name: "Termurah", value: "low" },
   { id: 5, name: "Termahal", value: "high" },
 ];
@@ -21,12 +19,13 @@ type SortOption = {
 };
 
 export default function SelectSort() {
-  const sort = useSelector((state: RootState) => state.filter.sort);
-  const sortState = sort !== null ? `${sort.column}-${sort.type}` : "";
-  const sortSet = sorts.findIndex((f) => f.value === sortState);
-  const [selected, setSelected] = useState(sorts[sortSet]);
-  const dispatch = useDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paramsSort = searchParams.get("sort");
+  const defaultSort = paramsSort
+    ? sorts.findIndex((f) => f.value === paramsSort)
+    : 0;
+  const [selected, setSelected] = useState(sorts[defaultSort]);
 
   const setSorting = (event: SortOption) => {
     setSelected(event);
@@ -34,7 +33,7 @@ export default function SelectSort() {
   };
   return (
     <div className="relative w-full md:w-64">
-      <Listbox value={selected} onChange={(e) => setSorting(e)}>
+      <Listbox value={selected} onChange={setSorting}>
         <div className="relative mt-1">
           <Listbox.Button
             id="1"

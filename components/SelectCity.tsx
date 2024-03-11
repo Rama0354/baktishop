@@ -1,6 +1,5 @@
 // components/SelectCity.tsx
 import React, { useEffect } from "react";
-import { withSelectCity } from "@/lib/utils/withSelectCity";
 
 interface SelectCityProps {
   city: any[];
@@ -48,4 +47,4 @@ function SelectCity({
   );
 }
 
-export default withSelectCity(SelectCity);
+export default SelectCity;

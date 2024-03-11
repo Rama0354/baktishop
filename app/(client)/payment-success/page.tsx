@@ -3,8 +3,8 @@ import React from "react";
 
 export default function ThanksPage() {
   return (
-    <div className="container w-full flex items-center bg-gray-100 h-screen">
-      <div className="bg-white p-6  md:mx-auto">
+    <div className="container w-full flex items-center bg-secondary/25 h-screen">
+      <div className="bg-secondary p-6  md:mx-auto">
         <svg
           viewBox="0 0 24 24"
           className="text-green-600 w-16 h-16 mx-auto my-6"
@@ -15,10 +15,10 @@ export default function ThanksPage() {
           ></path>
         </svg>
         <div className="text-center">
-          <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
+          <h3 className="md:text-2xl text-base font-semibold text-center">
             Pembayaran Berhasil!
           </h3>
-          <p className="text-gray-600 my-2">
+          <p className=" my-2">
             Terima Kasih telah belanja di tempat kami, Kami akan segera
             memproses pesanan anda.
           </p>

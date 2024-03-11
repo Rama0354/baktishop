@@ -1,7 +1,7 @@
 import React from "react";
 import SelectSort from "@/components/SelectSort";
-import { getGiftCards } from "@/lib/utils/action/GiftActions";
-import GiftCard from "@/components/gifts/GiftCard";
+import { getProductCards } from "@/lib/utils/action/ProductActions";
+import ProductCard from "@/components/products/ProductCard";
 import Image from "next/image";
 
 export default async function SearchPage({
@@ -13,17 +13,17 @@ export default async function SearchPage({
     searchParams.sort === "new"
       ? ""
       : searchParams.sort === "nameUp"
-      ? "sort_column[0]=item_gift_name&sort_type[0]=asc"
+      ? "sort_column[0]=name&sort_type[0]=asc"
       : searchParams.sort === "nameDown"
-      ? "sort_column[0]=item_gift_name&sort_type[0]=desc"
+      ? "sort_column[0]=name&sort_type[0]=desc"
       : searchParams.sort === "low"
-      ? "sort_column[0]=item_gift_point&sort_type[0]=asc"
+      ? "sort_column[0]=point&sort_type[0]=asc"
       : searchParams.sort === "high"
-      ? "sort_column[0]=item_gift_point&sort_type[0]=desc"
+      ? "sort_column[0]=point&sort_type[0]=desc"
       : "";
 
   const filters = sort !== "" ? "&" + sort : "";
-  const items = await getGiftCards(filters);
+  const items = await getProductCards(filters);
   return (
     <div className="container px-3 md:px-9 min-h-screen">
       <div id="maincontent" className="w-full flex gap-6">
@@ -38,25 +38,27 @@ export default async function SearchPage({
               <SelectSort />
             </div>
           </div>
-          <section className="bg-secondary/25 w-full flex justify-center pt-3 px-6 pb-12">
-            {items && items.data.length !== 0 ? (
-              <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
-                {items.data.map((item, idx: number) => (
-                  <GiftCard gift={item} key={idx} />
-                ))}
-              </div>
-            ) : (
-              <div className="w-full h-full flex justify-center items-center">
-                <Image
-                  src={"/assets/img/not-found-product.jpg"}
-                  width={200}
-                  height={200}
-                  className="sm:w-64"
-                  alt="product-not-found"
-                />
-              </div>
-            )}
-          </section>
+          <div className="w-full min-h-screen pt-3 pb-12 px-6 bg-secondary/25">
+            <section className=" w-full flex justify-center pt-3 px-6 pb-12">
+              {items && items.data.length !== 0 ? (
+                <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
+                  {items.data.map((item, idx: number) => (
+                    <ProductCard product={item} key={idx} />
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-full flex justify-center items-center">
+                  <Image
+                    src={"/assets/img/not-found-product.jpg"}
+                    width={200}
+                    height={200}
+                    className="sm:w-64"
+                    alt="product-not-found"
+                  />
+                </div>
+              )}
+            </section>
+          </div>
         </div>
       </div>
     </div>

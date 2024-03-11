@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import { MdLogout, MdMenu } from "react-icons/md";
 import { getProfie } from "@/lib/utils/action/profileAction";
-import AuthenticationhButton from "@/components/AuthenticationButton";
 import UsersNavigation from "@/components/users/UsersNavigation";
 import AuthenticationButton from "@/components/AuthenticationButton";
 
@@ -13,8 +12,8 @@ export default async function UsersLayout({
 }) {
   const profileData = await getProfie();
   return (
-    <section className="container h-full min-h-screen flex">
-      <div className="sm:w-1/4 px-3 sm:px-2 shrink-0 bg-accent sm:border-r-2">
+    <section className="w-full px-0 container h-auto min-h-screen flex">
+      <div className="h-auto sm:w-1/4 px-3 sm:px-2 shrink-0 bg-accent sm:border-r-2">
         <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
           <MdMenu className="w-6 h-6 " />
         </button>
@@ -50,12 +49,12 @@ export default async function UsersLayout({
           <div>
             <UsersNavigation />
           </div>
-          <div className="sm:hidden bg-white rounded-md mt-6 px-1 py-2 flex justify-center items-center text-rose-600 hover:bg-rose-100 cursor-pointer">
+          <div className="sm:hidden">
             <AuthenticationButton type="logout" />
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col sm:flex-row bg-secondary/25">
+      <div className="w-full h-full flex flex-col sm:flex-row bg-secondary/25">
         {children}
       </div>
     </section>

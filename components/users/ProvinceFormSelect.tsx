@@ -18,7 +18,7 @@ export default function ProvinceFormSelect({
 }) {
   const [selected, setSelected] = useState(
     defaultSelect !== undefined
-      ? provinces.find((p) => p.province_id === defaultSelect)
+      ? provinces.find((p) => p.id === defaultSelect)
       : provinces[0]
   );
   const [query, setQuery] = useState("");
@@ -26,15 +26,15 @@ export default function ProvinceFormSelect({
     query === ""
       ? provinces
       : provinces.filter((p) =>
-          p.province_name
+          p.name
             .toLowerCase()
             .replace(/\s+/g, "")
             .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
   const handleChange = (e: Province) => {
     setSelected(e);
-    setProvinceSelected(e.province_id);
-    setValue("province_id", e.province_id);
+    setProvinceSelected(e.id);
+    setValue("province_id", e.id);
   };
   return (
     <Combobox value={selected} onChange={handleChange}>
@@ -43,7 +43,7 @@ export default function ProvinceFormSelect({
           <Combobox.Input
             {...register("province_id", { valueAsNumber: true })}
             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-            displayValue={(p: Province) => p.province_name}
+            displayValue={(p: Province) => p.name}
             onChange={(event) => setQuery(event.target.value)}
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -68,7 +68,7 @@ export default function ProvinceFormSelect({
             ) : (
               filteredProvince.map((province) => (
                 <Combobox.Option
-                  key={province.province_id}
+                  key={province.id}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                       active ? "bg-teal-600 text-white" : "text-gray-900"
@@ -83,7 +83,7 @@ export default function ProvinceFormSelect({
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >
-                        {province.province_name}
+                        {province.name}
                       </span>
                       {selected ? (
                         <span

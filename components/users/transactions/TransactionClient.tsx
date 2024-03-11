@@ -1,36 +1,45 @@
 "use client";
-import { AiOutlineSchedule } from "react-icons/ai";
-import {
-  MdInfo,
-  MdLocalShipping,
-  MdMap,
-  MdPaid,
-  MdPayments,
-  MdShoppingBag,
-  MdSpeakerNotes,
-} from "react-icons/md";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatePresence } from "framer-motion";
-import ModalContent from "../../ModalContent";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ReceiveButton from "./receive-button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import CancelTransButton from "./cancel-button";
+import { OrdersDataFull } from "@/lib/types/order";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-export default function TransactionClient({ redeem }: any) {
-  let [isOpen, setIsOpen] = useState(false);
-  let [details, setDetails] = useState<any | null>(null);
-  const metapage = redeem && redeem.data.length !== 0 ? redeem.meta : null;
-  const pNumber = metapage !== null ? [...Array(metapage.last_page)] : [];
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal(data: any) {
-    setDetails(data);
-    setIsOpen(true);
-  }
+export default function TransactionClient({
+  orders,
+}: {
+  orders: OrdersDataFull;
+}) {
+  const router = useRouter();
   useEffect(() => {
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
 
@@ -50,17 +59,17 @@ export default function TransactionClient({ redeem }: any) {
     window.snap.pay(snap, {
       onSuccess: function (result: any) {
         /* You may add your own implementation here */
-        alert("payment success!");
-        console.log(result);
+        toast.success("Pemayaran Berhasil");
+        router.refresh();
       },
       onPending: function (result: any) {
         /* You may add your own implementation here */
-        alert("wating your payment!");
+        toast.loading("Pemayaran Diproses");
         console.log(result);
       },
       onError: function (result: any) {
         /* You may add your own implementation here */
-        alert("payment failed!");
+        toast.error("Pemayaran Gagaal");
         console.log(result);
       },
       // onClose: function () {
@@ -69,472 +78,266 @@ export default function TransactionClient({ redeem }: any) {
       // },
     });
   };
+
   return (
-    <section className="w-full h-screen">
-      <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-secondary/50">
-        <AiOutlineSchedule className={"w-6 h-6 stroke-2"} />
-        <h2 className="font-semibold text-lg">Riwayat Transaksi</h2>
-      </div>
-      <div className="relative w-full px-1 sm:px-3 ">
-        <div className="w-full overflow-x-auto">
-          <table className="w-full text-sm text-left border rounded-md overflow-hidden">
-            <thead className="text-xs uppercase bg-primary text-white">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Aksi
-                </th>
-                <th scope="col" className=" px-6 py-3">
-                  Nama Produk
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Tanggal Pesan
-                </th>
-                <th scope="col" className="px-6 py-3 text-center">
-                  Harga
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {redeem && redeem.data.length !== 0 ? (
-                redeem.data.map((r: any, idx: number) => (
-                  <tr key={idx} className=" border-b ">
-                    <td className="px-6 py-4 flex gap-3 float-right">
-                      {r.redeem_status === "pending" ||
-                      r.redeem_status === "failure" ? (
+    <ul>
+      {orders && orders.data.length !== 0 ? (
+        orders.data.map((r, idx: number) => {
+          return (
+            <li className="py-1" key={idx}>
+              <Card>
+                <CardHeader className="border-b flex flex-row justify-between items-center py-1">
+                  <CardTitle className="text-sm sm:text-base">
+                    <Link href={`/users/${r.code}`}>
+                      No. {r.code.toUpperCase()}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
+                    {r.fdate}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="w-full flex justify-around py-3">
+                  {r.order_products && r.order_products.length > 1 ? (
+                    <Collapsible className="gap-3 w-full flex flex-col flex-1">
+                      <div className="flex">
+                        <div className="w-12 h-12 shrink-0 p-1">
+                          <Image
+                            src={
+                              r.order_products[0].products.product_images
+                                .length !== 0 &&
+                              r.order_products[0].products.product_images[0] !==
+                                null
+                                ? r.order_products[0].products.product_images[0]
+                                    .image_url
+                                : `/assets/img/no-image.jpg`
+                            }
+                            width={120}
+                            height={80}
+                            className="w-full h-full object-cover"
+                            alt="product"
+                          />
+                        </div>
+                        <CollapsibleTrigger className="w-full flex flex-col items-start">
+                          <h2 className="font-medium">
+                            {r.order_products[0].products.name}
+                          </h2>
+                          {r.order_products[0].variants !== null && (
+                            <Badge variant={"secondary"}>
+                              {r.order_products[0].variants.name}
+                            </Badge>
+                          )}
+                          <p className="text-sm">
+                            {r.order_products[0].products.fweight}
+                          </p>
+                        </CollapsibleTrigger>
+                      </div>
+
+                      <CollapsibleContent className="w-full flex flex-col">
+                        <div className="w-full flex">
+                          <div className="w-12 h-12 shrink-0 p-1">
+                            <Image
+                              src={
+                                r.order_products[1].products.product_images
+                                  .length !== 0 &&
+                                r.order_products[1].products
+                                  .product_images[0] !== null
+                                  ? r.order_products[1].products
+                                      .product_images[0].image_url
+                                  : `/assets/img/no-image.jpg`
+                              }
+                              width={120}
+                              height={80}
+                              className="w-full h-full object-cover"
+                              alt="product"
+                            />
+                          </div>
+                          <div className="flex flex-col items-start">
+                            <h2 className="font-medium">
+                              {r.order_products[1].products.name}
+                            </h2>
+                            {r.order_products[1].variants !== null && (
+                              <Badge variant={"secondary"}>
+                                {r.order_products[1].variants.name}
+                              </Badge>
+                            )}
+                            <p className="text-sm">
+                              {r.order_products[1].products.fweight}
+                            </p>
+                          </div>
+                        </div>
+                        {r.order_products.length > 2 && (
+                          <Link
+                            href={`/users/${r.code}`}
+                            className="ml-1 text-sm text-primary dark:hover:text-white hover:font-bold"
+                          >
+                            lihat lebih +{r.order_products.length - 2}
+                          </Link>
+                        )}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <div className="flex flex-1">
+                      <div className="w-12 h-12 shrink-0 p-1">
+                        <Image
+                          src={
+                            r.order_products[0].products.product_images
+                              .length !== 0 &&
+                            r.order_products[0].products.product_images[0] !==
+                              null
+                              ? r.order_products[0].products.product_images[0]
+                                  .image_url
+                              : `/assets/img/no-image.jpg`
+                          }
+                          width={120}
+                          height={80}
+                          className="w-full h-full object-cover"
+                          alt="product"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <h2 className="font-medium">
+                          {r.order_products[0].products.name}
+                        </h2>
+                        {r.order_products[0].variants !== null && (
+                          <Badge variant={"secondary"}>
+                            {r.order_products[0].variants.name}
+                          </Badge>
+                        )}
+                        <p className="text-sm">
+                          {r.order_products[0].products.fweight}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex items-start">
+                    {r.status === "success" ? (
+                      <Badge variant={"success"}>Selesai</Badge>
+                    ) : r.status === "shipped" &&
+                      r.shippings.status === "on progress" ? (
+                      <Badge variant={"warning"}>Diproses</Badge>
+                    ) : r.status === "shipped" &&
+                      r.shippings.status === "on delivery" ? (
+                      <Badge variant={"warning"}>Dikirim</Badge>
+                    ) : r.status === "cancelled" ? (
+                      <Badge variant={"destructive"}>Dibatalkan</Badge>
+                    ) : (r.status === "pending" && r.payments === null) ||
+                      (r.payments && r.payments.status === "pending") ? (
+                      <Badge variant={"warning"}>Belum Dibayar</Badge>
+                    ) : (
+                      <Badge variant={"outline"}>Unknown</Badge>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between items-center border-t py-1">
+                  <p className="font-bold text-amber-400">{r.ftotal_amount}</p>
+                  <div className="flex gap-2">
+                    {r.status === "success" ? (
+                      r.order_products.map((ritem) => {
+                        const revData =
+                          ritem.products.reviews.length !== 0 &&
+                          ritem.products.reviews.filter(
+                            (rv: any) =>
+                              rv.id === r.id && rv.users.id === r.users.id
+                          );
+                        return revData && revData.length !== 0 ? (
+                          <Link href={`/users/reviews`}>
+                            <Button size={"sm"}>Ubah Ulasan</Button>
+                          </Link>
+                        ) : (
+                          <Link href={`/users/${r.code}/review`}>
+                            <Button size={"sm"}>Beri Ulasan</Button>
+                          </Link>
+                        );
+                      })[0]
+                    ) : (r.status === "pending" && r.payments === null) ||
+                      (r.payments && r.payments.status === "pending") ? (
+                      <>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size={"sm"} variant={"destructive"}>
+                              Batalkan
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Apakah anda yakin?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Apakah anda yakin ingin membatalkan pesanan ini.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Batal</AlertDialogCancel>
+                              <AlertDialogAction asChild>
+                                <CancelTransButton checkoutId={r.id} />
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                         <Button
-                          variant={"destructive"}
                           onClick={() => handlePay(r.snap_token)}
+                          size={"sm"}
                         >
                           Bayar
                         </Button>
-                      ) : null}
-                      <Button
-                        type="button"
-                        onClick={() => openModal(r)}
-                        className="px-3 py-1 text-sm font-medium bg-primary"
-                      >
-                        Detail
-                      </Button>
-                    </td>
-                    <td
-                      scope="row"
-                      className="px-1 sm:px-6 py-4 font-medium sm:min-w-[368px] whitespace-nowrap sm:whitespace-normal"
-                    >
-                      {r.redeem_item_gifts &&
-                        r.redeem_item_gifts
-                          .map((rname: any) => rname.item_gifts.item_gift_name)
-                          .join(", ")}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap">
-                      {r.fredeem_date}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 text-right whitespace-nowrap">
-                      {r.ftotal_amount}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4">
-                      {r.redeem_status === "success" ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                          Selesai
-                        </div>
-                      ) : r.redeem_status === "shipped" &&
-                        r.shippings.shipping_status === "on progress" ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                          Diproses
-                        </div>
-                      ) : r.redeem_status === "shipped" &&
-                        r.shippings.shipping_status === "on delivery" ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                          Dikirim
-                        </div>
-                      ) : (r.redeem_status === "pending" &&
-                          r.payments === null) ||
-                        (r.payments &&
-                          r.payments.payment_status === "pending") ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                          Belum Dibayar
-                        </div>
-                      ) : r.redeem_status === "failure" ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                          Batal
-                        </div>
-                      ) : r.redeem_status === "canceled" ? (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                          Dibatalkan
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
-                          Unknown
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr className="w-full">
-                  <td colSpan={5} className="bg-white">
-                    <p className="w-full py-2 px-3 mx-auto text-center text-base font-semibold italic">
-                      Belum ada Pesanan
-                    </p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      {metapage && metapage.total > metapage.per_page ? (
-        <nav className="w-full py-2 px-3 flex gap-3">
-          <Link
-            className={`${
-              metapage.current_page === 1 ? " pointer-events-none" : ""
-            } block py-1 px-3 border border-primary text-base font-semibold text-primary rounded-md hover:shadow-mds`}
-            href={`?page=${metapage.current_page - 1}`}
-          >
-            Prev
-          </Link>
-          {pNumber && pNumber.length !== 0
-            ? pNumber.map((_, idx) => (
-                <Link
-                  key={idx}
-                  className={`${
-                    metapage.current_page === idx + 1
-                      ? "bg-primary-dark text-white hover:bg-secondary-dark"
-                      : ""
-                  } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:bg-primary-light hover:shadow-md`}
-                  href={`?page=${idx + 1}`}
-                >
-                  {idx + 1}
-                </Link>
-              ))
-            : null}
-          <Link
-            className={`${
-              metapage.current_page === metapage.last_page
-                ? " pointer-events-none text-slate-300 border-slate-300"
-                : ""
-            } block py-1 px-3 border border-primary-dark text-base font-semibold text-primary-dark rounded-md hover:shadow-mds`}
-            href={`?page=${metapage.current_page + 1}`}
-          >
-            Next
-          </Link>
-        </nav>
-      ) : null}
-
-      <AnimatePresence>
-        {isOpen && <CheckoutDetail closeModal={closeModal} details={details} />}
-      </AnimatePresence>
-    </section>
+                      </>
+                    ) : r.status === "pending" &&
+                      r.shippings.status === "on progress" ? (
+                      <Link href={`/users/${r.code}`}>
+                        <Button size={"sm"}>Detail</Button>
+                      </Link>
+                    ) : r.status === "shipped" &&
+                      r.shippings.status === "on delivery" ? (
+                      <>
+                        <Link
+                          href={`/users/${r.code}/tracking/${r.shippings.resi}?courier=${r.shippings.courier}`}
+                        >
+                          <Button size={"sm"}>Cek Resi</Button>
+                        </Link>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size={"sm"}>Terima</Button>
+                          </AlertDialogTrigger>
+                          {r.shippings && r.shippings.resi !== null && (
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Apakah anda yakin telah menerimanya?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Apakah anda telah menerima paket anda dengan
+                                  selamat, silahkan konfirmasi bahwa anda telah
+                                  menerimanaya.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                  <ReceiveButton
+                                    checkoutId={r.id}
+                                    noResi={r.shippings.resi}
+                                  />
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          )}
+                        </AlertDialog>
+                      </>
+                    ) : r.status === "cancelled" ? (
+                      <></>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </CardFooter>
+              </Card>
+            </li>
+          );
+        })
+      ) : (
+        <p>belum ada pesanan</p>
+      )}
+    </ul>
   );
 }
-
-const CheckoutDetail = ({
-  details,
-  closeModal,
-}: {
-  details: any;
-  closeModal: () => void;
-}) => {
-  function transformText(inputText: string) {
-    // Mengganti underscore menjadi spasi
-    let stringWithSpaces = inputText.replace(/_/g, " ");
-
-    // Mengubah huruf awal menjadi kapital
-    let finalString = stringWithSpaces.replace(/\b\w/g, (match) =>
-      match.toUpperCase()
-    );
-
-    return finalString;
-  }
-  function rupiahCurrency(x: number) {
-    return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
-  }
-  return (
-    <ModalContent closeModal={closeModal} title="Detail Pesanan">
-      <ScrollArea className="h-[360px]">
-        <div className="mt-3">
-          <div className="flex gap-1 justify-between items-center py-1 px-3 font-semibold text-base border">
-            <h2 className="flex gap-1 items-center font-semibold text-base">
-              <MdInfo /> No Pesanan
-            </h2>
-            <div className="text-sm">
-              {details && details.redeem_status === "success" ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                  Selesai
-                </div>
-              ) : details &&
-                details.redeem_status === "shipped" &&
-                details &&
-                details.shippings.shipping_status === "on progress" ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                  Diproses
-                </div>
-              ) : details &&
-                details.redeem_status === "shipped" &&
-                details &&
-                details.shippings.shipping_status === "on delivery" ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                  Dikirim
-                </div>
-              ) : (details &&
-                  details.redeem_status === "pending" &&
-                  details &&
-                  details.payments === null) ||
-                (details &&
-                  details.payments &&
-                  details &&
-                  details.payments.payment_status === "pending") ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mr-2"></div>
-                  Belum Dibayar
-                </div>
-              ) : details && details.redeem_status === "failure" ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                  Batal
-                </div>
-              ) : details && details.redeem_status === "canceled" ? (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-rose-500 mr-2"></div>
-                  Dibatalkan
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-slate-500 mr-2"></div>
-                  Unknown
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="w-full flex justify-between px-1">
-            <p className="text-sm">
-              {details && details.redeem_code !== "" && details.redeem_code}
-            </p>
-          </div>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
-            <MdLocalShipping /> Info Pengiriman
-          </h2>
-          <div className="w-full flex flex-col px-3">
-            {details && details.shippings.shipping_resi !== null ? (
-              <div className="flex justify-between">
-                <p className="text-sm">No. Resi</p>
-                {details && details.shippings.shipping_resi}
-              </div>
-            ) : null}
-            <div className="flex justify-between">
-              <p className="text-sm">Metode Pengiriman</p>
-              <p className="text-sm flex gap-1">
-                <span className="uppercase">
-                  {details &&
-                  details.shippings &&
-                  details.shippings.shipping_courier !== ""
-                    ? details.shippings.shipping_courier
-                    : "unknown"}
-                </span>
-                {details &&
-                details.shippings &&
-                details.shippings.shipping_description !== ""
-                  ? details.shippings.shipping_description
-                  : "unknown"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
-            <MdMap /> Alamat Pengiriman
-          </h2>
-          <p className="text-sm px-1">
-            <span className="font-semibold">Penerima : </span>
-            {`${
-              details !== null && details.users.address.person_name !== ""
-                ? details.users.address.person_name
-                : ""
-            }`}
-          </p>
-          <p className="text-sm px-1">
-            <span className="font-semibold">Nomor : </span>
-            {`${
-              details !== null &&
-              details.users &&
-              details.users.address.person_phone !== ""
-                ? details.users.address.person_phone
-                : ""
-            }`}
-          </p>
-          <p className="text-sm px-1">
-            <span className="font-semibold">Alamat : </span>
-            {`${
-              details !== null && details.users.address.address !== ""
-                ? details.users.address.address
-                : ""
-            }, 
-            ${
-              details !== null &&
-              details.users.address.subdistrict.subdistrict_name !== ""
-                ? details.users.address.subdistrict.subdistrict_name
-                : ""
-            }, 
-            ${
-              details !== null && details.users.address.city.city_name !== ""
-                ? details.users.address.city.city_name
-                : ""
-            }, 
-            ${
-              details !== null &&
-              details.users.address.province.province_name !== ""
-                ? details.users.address.province.province_name
-                : ""
-            }, 
-            ${
-              details !== null && details.users.address.postal_code !== 0
-                ? details.users.address.postal_code
-                : ""
-            }`}
-          </p>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
-            <MdSpeakerNotes /> Catatan
-          </h2>
-          <div className="w-full px-1">
-            <p className="text-sm">
-              {details && details.note !== null ? details.note : "no note"}
-            </p>
-          </div>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border ">
-            <MdShoppingBag /> Daftar Produk
-          </h2>
-          <ul className="border-2 ">
-            {details && details.redeem_item_gifts.length !== 0 ? (
-              details.redeem_item_gifts.map((r: any, idx: number) => (
-                <li key={idx} className="flex gap-1 py-1 px-3">
-                  <Image
-                    className="shrink-0"
-                    src={
-                      r.item_gifts && r.item_gifts.item_gift_images.length !== 0
-                        ? r.item_gifts.item_gift_images[0].item_gift_image_url
-                        : "/assets/img/no-image.jpg"
-                    }
-                    width={100}
-                    height={100}
-                    alt="product"
-                  />
-                  <div className="w-full">
-                    <div className="w-full flex justify-between items-start">
-                      <p className="text-sm font-semibold">
-                        {r.item_gifts && r.item_gifts.item_gift_name !== ""
-                          ? r.item_gifts.item_gift_name
-                          : "No Name"}
-                      </p>
-                      <p>
-                        {r.redeem_quantity && r.redeem_quantity !== 0
-                          ? r.redeem_quantity
-                          : 0}
-                        x
-                      </p>
-                    </div>
-                    {r.variants && (
-                      <p className="text-xs py-1 px-2 rounded-md w-max">
-                        {r.variants.variant_name !== ""
-                          ? r.variants.variant_name
-                          : ""}
-                      </p>
-                    )}
-                    <p className="font-semibold text-amber-500">
-                      {r.variants && r.variants.fvariant_point !== ""
-                        ? r.variants.fvariant_point
-                        : r.item_gifts && r.item_gifts.fitem_gift_point !== ""
-                        ? r.item_gifts.fitem_gift_point
-                        : ""}
-                    </p>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="flex justify-center py-2">
-                <p>Tidak ada Barang</p>
-              </li>
-            )}
-            <li className="flex justify-between items-center gap-1 py-2 px-3 border-t ">
-              <p className="font-semibold text-sm ">Subtotal Produk</p>
-              <p className="font-bold text-base text-amber-500">
-                {rupiahCurrency(
-                  details && details.total_point !== 0 ? details.total_point : 0
-                )}
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border ">
-            <MdPayments /> Metode Pembayaran
-          </h2>
-          <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm">
-              {details && details.payments !== null
-                ? transformText(details.payments.payment_type)
-                : "Belum memilih pembayaran"}
-            </p>
-            {details && details.payments !== null && (
-              <p className="text-sm">
-                {details && details.payments.payment_status === "settlement"
-                  ? "Terbayar"
-                  : details && details.payments.payment_status === "pending"
-                  ? "Belum Dibayar"
-                  : "Gagal Dibayar"}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="mt-3">
-          <h2 className="flex gap-1 items-center py-1 px-3 font-semibold text-base border">
-            <MdPaid /> Total Pembayaran
-          </h2>
-          <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm">Sub Total</p>
-            <p className="text-sm">{details && details.ftotal_point}</p>
-          </div>
-          <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm">Diskon</p>
-            <p className="text-sm">Rp 0</p>
-          </div>
-          <div className="w-full flex justify-between items-center py-1 px-3">
-            <p className="text-sm">Pengiriman</p>
-            <p className="text-sm">{details && details.fshipping_fee}</p>
-          </div>
-          <div className="w-full flex justify-between items-center py-1 px-3 border-t ">
-            <p className="text-base font-semibold">Semua Total</p>
-            <p className="text-base font-semibold">
-              {details && details.ftotal_amount}
-            </p>
-          </div>
-        </div>
-      </ScrollArea>
-      {details && details.redeem_status !== "success" ? (
-        <div className="mt-3">
-          <ReceiveButton
-            checkoutId={details && details.id}
-            noResi={details && details.shippings.shipping_resi}
-          />
-        </div>
-      ) : null}
-    </ModalContent>
-  );
-};

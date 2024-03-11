@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { receiveCheckout } from "@/lib/utils/action/CheckoutActions";
+import { useRouter } from "next/navigation";
 import React, { useTransition } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +12,7 @@ const ReceiveButton = ({
   noResi: string;
 }) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   return (
     <Button
       disabled={isPending || noResi === null}
@@ -19,8 +21,8 @@ const ReceiveButton = ({
           async () =>
             await receiveCheckout(checkoutId).then((res) => {
               if (!res.error) {
-                console.log(res);
                 toast.success(res.message);
+                router.refresh();
               } else {
                 toast.error(res.error.message);
               }

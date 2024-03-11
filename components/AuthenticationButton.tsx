@@ -10,15 +10,22 @@ import { Button } from "@/components/ui/button";
 
 export default function AuthenticationButton({ type }: { type: string }) {
   const handleLogout = async () => {
-    return LogoutAction()
-      .then(() => signOut({ callbackUrl: "/login" }))
+    await LogoutAction()
+      .then((res: any) => {
+        console.log(res);
+        if (res && res.status_code === 200) {
+          signOut({ callbackUrl: "/login" });
+        } else {
+          toast.error(res.message);
+        }
+      })
       .catch(() => toast.error("ada masalah 🙁"));
   };
   return type === "logout" ? (
     <Button
       variant={"ghost"}
-      size={"sm"}
-      className="w-full flex gap-1 hover:text-destructive dark:hover:text-white dark:hover:font-bold"
+      size={"icon"}
+      className="w-full flex gap-1 hover:text-destructive dark:hover:text-white dark:hover:font-bold hover:bg-destructive/25 dark:hover:bg-destructive sm:hover:bg-secondary"
       onClick={handleLogout}
     >
       <MdLogout />

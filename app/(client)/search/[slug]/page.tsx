@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import SelectSort from "@/components/SelectSort";
-import { getGiftCards } from "@/lib/utils/action/GiftActions";
-import GiftCard from "@/components/gifts/GiftCard";
+import { getProductCards } from "@/lib/utils/action/ProductActions";
+import ProductCard from "@/components/products/ProductCard";
 
 export default async function SearchPage({
   params,
@@ -12,22 +12,22 @@ export default async function SearchPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const slug = params.slug;
-  const search = `search_column[0]=item_gift_name&search_text[0]=${slug}&search_operator[0]=like`;
+  const search = `search_column[0]=name&search_text[0]=${slug}&search_operator[0]=like`;
   const sort =
     searchParams.sort === "new"
       ? ""
-      : searchParams.sort === "nameUp"
-      ? "sort_column[0]=item_gift_name&sort_type[0]=asc"
-      : searchParams.sort === "nameDown"
-      ? "sort_column[0]=item_gift_name&sort_type[0]=desc"
+      : searchParams.sort === "a"
+      ? "sort_column[0]=name&sort_type[0]=asc"
+      : searchParams.sort === "z"
+      ? "sort_column[0]=name&sort_type[0]=desc"
       : searchParams.sort === "low"
-      ? "sort_column[0]=item_gift_point&sort_type[0]=asc"
+      ? "sort_column[0]=point&sort_type[0]=asc"
       : searchParams.sort === "high"
-      ? "sort_column[0]=item_gift_point&sort_type[0]=desc"
+      ? "sort_column[0]=point&sort_type[0]=desc"
       : "";
 
   const filters = search !== "" ? search + (sort !== "" ? "&" + sort : "") : "";
-  const items = await getGiftCards(filters);
+  const items = await getProductCards(filters);
   return (
     <div className="container px-3 md:px-9">
       <div id="maincontent" className="w-full flex gap-6">
@@ -47,13 +47,13 @@ export default async function SearchPage({
               {items && items.data.length !== 0 ? (
                 <div className="w-full grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-3 justify-center">
                   {items.data.map((item, idx: number) => (
-                    <GiftCard gift={item} key={idx} />
+                    <ProductCard product={item} key={idx} />
                   ))}
                 </div>
               ) : (
                 <div className="w-full h-full flex justify-center items-center">
                   <Image
-                    src={"/assets/img/not-found-product.jpg"}
+                    src={"/assets/img/not-found-product.png"}
                     width={300}
                     height={300}
                     className="sm:w-80"

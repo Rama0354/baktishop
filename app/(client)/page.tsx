@@ -1,12 +1,12 @@
 import CategoryListContainer from "@/components/category/CategoryListContainer";
-import GiftListNewContainer from "@/components/gifts/GiftListNewContainer";
+import ProductListNewContainer from "@/components/products/ProductListNewContainer";
 import SliderContainer from "@/components/SliderContainer";
-import GiftListBestContainer from "@/components/gifts/GiftListBestContainer";
+import ProductListBestContainer from "@/components/products/ProductListBestContainer";
 
 export default async function Home() {
   return (
-    <div className="container px-3 md:px-6 min-h-screen bg-secondary/25 border border-border">
-      <div className="relative flex w-full sm:w-[80vw] md:w-[60vw] justify-center mx-auto">
+    <div className="container p-3 md:px-6 min-h-screen bg-secondary/25 border border-border">
+      <div className="relative flex w-full sm:w-[80vw] md:w-full md:px-12 justify-center mx-auto">
         <SliderContainer />
       </div>
       <CategoryListContainer />
@@ -23,7 +23,7 @@ export default async function Home() {
             <div className="flex justify-end gap-3 items-center w-1/2 md:w-full"></div>
           </div>
           <div className="w-full pt-3 pb-12 px-1 sm:px-6">
-            <GiftListNewContainer />
+            <ProductListNewContainer />
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default async function Home() {
             <div className="flex justify-end gap-3 items-center w-1/2 md:w-full"></div>
           </div>
           <div className="w-full pt-3 pb-12 px-1 sm:px-6">
-            <GiftListBestContainer />
+            <ProductListBestContainer />
           </div>
         </div>
       </div>

@@ -2,7 +2,6 @@
 import { getCart } from "@/lib/redux/slice/cartSlice";
 import { RootState } from "@/lib/redux/store";
 import { createCheckout } from "@/lib/utils/action/CheckoutActions";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
@@ -13,23 +12,22 @@ export default function CheckoutCountDetails({
   cartData,
   weight,
 }: {
-  cartData: any;
+  cartData: { points: number; weights: number; qtys: number }[];
   weight: number;
 }) {
-  const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
-  const checkotData = useSelector((state: RootState) => state.checkout);
+  const checkoutData = useSelector((state: RootState) => state.checkout);
   const singleCartData = useSelector(
     (state: RootState) => state.cart.singleCart
   );
   const ongkir = useSelector(
-    (state: RootState) => state.checkout.shipping_details.shipping_cost
+    (state: RootState) => state.checkout.shipping_details.cost
   );
   const subTotal =
     singleCartData && singleCartData.length
-      ? singleCartData[0].product_price * singleCartData[0].product_quantity
+      ? singleCartData[0].product_point * singleCartData[0].quantity
       : cartData
       ? cartData.reduce(
           (acc: number, item: { points: number; qtys: number }) =>
@@ -39,7 +37,7 @@ export default function CheckoutCountDetails({
       : 0;
   const qtyTotal =
     singleCartData && singleCartData.length
-      ? singleCartData[0].product_quantity
+      ? singleCartData[0].quantity
       : cartData
       ? cartData.reduce(
           (acc: number, item: { qtys: number }) => acc + item.qtys,
@@ -48,7 +46,7 @@ export default function CheckoutCountDetails({
       : 0;
   const weightTotal =
     singleCartData && singleCartData.length
-      ? singleCartData[0].product_quantity * singleCartData[0].product_weight
+      ? singleCartData[0].quantity * singleCartData[0].product_weight
       : 0;
 
   function rupiahCurrency(x: number) {
@@ -75,21 +73,22 @@ export default function CheckoutCountDetails({
     window.snap.pay(snap, {
       onSuccess: function (result: any) {
         /* You may add your own implementation here */
-        router.push("/success-payment");
-        console.log(result);
+        router.push("/payment-success");
+        dispatch(getCart() as any);
+        // console.log(result);
       },
       onPending: function (result: any) {
         /* You may add your own implementation here */
         toast.loading("Pembayaran anda sedang kami proses mohon bersabar!");
         router.push("/users");
-        console.log(result);
+        // console.log(result);
       },
       onError: function (result: any) {
         /* You may add your own implementation here */
         toast.error(
           "Pembayaran anda Gagal!,\n pastikan anda melakukan langkah- langkah pembayaran dengan benar!"
         );
-        console.log(result);
+        // console.log(result);
       },
       onClose: function () {
         /* You may add your own implementation here */
@@ -131,23 +130,18 @@ export default function CheckoutCountDetails({
           disabled={isPending || ongkir === 0}
           onClick={() => {
             startTransition(async () => {
-              if (session?.email_status === "unverifed") {
-                toast.error("Maaf, Akun anda belum terverifikasi!");
-              } else {
-                await createCheckout(checkotData)
-                  .then((res) => {
-                    dispatch(getCart() as any);
-                    if (res.status === 200) {
-                      toast.success(res.message);
-                      handlePay(res.data.snap_token);
-                    } else {
-                      toast.error(res.error.error);
-                    }
-                  })
-                  .catch((error) => {
-                    toast.error("ada masalah");
-                  });
-              }
+              await createCheckout(checkoutData)
+                .then((res) => {
+                  if (res.status_code === 200) {
+                    toast.success(res.message);
+                    handlePay(res.data.snap_token);
+                  } else {
+                    toast.error(`${res.error.message}`);
+                  }
+                })
+                .catch((error) => {
+                  toast.error("ada masalah");
+                });
             });
           }}
           className="w-full"

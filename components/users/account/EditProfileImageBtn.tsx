@@ -5,10 +5,10 @@ import { MdModeEditOutline } from "react-icons/md";
 import EditProfileImage from "./EditProfileImage";
 
 export default function EditProfileImageBtn({
-  profileId,
+  id,
   children,
 }: {
-  profileId: number;
+  id: number;
   children: React.ReactNode;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,9 +28,7 @@ export default function EditProfileImageBtn({
       {children}
 
       <AnimatePresence>
-        {isModalOpen && (
-          <EditProfileImage profileId={profileId} onClose={closeModal} />
-        )}
+        {isModalOpen && <EditProfileImage id={id} onClose={closeModal} />}
       </AnimatePresence>
     </div>
   );

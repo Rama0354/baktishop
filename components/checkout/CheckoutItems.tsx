@@ -4,8 +4,14 @@ import Image from "next/image";
 import { redirect, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Badge } from "@/components/ui/badge";
+import { cartsSort } from "@/lib/types/cart";
 
-export default function CheckoutItems({ cartItems }: { cartItems: any }) {
+export default function CheckoutItems({
+  cartItems,
+}: {
+  cartItems: cartsSort | null;
+}) {
   const router = useRouter();
   const singleCartData = useSelector(
     (state: RootState) => state.cart.singleCart
@@ -47,23 +53,18 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
                   <h2 className="text-base font-medium">
                     {product && product.product_name}
                   </h2>
-                  {product && product.varian_id !== null ? (
-                    <p className="text-xs font-medium py-1 px-2 w-max bg-slate-100 rounded-md">
-                      {product.varian_name}
-                    </p>
+                  {product && product.variant_id ? (
+                    <Badge>{product.variant_name}</Badge>
                   ) : null}
                   <p className="font-semibold text-base text-amber-500">
-                    {product && product.product_price !== 0
-                      ? rupiahCurrency(product.product_price)
+                    {product && product.product_point !== 0
+                      ? rupiahCurrency(product.product_point)
                       : "Rp 0"}
                   </p>
                 </div>
                 <div className="w-full text-right font-semibold">
                   <p className="text-base">
-                    {product && product.product_quantity !== 0
-                      ? product.product_quantity
-                      : 0}
-                    x
+                    {product && product.quantity !== 0 ? product.quantity : 0}x
                   </p>
                   <p className="text-sm">
                     {product && product.product_weight !== 0
@@ -74,8 +75,8 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
               </div>
             </li>
           ))
-        ) : cartItems && cartItems.length > 0 ? (
-          cartItems.map((product: any, idx: number) => (
+        ) : cartItems !== null && cartItems.data.length > 0 ? (
+          cartItems.data.map((item, idx: number) => (
             <li
               key={idx}
               className="flex gap-1 dark:bg-secondary border rounded-md overflow-hidden p-3 shadow-md"
@@ -83,17 +84,14 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
               <div className="shrink-0 max-h-20 w-20">
                 <Image
                   src={
-                    product &&
-                    product.variants !== null &&
-                    product.variants.variant_image !== null
-                      ? product.variants.variant_image.image_url
-                      : product.item_gifts.item_gift_images.length &&
-                        product.item_gifts.item_gift_images[0]
-                          .item_gift_image_url &&
-                        product.item_gifts.item_gift_images[0]
-                          .item_gift_image_url !== ""
-                      ? product.item_gifts.item_gift_images[0]
-                          .item_gift_image_url
+                    item &&
+                    item.variants !== null &&
+                    item.variants.variant_images !== null
+                      ? item.variants.variant_images.image_url
+                      : item.products.product_images.length &&
+                        item.products.product_images[0].image_url &&
+                        item.products.product_images[0].image_url !== ""
+                      ? item.products.product_images[0].image_url
                       : "/assets/img/no-image.jpg"
                   }
                   width={64}
@@ -104,33 +102,28 @@ export default function CheckoutItems({ cartItems }: { cartItems: any }) {
               <div className="w-full flex flex-col sm:flex-row justify-between items-center">
                 <div className="w-full">
                   <h2 className="text-base font-medium">
-                    {product && product.item_gifts.item_gift_name}
+                    {item && item.products.name}
                   </h2>
-                  {product && product.variants !== null ? (
-                    <p className="text-xs font-medium py-1 px-2 w-max bg-slate-100 rounded-md">
-                      {product.variants.variant_name}
-                    </p>
+                  {item && item.variants !== null ? (
+                    <Badge>{item.variants.name}</Badge>
                   ) : null}
                   <p className="font-semibold text-base text-amber-500">
-                    {product && product.variants !== null
-                      ? product.variants.fvariant_point
-                      : product.item_gifts.fitem_gift_point !== ""
-                      ? product.item_gifts.fitem_gift_point
+                    {item && item.variants !== null
+                      ? item.variants.fpoint
+                      : item.products.fpoint !== ""
+                      ? item.products.fpoint
                       : "Rp 0"}
                   </p>
                 </div>
                 <div className="w-full text-right font-semibold">
                   <p className="text-base">
-                    {product && product.cart_quantity !== 0
-                      ? product.cart_quantity
-                      : 0}
-                    x
+                    {item && item.quantity !== 0 ? item.quantity : 0}x
                   </p>
                   <p className="text-sm">
-                    {product && product.variants !== null
-                      ? product.variants.fvariant_weight
-                      : product.item_gifts.fitem_gift_weight !== ""
-                      ? product.item_gifts.fitem_gift_weight
+                    {item && item.variants !== null
+                      ? item.variants.fweight
+                      : item.products.fweight !== ""
+                      ? item.products.fweight
                       : "0 Gram"}
                   </p>
                 </div>

@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { CartType } from "@/lib/types/cart";
-import { getCarts } from "@/lib/utils/action/Cartactions";
+import { getCarts } from "@/lib/utils/action/CartsActions";
+import {
+  CarstData,
+  CartData,
+  cartListSort,
+  FormAddCartData,
+} from "@/lib/types/cart";
 
 interface initialStateProps {
-  cartItems: CartType[];
-  singleCart: CartType[];
+  cartItems: CarstData;
+  singleCart: CarstData;
   totalQty: number;
   subtotal: number;
 }
@@ -18,19 +23,25 @@ const initialState: initialStateProps = {
 
 export const getCart = createAsyncThunk("cart/get", async () => {
   const res = await getCarts();
-  return res;
+  const data: cartListSort | undefined = res?.data;
+  const parse = cartListSort.safeParse(data);
+  if (parse.success) {
+    return parse.data;
+  }
+  console.log(parse.error);
+  return;
 });
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCartItems(state, action: PayloadAction<CartType>) {
+    setCartItems(state, action: PayloadAction<FormAddCartData>) {
       const indexItem = state.cartItems.findIndex((item) => {
-        if (item.varian_id) {
+        if (item.variant_id !== undefined && item.variant_id) {
           return (
             item.product_id === action.payload.product_id &&
-            item.varian_id === action.payload.varian_id
+            item.variant_id === action.payload.variant_id
           );
         } else {
           return item.product_id === action.payload.product_id;
@@ -39,32 +50,28 @@ const cartSlice = createSlice({
 
       if (indexItem !== -1) {
         const updatedItems = [...state.cartItems];
-        if (updatedItems[indexItem].varian_id) {
+        if (updatedItems[indexItem].variant_id) {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity:
-              updatedItems[indexItem].product_quantity +
-              action.payload.product_quantity,
+            quantity:
+              updatedItems[indexItem].quantity + action.payload.quantity,
           };
         } else {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity:
-              updatedItems[indexItem].product_quantity +
-              action.payload.product_quantity,
+            quantity:
+              updatedItems[indexItem].quantity + action.payload.quantity,
           };
         }
         state.cartItems = updatedItems;
-      } else {
-        state.cartItems = [...state.cartItems, action.payload];
       }
     },
-    changeCartItems(state, action: PayloadAction<CartType>) {
+    changeCartItems(state, action: PayloadAction<CartData>) {
       const indexItem = state.cartItems.findIndex((item) => {
-        if (item.varian_id) {
+        if (item.variant_id) {
           return (
             item.product_id === action.payload.product_id &&
-            item.varian_id === action.payload.varian_id
+            item.variant_id === action.payload.variant_id
           );
         } else {
           return item.product_id === action.payload.product_id;
@@ -73,20 +80,20 @@ const cartSlice = createSlice({
 
       if (indexItem !== -1) {
         const updatedItems = [...state.cartItems];
-        if (updatedItems[indexItem].varian_id) {
+        if (updatedItems[indexItem].variant_id) {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity: (updatedItems[indexItem].product_quantity =
-              action.payload.product_quantity),
+            quantity: (updatedItems[indexItem].quantity =
+              action.payload.quantity),
           };
         } else {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity: (updatedItems[indexItem].product_quantity =
-              action.payload.product_quantity),
+            quantity: (updatedItems[indexItem].quantity =
+              action.payload.quantity),
           };
         }
-        if (updatedItems[indexItem].product_quantity === 0) {
+        if (updatedItems[indexItem].quantity === 0) {
           updatedItems.splice(indexItem, 1);
         }
         state.cartItems = updatedItems;
@@ -94,10 +101,10 @@ const cartSlice = createSlice({
     },
     removeCartItem(state, action: PayloadAction<any>) {
       const indexItem = state.cartItems.findIndex((item) => {
-        if (item.varian_id) {
+        if (item.variant_id) {
           return (
             item.product_id === action.payload.product_id &&
-            item.varian_id === action.payload.varian_id
+            item.variant_id === action.payload.variant_id
           );
         } else {
           return item.product_id === action.payload.product_id;
@@ -110,12 +117,12 @@ const cartSlice = createSlice({
         state.cartItems = updatedItems;
       }
     },
-    setSingleCart(state, action: PayloadAction<CartType>) {
+    setSingleCart(state, action: PayloadAction<CartData>) {
       const indexItem = state.singleCart.findIndex((item) => {
-        if (item.varian_id) {
+        if (item.variant_id) {
           return (
             item.product_id === action.payload.product_id &&
-            item.varian_id === action.payload.varian_id
+            item.variant_id === action.payload.variant_id
           );
         } else {
           return item.product_id === action.payload.product_id;
@@ -124,19 +131,17 @@ const cartSlice = createSlice({
 
       if (indexItem !== -1) {
         const updatedItems = [...state.singleCart];
-        if (updatedItems[indexItem].varian_id) {
+        if (updatedItems[indexItem].variant_id) {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity:
-              updatedItems[indexItem].product_quantity +
-              action.payload.product_quantity,
+            quantity:
+              updatedItems[indexItem].quantity + action.payload.quantity,
           };
         } else {
           updatedItems[indexItem] = {
             ...updatedItems[indexItem],
-            product_quantity:
-              updatedItems[indexItem].product_quantity +
-              action.payload.product_quantity,
+            quantity:
+              updatedItems[indexItem].quantity + action.payload.quantity,
           };
         }
         state.singleCart = updatedItems;
@@ -152,47 +157,44 @@ const cartSlice = createSlice({
     builder.addCase(getCart.fulfilled, (state, action) => {
       const cartItems =
         action.payload && action.payload.length !== 0
-          ? action.payload.map((item: any) => {
-              const findVarImage =
-                item.variants !== null
-                  ? item.item_gifts.item_gift_images.find(
-                      (f: any) => f.variant_id === item.variants.id
-                    )
-                  : undefined;
-              return item.variants !== null
-                ? {
-                    cart_id: item.id,
-                    product_id: item.item_gifts.id,
-                    product_name: item.item_gifts.item_gift_name,
-                    product_image:
-                      findVarImage !== undefined
-                        ? findVarImage.item_gift_image_url !== null
-                          ? findVarImage.item_gift_image_url
-                          : item.item_gifts.item_gift_images[0]
-                              .item_gift_image_url
-                        : item.item_gifts.item_gift_images.length
-                        ? item.item_gifts.item_gift_images[0]
-                            .item_gift_image_url
-                        : "/assets/img/no-image.jpg",
-                    varian_id: item.variants.id,
-                    varian_name: item.variants.variant_name,
-                    product_weight: item.item_gifts.item_gift_weight,
-                    product_quantity: item.cart_quantity,
-                    product_price: item.variants.variant_point,
-                  }
-                : {
-                    cart_id: item.id,
-                    product_id: item.item_gifts.id,
-                    product_name: item.item_gifts.item_gift_name,
-                    product_image:
-                      item.item_gifts.item_gift_images.length !== 0
-                        ? item.item_gifts.item_gift_images[0]
-                            .item_gift_image_url
-                        : "/assets/img/no-image.jpg",
-                    product_weight: item.item_gifts.item_gift_weight,
-                    product_quantity: item.cart_quantity,
-                    product_price: item.item_gifts.item_gift_point,
-                  };
+          ? action.payload.map((item) => {
+              if (item.variants !== null) {
+                const varId = item.variants.id;
+                const findVarImage = item.products.product_images.find(
+                  (f: any) => f.variant_id === varId
+                );
+                return {
+                  id: item.id,
+                  product_id: item.products.id,
+                  product_name: item.products.name,
+                  product_image:
+                    findVarImage !== undefined
+                      ? findVarImage.image_url !== null
+                        ? findVarImage.image_url
+                        : item.products.product_images[0].image_url
+                      : item.products.product_images.length
+                      ? item.products.product_images[0].image_url
+                      : "/assets/img/no-image.jpg",
+                  varian_id: item.variants.id,
+                  varian_name: item.variants.name,
+                  product_weight: item.products.weight,
+                  product_point: item.variants.point,
+                  quantity: item.quantity,
+                };
+              } else {
+                return {
+                  id: item.id,
+                  product_id: item.products.id,
+                  product_name: item.products.name,
+                  product_image:
+                    item.products.product_images.length !== 0
+                      ? item.products.product_images[0].image_url
+                      : "/assets/img/no-image.jpg",
+                  product_weight: item.products.weight,
+                  product_point: item.products.point,
+                  quantity: item.quantity,
+                };
+              }
             })
           : [];
       state.cartItems = cartItems;

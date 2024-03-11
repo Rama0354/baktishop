@@ -31,7 +31,8 @@ const FormRegisterSchema = z.object({
     .nonempty("Username harus di isi")
     .regex(/^[a-z0-9]+$/, "hanya boleh angka dan huruf kecil saja"),
   email: z.string().email().nonempty("Email harus di isi"),
-  birthdate: z.date({ required_error: "Tanggal Lahir harus di Isi" }),
+  birthdate: z.string({ required_error: "Tanggal Lahir harus di Isi" }),
+  "g-recaptcha-response": z.string(),
 });
 const RegisterSchema = z.object({
   name: z.string().nonempty("Nama harus di isi"),

@@ -7,10 +7,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-import QueryProvider from "@/lib/context/QueryProvider";
 import StoreProvider from "@/lib/redux/StoreProvider";
-import { NavigationEvents } from "@/components/navigation-events";
-import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/components/theme-providers";
 
@@ -28,18 +25,16 @@ export default function ClientRootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <ThemeProvider 
+        <ThemeProvider
           attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-          <QueryProvider>
-            <AuthProvider>
-              <StoreProvider>{children}</StoreProvider>
-            </AuthProvider>
-            <Toaster position="top-center" />
-          </QueryProvider>
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <StoreProvider>{children}</StoreProvider>
+          </AuthProvider>
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>

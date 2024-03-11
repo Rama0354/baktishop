@@ -1,5 +1,4 @@
 import React from "react";
-import { withSelectSubdistrict } from "@/lib/utils/withSelectSubdistrict";
 
 interface SelectSubdistrictProps {
   subdistrict: any[];
@@ -52,4 +51,4 @@ function SelectSubdistrict({
   );
 }
 
-export default withSelectSubdistrict(SelectSubdistrict);
+export default SelectSubdistrict;

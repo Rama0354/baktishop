@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { withSelectProvince } from "@/lib/utils/withSelectProvince";
 
 interface MyComponentProps {
   provinceOptions: { province_id: string; province_name: string }[];
@@ -45,4 +44,4 @@ const SelectProvince: React.FC<MyComponentProps> = ({
   );
 };
 
-export default withSelectProvince(SelectProvince);
+export default SelectProvince;

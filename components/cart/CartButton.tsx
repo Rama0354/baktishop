@@ -1,18 +1,18 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { AiOutlineDelete, AiOutlineShoppingCart } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { RootState } from "../../lib/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { getCart } from "@/lib/redux/slice/cartSlice";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import toast from "react-hot-toast";
 import DeleteBtnCart from "./DeleteBtnCart";
 import { Badge } from "../ui/badge";
+import { useCartStore } from "@/lib/store/cart";
 
 export default function CartButton() {
+  const { setCartItems, cartItems: myCarts } = useCartStore();
+  const initialized = useRef(false);
   const [cartBtn, setCartBtn] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const dispatch = useDispatch();
@@ -20,11 +20,12 @@ export default function CartButton() {
     return x.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
   }
   const totalCartQty = cartItems.reduce((sum: number, item) => {
-    return sum + item.product_quantity;
+    return sum + item.quantity;
   }, 0);
 
   useEffect(() => {
     dispatch(getCart() as any);
+    return () => {};
   }, [dispatch]);
 
   return (
@@ -32,22 +33,24 @@ export default function CartButton() {
       <Link
         href={"/cart"}
         aria-label="keranjang belanja"
-        className="block p-2 transition duration-300 ease-in-out rounded-full"
+        className="block p-2 transition duration-300 ease-in-out rounded-full text-white group-hover:bg-white group-hover:text-primary"
       >
-        <AiOutlineShoppingCart className="text-white stroke-2 w-[1.5rem] h-[1.5rem]" />
-        <Badge
-          variant={"destructive"}
-          className={`${
-            cartItems.length === 0 ? "hidden" : ""
-          } absolute top-0 right-0 rounded-full`}
-        >
-          {totalCartQty}
-        </Badge>
+        <AiOutlineShoppingCart className=" stroke-2 w-[1.5rem] h-[1.5rem]" />
+        {cartItems && (
+          <Badge
+            variant={"destructive"}
+            className={`${
+              cartItems.length === 0 ? "hidden" : ""
+            } absolute top-0 right-0 rounded-full`}
+          >
+            {cartItems.length}
+          </Badge>
+        )}
       </Link>
       <div className="absolute right-0 top-9 sm:group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
-        <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">
-          <div className="w-full py-2 px-3 border-b-2 border-slate-100">
-            <h2 className="text-slate-600 text-xl font-semibold">Keranjang</h2>
+        <div className="w-96 mt-3 py-1 px-3 flex flex-col justify-between bg-background z-50 rounded-md boeder border-slate-200 shadow-md">
+          <div className="w-full py-2 px-3 border-b-2">
+            <h2 className=" text-xl font-semibold">Keranjang</h2>
           </div>
 
           <div className="w-full py-2 px-3">
@@ -69,26 +72,26 @@ export default function CartButton() {
                           className="h-full object-cover"
                         />
                       </div>
-                      <div className="w-full text-slate-700">
+                      <div className="w-full">
                         <p className="font-medium text-sm">
                           {cart.product_name}
                         </p>
-                        {cart.varian_id && (
-                          <p className="font-medium text-xs px-2 py-1 rounded-md bg-slate-100 w-max">
-                            {cart.varian_name}
-                          </p>
+                        {cart && cart.variant_id && (
+                          <Badge variant={"secondary"}>
+                            {cart.variant_name}
+                          </Badge>
                         )}
                         <span className="flex gap-3">
                           <p className="font-medium text-sm text-amber-600">
-                            {rupiahCurrency(cart.product_price)}
+                            {rupiahCurrency(cart.product_point)}
                           </p>
                           <p className="font-medium text-xs">
-                            x{cart.product_quantity}
+                            x{cart.quantity}
                           </p>
                         </span>
                       </div>
                       <div>
-                        <DeleteBtnCart cartid={cart.cart_id} />
+                        <DeleteBtnCart cartid={cart.id} />
                       </div>
                     </div>
                   </li>
@@ -107,7 +110,7 @@ export default function CartButton() {
               )}
             </ul>
             {cartItems.length > 0 && (
-              <div className="w-full border-t border-slate-100">
+              <div className="w-full border-t">
                 <Link
                   href={"/cart"}
                   className="block pt-2 px-3 font-medium text-center text-sm text-purple-500"

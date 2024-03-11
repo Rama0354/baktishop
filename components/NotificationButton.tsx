@@ -9,25 +9,23 @@ export default function NotificationButton() {
     <div className="group relative">
       <Link
         href={"/notifications"}
-        className="block relative p-2 group-hover:bg-primary-light transition duration-300 ease-in-out rounded-full"
+        className="block relative p-2 group-hover:bg-white group-hover:text-primary transition duration-300 ease-in-out rounded-full text-white"
       >
-        <AiOutlineBell className="text-white stroke-2 w-6 h-6" />
+        <AiOutlineBell className=" stroke-2 w-6 h-6" />
         <span
           className={`${
             notifications.length === 0 ? "hidden" : ""
-          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full bg-white text-primary-dark`}
+          } absolute top-0 right-0 flex shrink justify-center items-center w-5 h-5 p-0.5 text-xs font-semibold rounded-full`}
         >
           {notifications.length}
         </span>
       </Link>
       <div className="absolute right-0 top-9 group-hover:visible group-hover:pointer-events-auto invisible pointer-events-none transition duration-300 ease-in-out">
-        <div className="w-64 mt-3 py-1 px-3 flex flex-col justify-between bg-white z-50 rounded-md boeder border-slate-200 shadow-md">
-          <div className="w-full py-2 px-3 border-b-2 border-slate-100">
-            <h2 className="text-slate-600 text-xl font-semibold">
-              Pemberitahuan
-            </h2>
+        <div className="w-64 mt-3 py-1 px-3 flex flex-col justify-between z-50 rounded-md boeder shadow-md bg-background">
+          <div className="w-full py-2 px-3 border-b-2">
+            <h2 className=" text-xl font-semibold">Pemberitahuan</h2>
           </div>
-          <div className="w-full text-slate-600">
+          <div className="w-full">
             <ul className="max-h-64 overflow-auto">
               {notifications && notifications.length > 0 ? (
                 notifications.map((notif) => (

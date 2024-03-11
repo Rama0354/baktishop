@@ -1,33 +1,49 @@
-'use server'
-import { GiftCardsByCategory, SingleCategory } from "@/lib/types/category"
-import axios, { axiosAuthServer } from "@/lib/axios"
+"use server";
+import {
+  GiftCardsByCategory,
+  singleCategory,
+  categoriesList,
+} from "@/lib/types/category";
+import axios, { axiosAuthServer } from "@/lib/axios";
+import { productMin } from "@/lib/types/product";
 
-export async function getAllCategory() {
-    try {
-        const res = await axios.get(`/category`)
-        return res.data
-    } catch (error :any) {
-        console.log(error?.response?.data)
+export async function getCategoryList() {
+  try {
+    const res = await axios.get(`/categories`);
+    const datas: categoriesList = res.data;
+    const parse = categoriesList.safeParse(datas);
+    if (parse.success) {
+      return parse.data;
     }
+    console.log(parse.error);
+  } catch (error: any) {
+    console.log(error.response.data);
+  }
 }
-export async function getCategoryBySlug(slug:string):Promise<SingleCategory | undefined> {
-    try {
-        const res = await axios.get(`/category/slug/${slug}`)
-        const data:SingleCategory = res.data.data
-        const parseData = SingleCategory.parse(data)
-        return parseData
-    } catch (error :any) {
-        console.log(error?.response?.data)
+export async function getCategoryBySlug(slug: string) {
+  try {
+    const res = await axios.get(`/categories/slugs/${slug}`);
+    const data: singleCategory = res.data.data;
+    const parse = singleCategory.safeParse(data);
+    if (parse.success) {
+      return parse.data;
     }
+    console.log(parse.error);
+  } catch (error: any) {
+    console.log(error.response.data);
+  }
 }
 
-export async function getAllItemByCategory(slug:string):Promise<GiftCardsByCategory | undefined> {
-    try {
-        const res = await axiosAuthServer.get(`/gifts/category/${slug}`)
-        const data:GiftCardsByCategory = res.data.data
-        const parseData = GiftCardsByCategory.parse(data)
-        return parseData
-    } catch (error :any) {
-        console.log(error?.response?.data)
+export async function getProductByCategory(slug: string) {
+  try {
+    const res = await axiosAuthServer.get(`/products/categories/${slug}`);
+    const data: productMin = res.data;
+    const parse = productMin.safeParse(data);
+    if (parse.success) {
+      return parse.data;
     }
+    console.log(parse.error);
+  } catch (error: any) {
+    console.log(error.response.data);
+  }
 }

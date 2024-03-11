@@ -1,6 +1,5 @@
 "use client";
 
-import { DevTool } from "@hookform/devtools";
 import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -16,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -39,6 +37,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { LoginGoogle } from "@/lib/utils/action/GoogleActions";
 
 export default function Register() {
   const router = useRouter();
@@ -47,36 +48,33 @@ export default function Register() {
   });
   const isLoading = form.formState.isLoading;
   const onSubmit = async (data: FormRegister) => {
-    const newData = {
-      ...data,
-      birthdate: format(data.birthdate, "yyyy/MM/dd"),
-    };
-    try {
-      await RegisterAction(newData)
-        .then((res) => {
-          if (res.status === 200) {
-            toast.success(res.message);
-          } else {
-            toast.error(res.message);
-          }
-          router.push("/login");
-        })
-        .catch((err: any) => {
-          toast.error(err.message);
-        });
-    } catch (error) {
-      console.log(error);
+    // const newData = {
+    //   ...data,
+    //   birthdate: format(data.birthdate, "yyyy/MM/dd"),
+    // };
+    if (form.watch("g-recaptcha-response") !== "") {
+      try {
+        await RegisterAction(data)
+          .then((res) => {
+            if (res.status === 200) {
+              toast.success(res.message);
+            } else {
+              toast.error(res.message);
+            }
+            router.push("/login");
+          })
+          .catch((err: any) => {
+            toast.error(err.message);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast.error("Harap isi captcha");
     }
   };
   function padTo2Digits(num: any) {
     return num.toString().padStart(2, "0");
-  }
-  function formatDate(date: any) {
-    return [
-      padTo2Digits(date.getDate()),
-      padTo2Digits(date.getMonth() + 1),
-      date.getFullYear(),
-    ].join("/");
   }
   return (
     <Card className="w-[]660px] shadow-md">
@@ -161,37 +159,7 @@ export default function Register() {
                 render={({ field }) => (
                   <FormItem className="">
                     <FormLabel>Date of birth</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="end">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <Input disabled={isLoading} type="date" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -223,6 +191,22 @@ export default function Register() {
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="g-recaptcha-response"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Captcha</FormLabel>
+                  <FormControl>
+                    <ReCAPTCHA
+                      sitekey="6LethIQpAAAAAF8dEedS-q0Z5jnVH6cKXH9UzMle"
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button
               size={"lg"}
               className="w-full"
@@ -232,6 +216,11 @@ export default function Register() {
             </Button>
           </form>
         </Form>
+        <div className="flex flex-col py-3">
+          <CardDescription>with media:</CardDescription>
+          <Button onClick={() => LoginGoogle()}>Google</Button>
+          {/* <Button onClick={() => getCaptcha()}>captcha</Button> */}
+        </div>
       </CardContent>
       <CardFooter className="w-full flex justify-center">
         <p className=" text-sm">

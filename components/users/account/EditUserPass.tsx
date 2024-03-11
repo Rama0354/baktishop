@@ -45,13 +45,9 @@ export default function EditUserPassword({ onClose }: { onClose: () => void }) {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password Baru</FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <PasswordInput
-                    disabled={isLoading}
-                    placeholder="Budi"
-                    {...field}
-                  />
+                  <PasswordInput disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -62,13 +58,9 @@ export default function EditUserPassword({ onClose }: { onClose: () => void }) {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password Baru</FormLabel>
+                <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <PasswordInput
-                    disabled={isLoading}
-                    placeholder="Budi"
-                    {...field}
-                  />
+                  <PasswordInput disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

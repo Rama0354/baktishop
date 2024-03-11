@@ -1,43 +1,45 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { getCarts } from "@/lib/utils/action/Cartactions";
+import { getCarts } from "@/lib/utils/action/CartsActions";
 import CheckoutClient from "@/components/checkout/CheckoutClient";
 import { getAddresses } from "@/lib/utils/action/AddressActions";
 import CheckoutCountDetails from "@/components/checkout/CheckoutCountDetails";
 import AddAddressBtn from "@/components/users/address/AddAddressBtn";
 import CheckoutItems from "@/components/checkout/CheckoutItems";
 import { Button } from "@/components/ui/button";
+import { cartsSort } from "@/lib/types/cart";
 
 export default async function CheckoutPage() {
-  const getCartDatas = await getCarts();
+  const data = await getCarts();
   const getAddress = await getAddresses();
-  const addresses =
-    getAddress !== undefined
-      ? getAddress.sort((a, b) => b.is_main - a.is_main)
-      : undefined;
-  const cartItems = getCartDatas !== undefined ? getCartDatas : null;
+  const addresses = getAddress.sort((a: any, b: any) => b.is_main - a.is_main);
+  const cartItems: cartsSort | undefined = data;
   const cartData =
     cartItems &&
-    cartItems.map((product) => {
+    !data.error &&
+    cartItems.data.map((product) => {
       return {
         points: product.variants
-          ? product.variants.variant_point
-          : product.item_gifts.item_gift_point,
+          ? product.variants.point
+          : product.products.point,
         weights: product.variants
-          ? product.variants.variant_weight
-          : product.item_gifts.item_gift_weight,
-        qtys: product.cart_quantity,
+          ? product.variants.weight
+          : product.products.weight,
+        qtys: product.quantity,
       };
     });
-  const cartCheckout = cartItems
-    ? cartItems.map((item) => {
-        return {
-          item_gift_id: item.item_gifts.id,
-          redeem_quantity: item.cart_quantity,
-          variant_id: item.variants !== null ? item.variants.id : null,
-        };
-      })
-    : [];
+  const cartCheckout =
+    cartItems && !data.error
+      ? cartItems.data.map((item) => {
+          return {
+            variant_id: item.variants !== null ? item.variants.id : null,
+            product_id: item.products.id,
+            quantity: item.quantity,
+          };
+        })
+      : [];
   const weightTotal = cartData
     ? cartData.reduce(
         (acc: number, item: { weights: number; qtys: number }) =>
@@ -53,12 +55,16 @@ export default async function CheckoutPage() {
       </div>
       <div className="w-full py-3 px-6 flex flex-col sm:flex-row gap-12 sm:gap-3">
         <div className="w-full sm:1/2 md:w-2/3">
-          <CheckoutItems cartItems={cartItems} />
+          {cartItems && (
+            <CheckoutItems
+              cartItems={cartItems && !data.error ? cartItems : null}
+            />
+          )}
           {addresses !== undefined ? (
             <CheckoutClient
               address={addresses}
               weights={weightTotal}
-              gifts={cartCheckout}
+              products={cartCheckout}
             />
           ) : (
             <div className="w-full px-3 py-2">
@@ -73,7 +79,9 @@ export default async function CheckoutPage() {
           )}
         </div>
         <div className="w-full sm:1/2 md:w-1/3 flex flex-col gap-1 py-1 px-3 border-primary border-t border-l-0 sm:border-l sm:border-t-0 mb-12">
-          <CheckoutCountDetails cartData={cartData} weight={weightTotal} />
+          {cartData && (
+            <CheckoutCountDetails cartData={cartData} weight={weightTotal} />
+          )}
         </div>
       </div>
     </section>

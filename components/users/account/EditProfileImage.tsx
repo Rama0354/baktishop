@@ -13,10 +13,10 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 
 export default function EditProfileImage({
-  profileId,
+  id,
   onClose,
 }: {
-  profileId: number;
+  id: number;
   onClose: () => void;
 }) {
   const {
@@ -29,7 +29,7 @@ export default function EditProfileImage({
   } = useForm<FormChangeAvatar>({
     resolver: zodResolver(FormChangeAvatar),
     defaultValues: {
-      profileId: profileId !== 0 ? profileId : 0,
+      id: id !== 0 ? id : 0,
       avatar: undefined,
     },
   });
@@ -48,7 +48,7 @@ export default function EditProfileImage({
     const formData = new FormData();
     formData.append("avatar", data.avatar[0]);
     const requestData = {
-      profileId: data.profileId,
+      id: data.id,
       avatar: formData,
     };
     const res = await changeAvatarProfile(requestData)
@@ -70,8 +70,8 @@ export default function EditProfileImage({
         onSubmit={handleSubmit(onSubmitHandler)}
         className="flex flex-col gap-3"
       >
-        <input {...register("profileId")} className="hidden" />
-        {errors.profileId && <span>{errors.profileId.message}</span>}
+        <input {...register("id")} className="hidden" />
+        {errors.id && <span>{errors.id.message}</span>}
 
         <div className="w-full flex justify-center">
           {imagePreview && (

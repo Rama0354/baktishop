@@ -38,33 +38,30 @@ export default function AccountClient({ userData }: { userData: UserData }) {
               <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[160px_1fr]">
                 <p className="font-semibold">Nama</p>
                 <p>
-                  :{" "}
-                  {userData && userData.profile.name !== ""
-                    ? userData.profile.name
-                    : ""}
+                  : {userData.profile.name !== "" ? userData.profile.name : ""}
                 </p>
                 <p className="font-semibold">Tgl. Lahir</p>
                 <p>
                   :{" "}
-                  {userData && userData.profile.birthdate !== ""
+                  {userData.profile.birthdate !== ""
                     ? userData.profile.birthdate
                     : ""}
                 </p>
                 <p className="font-semibold">No. Telp</p>
                 <p>
                   :{" "}
-                  {userData && userData.profile.phone_number !== ""
+                  {userData.profile.phone_number !== ""
                     ? userData.profile.phone_number
                     : ""}
                 </p>
               </div>
             </div>
             <div className="relative w-full p-3 sm:p-0 flex justify-center sm:w-max">
-              <EditProfileImageBtn profileId={userData && userData.id}>
+              <EditProfileImageBtn id={userData.profile.id}>
                 <div className="relative group transition-all duration-500  border border-purple-500 cursor-pointer">
                   <Image
                     src={
-                      userData && userData.profile.avatar_url !== null
+                      userData.profile.avatar_url !== null
                         ? userData.profile.avatar_url
                         : "/assets/img/no-image.jpg"
                     }
@@ -86,13 +83,10 @@ export default function AccountClient({ userData }: { userData: UserData }) {
           <div className="w-full flex justify-between flex-col rounded-md py-1 px-3">
             <div className="flex flex-col sm:grid sm:grid-cols-[160px_1fr]">
               <p className="font-semibold">Username</p>
-              <p>
-                :{" "}
-                {userData && userData.username !== "" ? userData.username : ""}
-              </p>
+              <p>: {userData.username !== "" ? userData.username : ""}</p>
               <p className="font-semibold">Email</p>
               <p className="text-xs sm:text-base">
-                : {userData && userData.email !== "" ? userData.email : ""}
+                : {userData.email !== "" ? userData.email : ""}
               </p>
               <p className="font-semibold">Password</p>
               <div className="flex-1 flex gap-2">

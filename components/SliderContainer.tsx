@@ -31,9 +31,8 @@ export default function SliderContainer() {
         <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-1.jpg"}
-            width={100}
-            height={100}
-            sizes="(max-width: 425px) 30vw,100vw"
+            width={600}
+            height={400}
             className="w-full h-auto object-cover mx-auto"
             quality={50}
             alt="banner"
@@ -44,9 +43,8 @@ export default function SliderContainer() {
         <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-2.jpg"}
-            width={100}
-            height={100}
-            sizes="(max-width: 425px) 30vw,80vw"
+            width={600}
+            height={400}
             className="w-full h-auto object-cover mx-auto"
             quality={50}
             alt="banner"
@@ -57,9 +55,8 @@ export default function SliderContainer() {
         <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-3.jpg"}
-            width={100}
-            height={100}
-            sizes="(max-width: 425px) 30vw,80vw"
+            width={600}
+            height={400}
             className="w-full h-auto object-cover mx-auto"
             quality={50}
             alt="banner"
@@ -70,9 +67,8 @@ export default function SliderContainer() {
         <div className="max-h-[480px]">
           <Image
             src={"/assets/img/banner-4.jpg"}
-            width={100}
-            height={100}
-            sizes="(max-width: 425px) 30vw,80vw"
+            width={600}
+            height={400}
             className="w-full h-auto object-cover mx-auto"
             quality={50}
             alt="banner"

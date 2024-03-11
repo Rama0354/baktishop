@@ -1,5 +1,6 @@
-import GiftCardWishlist from "@/components/gifts/GiftCardWishlist";
-import { getAllWishlist } from "@/lib/utils/action/WishlistActions";
+import GiftCardWishlist from "@/components/products/GiftCardWishlist";
+import { wishList } from "@/lib/types/wish";
+import { getWishlist } from "@/lib/utils/action/WishlistActions";
 import Image from "next/image";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -10,7 +11,8 @@ export default async function WishlistPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const searchPage = searchParams.page;
-  const wishlistData = await getAllWishlist();
+  const data = await getWishlist();
+  const wishlistData: wishList | undefined = data;
   return (
     <section className="w-full h-screen">
       <div className="w-full flex gap-3 items-center py-4 px-1 sm:px-6 mb-3 border-b-2 bg-secondary/50">
@@ -18,9 +20,9 @@ export default async function WishlistPage({
         <h2 className="font-semibold text-lg">Barang Favorit</h2>
       </div>
       <div className="p-3">
-        {wishlistData && !wishlistData.data.error ? (
+        {wishlistData ? (
           <div className="relative overflow-x-auto grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {wishlistData.data.data.map((wish: any, idx: number) => (
+            {wishlistData.data.map((wish, idx: number) => (
               <GiftCardWishlist key={idx} wish={wish} />
             ))}
           </div>

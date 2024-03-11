@@ -1,15 +1,10 @@
 import { WishlistData } from "@/lib/types/giftwishlist";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
-import GiftCardWishlist from "../gifts/GiftCardWishlist";
+import GiftCardWishlist from "../products/GiftCardWishlist";
+import { wishList } from "@/lib/types/wish";
 
-type wishlistClientProps = {
-  wishlist: {
-    data: WishlistData[];
-  };
-};
-
-export default function WishlistClient({ wishlist }: wishlistClientProps) {
+export default function WishlistClient(wishlist: wishList) {
   return (
     <section className="w-full h-screen bg-slate-200/50">
       <div className="w-full flex gap-3 items-center py-3 px-6 mb-3 border-b-2 bg-secondary/50">

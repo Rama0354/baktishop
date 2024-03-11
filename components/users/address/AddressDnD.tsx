@@ -135,23 +135,21 @@ export default function AddressDnD({
                                 <p>
                                   <span className="font-bold">Alamat : </span>
                                   {`${
-                                    address.address !== ""
-                                      ? address.address
+                                    address.street !== "" ? address.street : ""
+                                  }, 
+                                  ${
+                                    address.subdistrict.name !== ""
+                                      ? address.subdistrict.name
                                       : ""
                                   }, 
                                   ${
-                                    address.subdistrict.subdistrict_name !== ""
-                                      ? address.subdistrict.subdistrict_name
+                                    address.city.name !== ""
+                                      ? address.city.name
                                       : ""
                                   }, 
                                   ${
-                                    address.city.city_name !== ""
-                                      ? address.city.city_name
-                                      : ""
-                                  }, 
-                                  ${
-                                    address.province.province_name !== ""
-                                      ? address.province.province_name
+                                    address.province.name !== ""
+                                      ? address.province.name
                                       : ""
                                   }, 
                                   ${

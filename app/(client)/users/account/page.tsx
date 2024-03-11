@@ -10,7 +10,7 @@ async function getUserData() {
     .get(`${process.env.BACKEND_API}/users/${session?.user.id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken}`,
+        Authorization: `Bearer ${session?.user.access_token}`,
       },
     })
     .then((res) => res.data)

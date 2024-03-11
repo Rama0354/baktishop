@@ -3,9 +3,10 @@
 import { useTransition, useOptimistic } from "react";
 import { useDispatch } from "react-redux";
 import { getCart } from "@/lib/redux/slice/cartSlice";
-import { decQty, incQty } from "@/lib/utils/action/Cartactions";
+import { decQty, incQty } from "@/lib/utils/action/CartsActions";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import toast from "react-hot-toast";
 
 const CountCart = ({ scale, count, cartId }: any) => {
   const dispatch = useDispatch();
@@ -43,7 +44,14 @@ const CountCart = ({ scale, count, cartId }: any) => {
         disabled={isPending}
         onClick={async () => {
           startTransition(() => setOptimisticQty(optimisticQty.count + 1));
-          await incQty(cartId, count).then(dispatch(getCart() as any));
+          await incQty(cartId, count).then((res) => {
+            if (res) {
+              if (res.error) {
+                toast.error(res.error.message);
+              }
+            }
+            dispatch(getCart() as any);
+          });
         }}
       >
         +

@@ -27,9 +27,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PasswordInput } from "@/components/ui/password-input";
+import { LoginWithGoogle } from "@/lib/utils/action/AuthActions";
+import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Login() {
   const router = useRouter();
+  const [cap, setCap] = useState<string | null>(null);
   const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFom),
     defaultValues: {
@@ -39,46 +43,57 @@ export default function Login() {
   });
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (data: LoginForm) => {
-    try {
-      await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-        callbackUrl: "/",
-      }).then((res) => {
-        if (res?.ok) {
-          toast.success("Berhasil login");
-          router.push("/");
-        } else {
-          toast.error("Email atau password anda salah");
-        }
-      });
-    } catch (error) {
-      console.log(error);
+    if (cap !== null) {
+      try {
+        await signIn("credentials", {
+          username: data.email,
+          password: data.password,
+          "g-recaptcha-response": cap,
+          grant_type: "password",
+          redirect: false,
+          callbackUrl: "/",
+        }).then((res) => {
+          console.log(res);
+          if (res?.ok) {
+            toast.success("Berhasil login");
+            router.push("/");
+          } else {
+            toast.error("Email atau password anda salah");
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast.error("Harap isi captcha");
     }
   };
 
+  const LoginGoogle = async () => {
+    await LoginWithGoogle().then((res) => router.push(res));
+  };
+  // const getCaptcha = () => {
+  //   console.log(cap);
+  // };
+
   return (
-    <Card className="w-80 shadow-md">
+    <Card>
       <CardHeader>
-        <CardTitle>
-          <Link
-            href={"/"}
-            className="w-full flex justify-center items-end px-1"
-          >
-            <Image
-              src={"/assets/icon/logo.png"}
-              alt="logo"
-              width={250}
-              height={250}
-              className="object-contain w-16 lg:w-24"
-            />
-            <h1 className="font-semibold text-2xl py-1">Shop</h1>
-          </Link>
-        </CardTitle>
-        <CardDescription className="text-center text-xl font-bold">
-          Login
-        </CardDescription>
+        <Link href={"/"} className="w-full flex justify-center items-end px-1">
+          <Image
+            src={"/assets/icon/logo.png"}
+            alt="logo"
+            width={250}
+            height={250}
+            className="object-contain w-16 lg:w-24"
+          />
+          <CardTitle>
+            <span className="font-semibold text-2xl py-1">Shop</span>
+          </CardTitle>
+        </Link>
+        <div className="text-center text-xl font-bold text-secondary dark:text-slate-600 py-2 border-b">
+          <p>Login</p>
+        </div>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -113,32 +128,39 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <Button
-              size={"lg"}
-              className="w-full"
-              disabled={form.formState.isSubmitting}
-            >
+            <ReCAPTCHA
+              sitekey="6LethIQpAAAAAF8dEedS-q0Z5jnVH6cKXH9UzMle"
+              onChange={(v) => setCap(v)}
+            />
+            <Button size={"full"} disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Proses" : "Masuk"}
             </Button>
           </form>
         </Form>
+        <div className="flex flex-col py-3">
+          <CardDescription>with media:</CardDescription>
+          <Button onClick={() => LoginGoogle()}>Google</Button>
+          {/* <Button onClick={() => getCaptcha()}>captcha</Button> */}
+        </div>
       </CardContent>
-      <CardFooter className="w-full flex justify-center">
-        <p className="text-sm">
-          <Link
-            className="font-bold text-primary dark:text-white"
-            href={"/register"}
-          >
-            Daftar
-          </Link>{" "}
-          atau{" "}
-          <Link
-            className="font-bold text-primary dark:text-white"
-            href={"/forgot-password"}
-          >
-            Lupa Password?
-          </Link>
-        </p>
+      <CardFooter>
+        <div className="w-full flex justify-center">
+          <p className="text-sm">
+            <Link
+              className="font-bold text-primary dark:text-white"
+              href={"/register"}
+            >
+              Daftar
+            </Link>{" "}
+            atau{" "}
+            <Link
+              className="font-bold text-primary dark:text-white"
+              href={"/forgot-password"}
+            >
+              Lupa Password?
+            </Link>
+          </p>
+        </div>
       </CardFooter>
     </Card>
   );

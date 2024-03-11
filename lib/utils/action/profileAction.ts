@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import axios from "axios";
 import { getServerSession } from "next-auth";
@@ -9,47 +9,50 @@ import { axiosAuthServer } from "@/lib/axios";
 export const getProfie = async () => {
   try {
     const session = await getServerSession(options);
-    const res = await axiosAuthServer.get(
-      `/users/${session?.user.id}`
-    );
+    const res = await axiosAuthServer.get(`/users/${session?.user.id}`);
     return res.data.data;
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    console.log(error.data);
   }
 };
 
-export async function editProfile(data:FormEditProfile){
+export async function editProfile(data: FormEditProfile) {
   try {
-      const res = await axiosAuthServer.post(`/profile/${data.id}`,{
-          name:data.name,
-          birthdate:data.birthdate,
-          phone_number:data.phone_number
-      })
-      return res.data
-  } catch (error:any) {
-      if(error.response !== undefined){
-        console.log(error.response.data)
-      }
-  }finally{
-      revalidatePath('/users/account')
+    const res = await axiosAuthServer.post(`/users/profiles/${data.id}`, {
+      name: data.name,
+      birthdate: data.birthdate,
+      phone_number: data.phone_number,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response !== undefined) {
+      console.log(error.response.data);
+    }
+  } finally {
+    revalidatePath("/users/account");
   }
 }
 
-export async function changeAvatarProfile(data:any){
+export async function changeAvatarProfile(data: any) {
   try {
-    const avatar = data.avatar.get('avatar')
+    const avatar = data.avatar.get("avatar");
     const formData = new FormData();
-    formData.append('avatar', avatar);
-    await axiosAuthServer.post(`/profile/${data.profileId}`,formData,{
-        headers:{
-            'Content-Type': 'multipart/form-data',
-        }
-    })
-  } catch (error:any) {
-      if(error.response !== undefined){
-        console.log(error.response.data)
+    formData.append("avatar", avatar);
+    const res = await axiosAuthServer.post(
+      `/users/profiles/${data.id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
-  }finally{
-      revalidatePath('/users/account')
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response !== undefined) {
+      console.log(error.response.data);
+    }
+  } finally {
+    revalidatePath("/users/account");
   }
 }

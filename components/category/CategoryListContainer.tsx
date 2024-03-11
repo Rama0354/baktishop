@@ -1,13 +1,35 @@
 import React from "react";
-import { getAllCategory } from "@/lib/utils/action/CategoryActions";
 import Image from "next/image";
 import Link from "next/link";
+import { getCategoryList } from "@/lib/utils/action/CategoryActions";
+import { categoriesList } from "@/lib/types/category";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function CategoryListContainer() {
-  const getCategoryData = await getAllCategory();
+  const data = await getCategoryList();
+  const categories: categoriesList | undefined = data;
+
   return (
     <div className="w-full flex shrink gap-3 py-6">
-      {getCategoryData &&
+      {categories?.data.map((category, idx: number) => (
+        <Link key={idx} href={`/category/${category.slug}`}>
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col items-center gap-3">
+                <Image
+                  src={category.image_url}
+                  alt={category.slug}
+                  width={120}
+                  height={120}
+                  className={"w-20"}
+                />
+                <CardTitle>{category.name}</CardTitle>
+              </div>
+            </CardHeader>
+          </Card>
+        </Link>
+      ))}
+      {/* {getCategoryData &&
         getCategoryData.data.map((cat: any, idx: number) => (
           <Link
             key={cat.id}
@@ -32,7 +54,7 @@ export default async function CategoryListContainer() {
               {cat.category_name}
             </span>
           </Link>
-        ))}
+        ))} */}
     </div>
   );
 }

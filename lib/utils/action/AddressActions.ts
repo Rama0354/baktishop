@@ -16,7 +16,7 @@ import axios, { axiosAuthServer } from "@/lib/axios";
 
 export const getAllProvince = async (): Promise<ProvinceArray | undefined> => {
   try {
-    const res = await axios.get(`/province?per_page=50`);
+    const res = await axios.get(`/provinces?per_page=50`);
     const datas: ProvinceArray = await res.data.data;
     const parseData = ProvinceArray.parse(datas);
     return parseData;
@@ -31,7 +31,7 @@ export const getAllCity = async (
 ): Promise<CityArray | undefined> => {
   try {
     const res = await axios.get(
-      `/city?per_page=50&search_column[0]=province_id&search_text[0]=${province_id}&search_operator[0]==`
+      `/cities?per_page=50&search_column[0]=province_id&search_text[0]=${province_id}&search_operator[0]==`
     );
     const datas: CityArray = await res.data.data;
     const parseData = CityArray.parse(datas);
@@ -47,7 +47,7 @@ export const getAllSubdistrict = async (
 ): Promise<SubdistrictArray | undefined> => {
   try {
     const res = await axios.get(
-      `/subdistrict?per_page=50&search_column[0]=city_id&search_text[0]=${city_id}&search_operator[0]==`
+      `/subdistricts?per_page=50&search_column[0]=city_id&search_text[0]=${city_id}&search_operator[0]==`
     );
     const datas: SubdistrictArray = await res.data.data;
     const parseData = SubdistrictArray.parse(datas);
@@ -59,26 +59,28 @@ export const getAllSubdistrict = async (
   }
 };
 
-export const getAddresses = async (): Promise<FullAddressArray | undefined> => {
+export const getAddresses = async () => {
   try {
     const session = await getServerSession(options);
     const res = await axiosAuthServer.get(
-      `/address?search_column[0]=user_id&search_text[0]=${session?.user.id}&search_operator[0]==`
+      `/users/address?search_column[0]=user_id&search_text[0]=${session?.user.id}&search_operator[0]==`
     );
-    const datas: FullAddressArray = await res.data.data;
-    const parseData = FullAddressArray.parse(datas);
-    return parseData;
-  } catch (error: any) {
-    if (error.response !== undefined) {
-      console.log(error.response.data);
+    const datas: FullAddressArray = res.data.data;
+    const parse = FullAddressArray.safeParse(datas);
+    if (parse.success) {
+      return parse.data;
     }
+    console.log(parse.error);
+  } catch (error: any) {
+    console.log(error.response.data);
+    return error.response.data;
   }
 };
 
 export const addAddress = async (data: FormAddAddress) => {
   try {
     const session = await getServerSession(options);
-    const res = await axiosAuthServer.post(`/address`, {
+    const res = await axiosAuthServer.post(`/users/address`, {
       user_id: session?.user.id,
       person_name: data.person_name,
       person_phone: data.person_phone,
@@ -86,7 +88,7 @@ export const addAddress = async (data: FormAddAddress) => {
       city_id: data.city_id,
       subdistrict_id: data.subdistrict_id,
       postal_code: data.postal_code,
-      address: data.address,
+      street: data.street,
     });
     return res.data;
   } catch (error: any) {
@@ -98,14 +100,14 @@ export const addAddress = async (data: FormAddAddress) => {
 };
 export const editAddress = async (data: FormEditAddress) => {
   try {
-    const res = await axiosAuthServer.put(`/address/${data.id}`, {
+    const res = await axiosAuthServer.put(`/users/address/${data.id}`, {
       person_name: data.person_name,
       person_phone: data.person_phone,
       province_id: data.province_id,
       city_id: data.city_id,
       subdistrict_id: data.subdistrict_id,
       postal_code: data.postal_code,
-      address: data.address,
+      street: data.street,
     });
     return res.data;
   } catch (error: any) {
@@ -118,7 +120,7 @@ export const editAddress = async (data: FormEditAddress) => {
 };
 export const deleteAddress = async (data: FormDeleteAddress) => {
   try {
-    const res = await axiosAuthServer.delete(`/address/${data.id}`);
+    const res = await axiosAuthServer.delete(`/users/address/${data.id}`);
     return res.data;
   } catch (error: any) {
     console.log(error.response.data);
@@ -137,7 +139,7 @@ export const changeAddress = async ({
   try {
     if (is_main !== 1) {
       const session = await getServerSession(options);
-      const res = await axiosAuthServer.post(`/users/set-main-address`, {
+      const res = await axiosAuthServer.post(`/users/main-address`, {
         user_id: session?.user.id,
         address_id: id,
       });
