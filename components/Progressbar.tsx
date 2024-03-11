@@ -11,7 +11,6 @@ function ProgressBar() {
     NProgress.configure({
       showSpinner: false,
       speed: 1000,
-      role: "alert",
     });
     NProgress.start();
     NProgress.set(0.8);
