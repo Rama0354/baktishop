@@ -4,9 +4,11 @@ import Link from "next/link";
 import { AiOutlineHome, AiOutlineMessage, AiOutlineUser } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import { MdNotifications } from "react-icons/md";
+import { signIn, useSession } from "next-auth/react";
 
 export default function MobileNavigation() {
   const pathname = usePathname();
+  const { status } = useSession();
   return (
     <div className="md:hidden w-full py-2 px-3 border flex justify-around bg-background sticky bottom-0 z-50">
       <Link
@@ -31,17 +33,31 @@ export default function MobileNavigation() {
       >
         <MdNotifications className={"w-6 h-6"} /> Notifikasi
       </Link>
-      <Link
-        href={"/users"}
-        className={`w-full py-1 px-2 flex flex-col items-center cursor-pointer font-medium text-sm rounded-md transition-all duration-300
+      {status === "authenticated" ? (
+        <Link
+          href={"/users"}
+          className={`w-full py-1 px-2 flex flex-col items-center cursor-pointer font-medium text-sm rounded-md transition-all duration-300
          ${
            pathname.startsWith("/users")
              ? "text-white bg-primary hover:bg-primary/75"
              : "text-primary bg-background hover:bg-primary/25"
          }`}
-      >
-        <AiOutlineUser className={"stroke-2 w-6 h-6"} /> Akun Saya
-      </Link>
+        >
+          <AiOutlineUser className={"stroke-2 w-6 h-6"} /> Akun Saya
+        </Link>
+      ) : (
+        <button
+          onClick={() => signIn()}
+          className={`w-full py-1 px-2 flex flex-col items-center cursor-pointer font-medium text-sm rounded-md transition-all duration-300
+      ${
+        pathname.startsWith("/users")
+          ? "text-white bg-primary hover:bg-primary/75"
+          : "text-primary bg-background hover:bg-primary/25"
+      }`}
+        >
+          <AiOutlineUser className={"stroke-2 w-6 h-6"} /> Akun Saya
+        </button>
+      )}
     </div>
   );
 }

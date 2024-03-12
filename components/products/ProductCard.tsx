@@ -14,7 +14,13 @@ const ProductCard = ({ product }: { product: ProductCardType }) => {
     <Card>
       <div className="max-w-[350px]">
         <CardContent>
-          <Link href={`/${product.slug}`}>
+          <Link href={`/${product.slug}`} className="relative">
+            <button className="absolute top-0 right-0 shrink-0 w-9 sm:w-12 rounded-full bg-secondary">
+              <WishBtn
+                productId={product.id}
+                is_wishlist={product.is_wishlist}
+              />
+            </button>
             <div className="flex items-center justify-center rounded-md w-full overflow-hidden py-2 my-3 bg-secondary">
               <Image
                 src={
@@ -59,9 +65,6 @@ const ProductCard = ({ product }: { product: ProductCardType }) => {
               </div>
             </div>
           </div>
-          <button>
-            <WishBtn productId={product.id} is_wishlist={product.is_wishlist} />
-          </button>
         </div>
       </CardFooter>
     </Card>

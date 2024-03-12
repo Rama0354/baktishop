@@ -13,10 +13,10 @@ export default async function UsersLayout({
   const profileData = await getProfie();
   return (
     <section className="w-full px-0 container h-auto min-h-screen flex">
-      <div className="h-auto sm:w-1/4 px-3 sm:px-2 shrink-0 bg-accent sm:border-r-2">
-        <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
+      <div className="h-auto sm:w-1/4 sm:px-2 shrink-0 bg-accent sm:border-r-2">
+        {/* <button className="block sm:hidden p-3 text-slate-600 rounded-full hover:bg-slate-100">
           <MdMenu className="w-6 h-6 " />
-        </button>
+        </button> */}
         <div className="w-full md:px-3 shrink-0">
           <div className="w-full py-6 flex flex-col items-center gap-2">
             <div className="w-10 h-10 sm:w-20 sm:h-20 shrink-0 flex justify-center items-center bg-primary/25 rounded-full overflow-hidden ring-2 ring-primary">

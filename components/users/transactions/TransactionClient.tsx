@@ -33,6 +33,7 @@ import CancelTransButton from "./cancel-button";
 import { OrdersDataFull } from "@/lib/types/order";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { CheckIcon, ClockIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 
 export default function TransactionClient({
   orders,
@@ -87,7 +88,7 @@ export default function TransactionClient({
             <li className="py-1" key={idx}>
               <Card>
                 <CardHeader className="border-b flex flex-row justify-between items-center py-1">
-                  <CardTitle className="text-sm sm:text-base">
+                  <CardTitle className="text-xs sm:text-sm">
                     <Link href={`/users/${r.code}`}>
                       No. {r.code.toUpperCase()}
                     </Link>
@@ -117,8 +118,8 @@ export default function TransactionClient({
                             alt="product"
                           />
                         </div>
-                        <CollapsibleTrigger className="w-full flex flex-col items-start">
-                          <h2 className="font-medium">
+                        <CollapsibleTrigger className="w-full flex flex-col items-start text-left">
+                          <h2 className="text-sm sm:text-base font-medium">
                             {r.order_products[0].products.name}
                           </h2>
                           {r.order_products[0].variants !== null && (
@@ -152,7 +153,7 @@ export default function TransactionClient({
                             />
                           </div>
                           <div className="flex flex-col items-start">
-                            <h2 className="font-medium">
+                            <h2 className="text-sm sm:text-base font-medium">
                               {r.order_products[1].products.name}
                             </h2>
                             {r.order_products[1].variants !== null && (
@@ -195,7 +196,7 @@ export default function TransactionClient({
                         />
                       </div>
                       <div className="flex flex-col">
-                        <h2 className="font-medium">
+                        <h2 className="text-sm sm:text-base font-medium">
                           {r.order_products[0].products.name}
                         </h2>
                         {r.order_products[0].variants !== null && (
@@ -211,18 +212,33 @@ export default function TransactionClient({
                   )}
                   <div className="flex items-start">
                     {r.status === "success" ? (
-                      <Badge variant={"success"}>Selesai</Badge>
+                      <Badge variant={"success"}>
+                        <CheckIcon />{" "}
+                        <span className="hidden sm:inline">Selesai</span>
+                      </Badge>
                     ) : r.status === "shipped" &&
                       r.shippings.status === "on progress" ? (
-                      <Badge variant={"warning"}>Diproses</Badge>
+                      <Badge variant={"warning"}>
+                        <ClockIcon />{" "}
+                        <span className="hidden sm:inline">Diproses</span>
+                      </Badge>
                     ) : r.status === "shipped" &&
                       r.shippings.status === "on delivery" ? (
-                      <Badge variant={"warning"}>Dikirim</Badge>
+                      <Badge variant={"warning"}>
+                        <ClockIcon />{" "}
+                        <span className="hidden sm:inline">Dikirim</span>
+                      </Badge>
                     ) : r.status === "cancelled" ? (
-                      <Badge variant={"destructive"}>Dibatalkan</Badge>
+                      <Badge variant={"destructive"}>
+                        <CrossCircledIcon />{" "}
+                        <span className="hidden sm:inline">Dibatalkan</span>
+                      </Badge>
                     ) : (r.status === "pending" && r.payments === null) ||
                       (r.payments && r.payments.status === "pending") ? (
-                      <Badge variant={"warning"}>Belum Dibayar</Badge>
+                      <Badge variant={"warning"}>
+                        <ClockIcon />{" "}
+                        <span className="hidden sm:inline">Belum Dibayar</span>
+                      </Badge>
                     ) : (
                       <Badge variant={"outline"}>Unknown</Badge>
                     )}

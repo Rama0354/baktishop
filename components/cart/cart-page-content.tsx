@@ -12,18 +12,20 @@ export default function CartPageContent({
 }: {
   cartItems: cartsSort;
 }) {
-  const cartData = cartItems
-    ? cartItems.data.map((product) => {
-        return {
-          points: product.variants
-            ? product.variants.point
-            : product.products.point,
-          qtys: product.quantity,
-        };
-      })
-    : [];
+  const cartData =
+    cartItems.data.length > 0
+      ? cartItems.data.map((product) => {
+          return {
+            points: product.variants
+              ? product.variants.point
+              : product.products.point,
+            qtys: product.quantity,
+          };
+        })
+      : [];
+
   const subTotal =
-    cartData && cartData.length !== 0
+    cartData.length !== 0
       ? cartData.reduce(
           (acc: number, item: { points: number; qtys: number }) =>
             acc + item.points * item.qtys,
@@ -31,7 +33,7 @@ export default function CartPageContent({
         )
       : 0;
   const qtyTotal =
-    cartData && cartData.length !== 0
+    cartData.length !== 0
       ? cartData.reduce(
           (acc: number, item: { qtys: number }) => acc + item.qtys,
           0
@@ -52,7 +54,7 @@ export default function CartPageContent({
             </tr>
           </thead>
           <tbody>
-            {cartItems && cartItems.data.length > 0 ? (
+            {cartItems.data.length > 0 ? (
               cartItems.data.map((product, idx: number) => (
                 <tr key={idx} className=" border-b dark:hover:bg-secondary/25">
                   <td className="h-full flex items-start sm:items-center justify-between gap-1 sm:gap-6 px-1 sm:px-3 py-3">
@@ -143,7 +145,7 @@ export default function CartPageContent({
           >
             Lanjut Belanja
           </Link>
-          <ToCheckoutBtn cartCount={cartItems ? cartItems.data.length : 0} />
+          <ToCheckoutBtn cartCount={cartItems.data.length} />
         </div>
       </div>
     </div>
