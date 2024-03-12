@@ -166,7 +166,7 @@ export default async function SlugPage({
       </section>
     );
   } else {
-    const data = await getProductVariantDetail(slugs);
+    const data = await getProductVariantDetail(slug);
     const varDetail: productDetailVariant = data;
     if (varDetail && !data.error) {
       return (
