@@ -26,7 +26,7 @@ export default async function SlugPage({
   console.log("slug %2b : ", slug.includes("%2b"));
   console.log("slug %2B : ", slug.includes("%2B"));
   console.log("slug decoded function : ", slugs);
-  if (slug.includes("%2b")) {
+  if (slug.includes("%20")) {
     const data = await getProductVariantDetail(slugs);
     const varDetail: productDetailVariant = data;
     if (varDetail && !data.error) {
