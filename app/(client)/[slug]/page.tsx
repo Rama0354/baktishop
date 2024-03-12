@@ -22,11 +22,150 @@ export default async function SlugPage({
 }) {
   const slug = params.slug;
   const slugs = decodeURIComponent(slug);
-  console.log("slug %20 : ", slug.includes("%20"));
-  console.log("slug %2b : ", slug.includes("%2b"));
-  console.log("slug %2B : ", slug.includes("%2B"));
-  console.log("slug decoded function : ", slugs);
-  if (slug.includes("%20")) {
+  const data = await getProductDetail(slugs);
+  const detail: productDetail = data;
+  if (detail && !data.error) {
+    return (
+      <section className="container py-3 px-0 sm:px-6">
+        <Card className="bg-secondary/25">
+          <CardHeader className="border-b">
+            <CardTitle>
+              <Link href={"/"}>Product</Link>
+              {` > ${detail.name}`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-0 sm:px-3">
+            <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
+              <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
+                <div className="w-full h-72 object-contain mx-auto flex justify-center py-3">
+                  {Array.isArray(detail.product_images) &&
+                  detail.product_images[0] ? (
+                    <ResponsiveCarousel data={detail.product_images} />
+                  ) : (
+                    <Image
+                      src={"/assets/img/no-image.jpg"}
+                      alt="product"
+                      width={100}
+                      height={100}
+                      className="w-full"
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="px-3 md:2/4 lg:w-3/4 flex flex-col gap-3">
+                <p className="font-bold text-2xl">{detail.name}</p>
+                <div className="flex gap-3 items-center">
+                  <GiftRating
+                    stars={detail.total_rating}
+                    reviews={detail.total_review}
+                    scale={20}
+                  />
+                  <div className="w-full">
+                    <p className="text-sm">{detail.total_review} reviewers</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="font-bold text-2xl text-primary">
+                    {detail.fpoint}
+                  </p>
+                </div>
+                <div className="w-full">
+                  <div className="w-min py-0.5 border-b border-border">
+                    <h2 className="font-semibold text-lg">Detail</h2>
+                  </div>
+                  <div className="flex flex-col gap-1 pt-1">
+                    <div className="flex gap-3">
+                      <div className="w-20">
+                        <p className="font-medium uppercase">Brand</p>
+                      </div>
+                      <p>{detail.brand ? detail.brand.name : "-"}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-20">
+                        <p className="font-medium uppercase">Kategori</p>
+                      </div>
+                      <p>{detail.category ? detail.category.name : "-"}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-20">
+                        <p className="font-medium uppercase">Berat</p>
+                      </div>
+                      <p>{detail.fweight}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-20">
+                        <p className="font-medium uppercase">Stok</p>
+                      </div>
+                      <p>{detail.quantity}</p>
+                    </div>
+                    {detail.variants.length !== 0 ? (
+                      <div className="flex gap-3">
+                        <div className="w-20">
+                          <p>Variant</p>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          {detail.variants.map((v, idx: number) => (
+                            <Link key={idx} href={`${v && (v.slug as string)}`}>
+                              <Button
+                                variant={
+                                  v && v.slug === params.slug
+                                    ? "default"
+                                    : "outline"
+                                }
+                              >
+                                {v && v.name}
+                              </Button>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                <ProductDetailClient detail={detail} varDetail={null} />
+              </div>
+            </div>
+            <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
+              {detail.spesification.length ? (
+                <div className="relative w-full">
+                  <div className="w-full border-b border-primary">
+                    <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
+                      Spesifikasi Produk
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 p-3">
+                    <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
+                      {detail.spesification.map((spec: any, idx: number) => (
+                        <Fragment key={idx}>
+                          <div className="w-full">
+                            <p className="font-medium uppercase">{spec.key}</p>
+                          </div>
+                          <div className="w-full">
+                            <p>: {spec.value}</p>
+                          </div>
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+              <div className="relative w-full">
+                <div className="w-full border-b border-primary">
+                  <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
+                    Deskripsi Produk
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 p-3">
+                  <p>{detail.description}</p>
+                </div>
+              </div>
+              <ReviewsClient id={detail.id} />
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    );
+  } else {
     const data = await getProductVariantDetail(slugs);
     const varDetail: productDetailVariant = data;
     if (varDetail && !data.error) {
@@ -186,158 +325,6 @@ export default async function SlugPage({
                   </div>
                 </div>
                 <ReviewsClient id={varDetail.products.id} />
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      );
-    } else {
-      notFound();
-    }
-  } else {
-    const data = await getProductDetail(slugs);
-    const detail: productDetail = data;
-    if (detail && !data.error) {
-      return (
-        <section className="container py-3 px-0 sm:px-6">
-          <Card className="bg-secondary/25">
-            <CardHeader className="border-b">
-              <CardTitle>
-                <Link href={"/"}>Product</Link>
-                {` > ${detail.name}`}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-0 sm:px-3">
-              <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
-                <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
-                  <div className="w-full h-72 object-contain mx-auto flex justify-center py-3">
-                    {Array.isArray(detail.product_images) &&
-                    detail.product_images[0] ? (
-                      <ResponsiveCarousel data={detail.product_images} />
-                    ) : (
-                      <Image
-                        src={"/assets/img/no-image.jpg"}
-                        alt="product"
-                        width={100}
-                        height={100}
-                        className="w-full"
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="px-3 md:2/4 lg:w-3/4 flex flex-col gap-3">
-                  <p className="font-bold text-2xl">{detail.name}</p>
-                  <div className="flex gap-3 items-center">
-                    <GiftRating
-                      stars={detail.total_rating}
-                      reviews={detail.total_review}
-                      scale={20}
-                    />
-                    <div className="w-full">
-                      <p className="text-sm">{detail.total_review} reviewers</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <p className="font-bold text-2xl text-primary">
-                      {detail.fpoint}
-                    </p>
-                  </div>
-                  <div className="w-full">
-                    <div className="w-min py-0.5 border-b border-border">
-                      <h2 className="font-semibold text-lg">Detail</h2>
-                    </div>
-                    <div className="flex flex-col gap-1 pt-1">
-                      <div className="flex gap-3">
-                        <div className="w-20">
-                          <p className="font-medium uppercase">Brand</p>
-                        </div>
-                        <p>{detail.brand ? detail.brand.name : "-"}</p>
-                      </div>
-                      <div className="flex gap-3">
-                        <div className="w-20">
-                          <p className="font-medium uppercase">Kategori</p>
-                        </div>
-                        <p>{detail.category ? detail.category.name : "-"}</p>
-                      </div>
-                      <div className="flex gap-3">
-                        <div className="w-20">
-                          <p className="font-medium uppercase">Berat</p>
-                        </div>
-                        <p>{detail.fweight}</p>
-                      </div>
-                      <div className="flex gap-3">
-                        <div className="w-20">
-                          <p className="font-medium uppercase">Stok</p>
-                        </div>
-                        <p>{detail.quantity}</p>
-                      </div>
-                      {detail.variants.length !== 0 ? (
-                        <div className="flex gap-3">
-                          <div className="w-20">
-                            <p>Variant</p>
-                          </div>
-                          <div className="flex flex-wrap gap-3">
-                            {detail.variants.map((v, idx: number) => (
-                              <Link
-                                key={idx}
-                                href={`${v && (v.slug as string)}`}
-                              >
-                                <Button
-                                  variant={
-                                    v && v.slug === params.slug
-                                      ? "default"
-                                      : "outline"
-                                  }
-                                >
-                                  {v && v.name}
-                                </Button>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <ProductDetailClient detail={detail} varDetail={null} />
-                </div>
-              </div>
-              <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
-                {detail.spesification.length ? (
-                  <div className="relative w-full">
-                    <div className="w-full border-b border-primary">
-                      <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
-                        Spesifikasi Produk
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-3 p-3">
-                      <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
-                        {detail.spesification.map((spec: any, idx: number) => (
-                          <Fragment key={idx}>
-                            <div className="w-full">
-                              <p className="font-medium uppercase">
-                                {spec.key}
-                              </p>
-                            </div>
-                            <div className="w-full">
-                              <p>: {spec.value}</p>
-                            </div>
-                          </Fragment>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-                <div className="relative w-full">
-                  <div className="w-full border-b border-primary">
-                    <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
-                      Deskripsi Produk
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-3 p-3">
-                    <p>{detail.description}</p>
-                  </div>
-                </div>
-                <ReviewsClient id={detail.id} />
               </div>
             </CardContent>
           </Card>
