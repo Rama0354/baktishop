@@ -22,7 +22,7 @@ export default async function SlugPage({
 }) {
   const slug = params.slug;
   const slugs = decodeURIComponent(slug);
-  if (slug.includes("%2B")) {
+  if (slug.includes("%20")) {
     const data = await getProductVariantDetail(slugs);
     const varDetail: productDetailVariant = data;
     if (varDetail && !data.error) {
