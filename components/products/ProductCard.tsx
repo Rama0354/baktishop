@@ -12,15 +12,12 @@ const ProductCard = ({ product }: { product: ProductCardType }) => {
   const images = product.product_images.map((image) => image);
   return (
     <Card>
-      <div className="max-w-[350px]">
+      <div className="max-w-[350px] relative">
         <CardContent>
-          <Link href={`/${product.slug}`} className="relative">
-            <button className="absolute top-0 right-0 shrink-0 w-9 sm:w-12 rounded-full bg-secondary">
-              <WishBtn
-                productId={product.id}
-                is_wishlist={product.is_wishlist}
-              />
-            </button>
+          <button className="absolute top-0 right-3 shrink-0 w-9 sm:w-12 rounded-full bg-secondary">
+            <WishBtn productId={product.id} is_wishlist={product.is_wishlist} />
+          </button>
+          <Link href={`/${product.slug}`}>
             <div className="flex items-center justify-center rounded-md w-full overflow-hidden py-2 my-3 bg-secondary">
               <Image
                 src={
