@@ -22,51 +22,55 @@ export default async function SlugPage({
 }) {
   const slug = params.slug;
   const slugs = decodeURIComponent(slug);
-  const data = await getProductDetail(slugs);
-  const detail: productDetail = data;
-  if (detail && !data.error) {
+  const data = await getProductVariantDetail(slug);
+  const varDetail: productDetailVariant = data;
+  if (varDetail && !data.error) {
     return (
-      <section className="container py-3 px-0 sm:px-6">
+      <section className="container py-3 px-0">
         <Card className="bg-secondary/25">
           <CardHeader className="border-b">
             <CardTitle>
               <Link href={"/"}>Product</Link>
-              {` > ${detail.name}`}
+              {` > ${varDetail.products.name} ${varDetail.name}`}
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-0 sm:px-3">
+          <CardContent>
             <div className="w-full flex flex-col md:flex-row gap-3 lg:gap-6 justify-center items-start">
               <div className="w-full md:w-2/4 lg:w-1/4 px-3 flex flex-col shrink gap-3 justify-center">
-                <div className="w-full h-72 object-contain mx-auto flex justify-center py-3">
-                  {Array.isArray(detail.product_images) &&
-                  detail.product_images[0] ? (
-                    <ResponsiveCarousel data={detail.product_images} />
-                  ) : (
-                    <Image
+                <div className="h-72 object-contain mx-auto">
+                  {/* <Image
                       src={"/assets/img/no-image.jpg"}
                       alt="product"
                       width={100}
                       height={100}
-                      className="w-full"
-                    />
-                  )}
+                      style={{ width: "auto", height: "100%" }}
+                      sizes="(max-width: 425px) 50vw,75vw"
+                    /> */}
+                  <ResponsiveCarouselVariant
+                    data={varDetail.products.product_images}
+                    variant_id={varDetail.id}
+                  />
                 </div>
               </div>
               <div className="px-3 md:2/4 lg:w-3/4 flex flex-col gap-3">
-                <p className="font-bold text-2xl">{detail.name}</p>
+                <p className="font-bold text-2xl">
+                  {`${varDetail.products.name} - ${varDetail.name}`}
+                </p>
                 <div className="flex gap-3 items-center">
                   <GiftRating
-                    stars={detail.total_rating}
-                    reviews={detail.total_review}
+                    stars={varDetail.products.total_rating}
+                    reviews={varDetail.products.total_review}
                     scale={20}
                   />
                   <div className="w-full">
-                    <p className="text-sm">{detail.total_review} reviewers</p>
+                    <p className="text-sm">
+                      {varDetail.products.total_review} reviewers
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="font-bold text-2xl text-primary">
-                    {detail.fpoint}
+                    {varDetail.fpoint}
                   </p>
                 </div>
                 <div className="w-full">
@@ -78,58 +82,66 @@ export default async function SlugPage({
                       <div className="w-20">
                         <p className="font-medium uppercase">Brand</p>
                       </div>
-                      <p>{detail.brand ? detail.brand.name : "-"}</p>
+                      <p>
+                        {varDetail.products.brand
+                          ? varDetail.products.brand.name
+                          : "-"}
+                      </p>
                     </div>
                     <div className="flex gap-3">
                       <div className="w-20">
                         <p className="font-medium uppercase">Kategori</p>
                       </div>
-                      <p>{detail.category ? detail.category.name : "-"}</p>
+                      <p>
+                        {varDetail.products.category
+                          ? varDetail.products.category.name
+                          : "-"}
+                      </p>
                     </div>
                     <div className="flex gap-3">
                       <div className="w-20">
                         <p className="font-medium uppercase">Berat</p>
                       </div>
-                      <p>{detail.fweight}</p>
+                      <p>{varDetail.fweight}</p>
                     </div>
                     <div className="flex gap-3">
                       <div className="w-20">
                         <p className="font-medium uppercase">Stok</p>
                       </div>
-                      <p>{detail.quantity}</p>
+                      <p>{varDetail.quantity}</p>
                     </div>
-                    {detail.variants.length !== 0 ? (
+                    {varDetail.products.variants.length && (
                       <div className="flex gap-3">
                         <div className="w-20">
                           <p>Variant</p>
                         </div>
                         <div className="flex flex-wrap gap-3">
-                          {detail.variants.map((v, idx: number) => (
-                            <Link
-                              key={idx}
-                              href={`/variant/${v && (v.slug as string)}`}
-                            >
-                              <Button
-                                variant={
-                                  v && v.slug === params.slug
-                                    ? "default"
-                                    : "outline"
-                                }
-                              >
-                                {v && v.name}
-                              </Button>
-                            </Link>
-                          ))}
+                          {varDetail.products &&
+                            varDetail.products.variants.map(
+                              (v: any, idx: number) => {
+                                return v.slug !== null ? (
+                                  <Link key={idx} href={`/variant/${v.slug}`}>
+                                    <Button
+                                      variant={
+                                        slugs === v.slug ? "default" : "outline"
+                                      }
+                                    >
+                                      {v.name}
+                                    </Button>
+                                  </Link>
+                                ) : null;
+                              }
+                            )}
                         </div>
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 </div>
-                <ProductDetailClient detail={detail} varDetail={null} />
+                <ProductDetailClient detail={null} varDetail={varDetail} />
               </div>
             </div>
             <div className="w-full flex flex-col gap-3 py-6 px-3 mb-24">
-              {detail.spesification.length ? (
+              {varDetail.products.spesification.length ? (
                 <div className="relative w-full">
                   <div className="w-full border-b border-primary">
                     <p className="inline-block h-full py-2 px-5 text-base font-bold text-primary border-b-2 border-primary">
@@ -138,16 +150,20 @@ export default async function SlugPage({
                   </div>
                   <div className="flex flex-col gap-3 p-3">
                     <div className="w-full md:w-1/2 grid grid-cols-[25%_75%] gap-1 pt-1">
-                      {detail.spesification.map((spec: any, idx: number) => (
-                        <Fragment key={idx}>
-                          <div className="w-full">
-                            <p className="font-medium uppercase">{spec.key}</p>
-                          </div>
-                          <div className="w-full">
-                            <p>: {spec.value}</p>
-                          </div>
-                        </Fragment>
-                      ))}
+                      {varDetail.products.spesification.map(
+                        (spec: any, idx: number) => (
+                          <Fragment key={idx}>
+                            <div className="w-full">
+                              <p className="font-medium uppercase">
+                                {spec.key}
+                              </p>
+                            </div>
+                            <div className="w-full">
+                              <p>: {spec.value}</p>
+                            </div>
+                          </Fragment>
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
@@ -159,10 +175,10 @@ export default async function SlugPage({
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 p-3">
-                  <p>{detail.description}</p>
+                  <p>{varDetail.products.description}</p>
                 </div>
               </div>
-              <ReviewsClient id={detail.id} />
+              <ReviewsClient id={varDetail.products.id} />
             </div>
           </CardContent>
         </Card>
