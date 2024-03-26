@@ -21,6 +21,7 @@ export default async function SlugPage({
   params: { slug: string };
 }) {
   const slug = params.slug;
+  console.log(slug);
   const slugs = decodeURIComponent(slug);
   const data = await getProductVariantDetail(slugs);
   const varDetail: productDetailVariant = data;

@@ -41,6 +41,12 @@ const ProductCategorySchema = z
     image_url: z.string(),
   })
   .nullable();
+const ProductCategoryMinSchema = z
+  .object({
+    name: z.string(),
+    slug: z.string(),
+  })
+  .nullable();
 
 const ProductBrandSchema = z
   .object({
@@ -51,6 +57,14 @@ const ProductBrandSchema = z
     logo_url: z.string(),
   })
   .nullable();
+
+const ProductBrandMinSchema = z
+  .object({
+    name: z.string(),
+    slug: z.string(),
+  })
+  .nullable();
+
 const ProductImage = z.object({
   product_id: z.number(),
   variant_id: z.number().nullable(),
@@ -108,6 +122,8 @@ const ProductsMeta = z.object({
 
 export const ProductCardType = ProductSchema.merge(ProductIdSchema).extend({
   product_images: ProductImages,
+  category: ProductCategoryMinSchema,
+  brand: ProductBrandMinSchema,
 });
 export const ProductCardArray = z.array(ProductCardType);
 export const productMin = z.object({

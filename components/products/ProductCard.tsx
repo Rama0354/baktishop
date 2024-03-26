@@ -31,6 +31,17 @@ const ProductCard = ({ product }: { product: ProductCardType }) => {
                 alt="product"
               />
             </div>
+            <div className="w-full flex gap-3 py-1 text-xs">
+              {product.brand !== null && (
+                <p className="uppercase text-primary font-semibold">
+                  {product.brand.name}
+                </p>
+              )}
+              {" - "}
+              {product.category !== null && (
+                <p className="font-thin">{product.category.name}</p>
+              )}
+            </div>
             <p className="font-semibold text-sm md:text-base line-clamp-1">
               {product.name}
             </p>
