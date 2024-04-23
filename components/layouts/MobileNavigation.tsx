@@ -20,7 +20,7 @@ export default function MobileNavigation() {
             : "text-primary bg-background hover:bg-primary/25"
         }`}
       >
-        <AiOutlineHome className={"stroke-2 w-6 h-6"} /> Beranada
+        <AiOutlineHome className={"stroke-2 w-6 h-6"} /> Beranda
       </Link>
       <Link
         href={"/notifications"}
