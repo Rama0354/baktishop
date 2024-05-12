@@ -1,8 +1,6 @@
 import "@/app/globals.css";
 import "@/app/nprogress.css";
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";

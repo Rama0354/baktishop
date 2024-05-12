@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import { AspectRatio } from "./ui/aspect-ratio";
 
 export default function SliderContainer() {
   return (
@@ -28,52 +29,60 @@ export default function SliderContainer() {
       //   onSlideChange={() => console.log("slide change")}
     >
       <SwiperSlide>
-        <div className="max-h-[480px]">
-          <Image
-            src={"/assets/img/banner-1.jpg"}
-            width={600}
-            height={400}
-            className="w-full h-auto object-cover mx-auto"
-            quality={50}
-            alt="banner"
-          />
-        </div>
+        <Image
+          src={"/assets/img/banner-1.jpg"}
+          width={260}
+          height={120}
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+          className="h-full w-full"
+          alt="banner"
+        />
       </SwiperSlide>
       <SwiperSlide>
-        <div className="max-h-[480px]">
-          <Image
-            src={"/assets/img/banner-2.jpg"}
-            width={600}
-            height={400}
-            className="w-full h-auto object-cover mx-auto"
-            quality={50}
-            alt="banner"
-          />
-        </div>
+        <Image
+          src={"/assets/img/banner-2.jpg"}
+          width={260}
+          height={120}
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+          className="h-full w-full"
+          alt="banner"
+        />
       </SwiperSlide>
       <SwiperSlide>
-        <div className="max-h-[480px]">
-          <Image
-            src={"/assets/img/banner-3.jpg"}
-            width={600}
-            height={400}
-            className="w-full h-auto object-cover mx-auto"
-            quality={50}
-            alt="banner"
-          />
-        </div>
+        <Image
+          src={"/assets/img/banner-3.jpg"}
+          width={260}
+          height={120}
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+          className="h-full w-full"
+          alt="banner"
+        />
       </SwiperSlide>
       <SwiperSlide>
-        <div className="max-h-[480px]">
-          <Image
-            src={"/assets/img/banner-4.jpg"}
-            width={600}
-            height={400}
-            className="w-full h-auto object-cover mx-auto"
-            quality={50}
-            alt="banner"
-          />
-        </div>
+        <Image
+          src={"/assets/img/banner-4.jpg"}
+          width={260}
+          height={120}
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+          className="h-full w-full"
+          alt="banner"
+        />
       </SwiperSlide>
     </Swiper>
   );
