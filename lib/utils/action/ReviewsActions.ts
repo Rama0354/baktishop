@@ -45,7 +45,15 @@ export const getReviews = async ({
       return;
     }
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 };
 
@@ -71,7 +79,15 @@ export const getAllReviews = async ({
     console.log(parse.error);
     return;
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 };
 
@@ -80,8 +96,16 @@ export async function createReviews(data: formReviews) {
     const res = await axiosAuthServer.post(`/reviews/bulk`, data);
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -90,8 +114,16 @@ export async function editReview(id: number, data: formReview) {
     const res = await axiosAuthServer.put(`/reviews/${id}`, data);
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/users/reviews");
   }

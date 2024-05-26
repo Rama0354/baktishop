@@ -18,8 +18,16 @@ export const getCarts = async () => {
     console.log(parse.error);
     return;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 };
 export const incQty = async (cartid: string, cartqty: number) => {
@@ -30,7 +38,16 @@ export const incQty = async (cartid: string, cartqty: number) => {
       })
       .then((res) => res.data.data.cart_quantity);
   } catch (error: any) {
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/cart");
   }
@@ -48,7 +65,15 @@ export const addCart = async ({
         : { product_id, quantity }
     );
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/cart");
   }

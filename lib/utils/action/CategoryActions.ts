@@ -17,7 +17,15 @@ export async function getCategoryList() {
     }
     console.log(parse.error);
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 export async function getCategoryBySlug(slug: string) {
@@ -30,7 +38,15 @@ export async function getCategoryBySlug(slug: string) {
     }
     console.log(parse.error);
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -44,6 +60,14 @@ export async function getProductByCategory(slug: string) {
     }
     console.log(parse.error);
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }

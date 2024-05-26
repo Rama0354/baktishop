@@ -15,6 +15,14 @@ export async function changePassword(data: FormEditPassword) {
     );
     return res.data;
   } catch (error: any) {
-    console.log(error.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }

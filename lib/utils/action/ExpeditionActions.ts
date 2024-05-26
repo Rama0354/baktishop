@@ -18,8 +18,15 @@ export async function getCostsExpedition(
     const parseData = ExpeditionArray.parse(datas);
     return parseData;
   } catch (error: any) {
-    if (error.response !== undefined) {
-      error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
     }
   }
 }

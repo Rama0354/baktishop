@@ -19,8 +19,14 @@ export const getProductCards = async (params?: string) => {
       return;
     }
   } catch (error: any) {
-    if (error.response !== undefined) {
-      console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
     }
   }
 };
@@ -35,8 +41,16 @@ export const getProductDetail = async (params: string) => {
     }
     console.log(parse.error);
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 };
 
@@ -52,7 +66,15 @@ export const getProductVariantDetail = async (params: string) => {
       return;
     }
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 };

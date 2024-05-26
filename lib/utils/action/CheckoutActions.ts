@@ -14,8 +14,16 @@ export async function createCheckout(data: Checkout) {
     });
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -26,8 +34,16 @@ export async function receiveCheckout(id: number) {
     });
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -39,8 +55,16 @@ export async function cancelCheckout(id: number) {
     });
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/users");
   }

@@ -49,8 +49,16 @@ export async function RegisterAction(data: RegisterActionSchema) {
     });
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -59,8 +67,16 @@ export async function ForgotPasswordActions(data: FormForgotPass) {
     const res = await axios.post(`/forget/password`, data);
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -69,8 +85,16 @@ export async function ResetPasswordActions(data: FormResetPass) {
     const res = await axios.post(`/reset/password`, data);
     return res.data;
   } catch (error: any) {
-    console.log(error.response.data);
-    return error.response.data;
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
@@ -79,7 +103,15 @@ export async function VerifedStatus(id: string) {
     const res = await axiosAuthServer.get(`/users/${id}`);
     return res.data.data.email_status;
   } catch (error: any) {
-    console.log(error.response.data);
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   }
 }
 
