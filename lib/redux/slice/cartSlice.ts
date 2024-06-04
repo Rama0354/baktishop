@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 import { getCarts } from "@/lib/utils/action/CartsActions";
 import {
   CarstData,
@@ -7,6 +6,7 @@ import {
   cartListSort,
   FormAddCartData,
 } from "@/lib/types/cart";
+import { auth } from "@/lib/auth";
 
 interface initialStateProps {
   cartItems: CarstData;
@@ -22,6 +22,10 @@ const initialState: initialStateProps = {
 };
 
 export const getCart = createAsyncThunk("cart/get", async () => {
+  const session = await auth();
+  if (!session) {
+    return;
+  }
   const res = await getCarts();
   const data: cartListSort | undefined = res?.data;
   const parse = cartListSort.safeParse(data);

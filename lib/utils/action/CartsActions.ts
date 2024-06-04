@@ -1,15 +1,14 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { revalidatePath } from "next/cache";
 import { FormAddCart, cartsSort } from "@/lib/types/cart";
-import axios, { axiosAuthServer } from "@/lib/axios";
+import { axiosAuthServer } from "@/lib/axios";
+import { auth } from "@/lib/auth";
 
 export const getCarts = async () => {
   try {
-    // const session = await getServerSession(options);
-    const res = await axiosAuthServer.get(`/carts/users/5`);
+    const session = await auth();
+    const res = await axiosAuthServer.get(`/carts/users/${session?.user.id}`);
     const datas: cartsSort = res.data;
     const parse = cartsSort.safeParse(datas);
     if (parse.success) {
@@ -20,7 +19,7 @@ export const getCarts = async () => {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Get Cart request failed: ${error.response.status} - ${error.response.data.message}`
       );
       return error.response.data;
     } else if (error.request) {
@@ -40,7 +39,7 @@ export const incQty = async (cartid: string, cartqty: number) => {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Cart inQty request failed: ${error.response.status} - ${error.response.data.message}`
       );
       return error.response.data;
     } else if (error.request) {
@@ -67,7 +66,7 @@ export const addCart = async ({
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Add Cart request failed: ${error.response.status} - ${error.response.data.message}`
       );
     } else if (error.request) {
       console.log(`API request failed: No response received`);
@@ -87,8 +86,16 @@ export const decQty = async (cartid: string, cartqty: number) => {
         quantity: cartqty - 1,
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log(
+        `API Cart decQty request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/cart");
   }
@@ -96,8 +103,16 @@ export const decQty = async (cartid: string, cartqty: number) => {
 export const deleteCart = async (cartid: string) => {
   try {
     await axiosAuthServer.delete(`/carts/${cartid}`);
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log(
+        `API Del Cart request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
   } finally {
     revalidatePath("/cart");
   }

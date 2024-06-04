@@ -1,6 +1,5 @@
 import axios from "axios";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "./auth";
 
 const BASE_URL = process.env.BACKEND_API;
 
@@ -26,10 +25,11 @@ axiosAuthServer.interceptors.request.use(
     //     axiosAuth.interceptors.request.eject(requestIntercept)
     // }
     // Modify the request config here (add headers, authentication tokens)
-    const session = await getServerSession(options);
-    const accessToken = session?.user.access_token;
+    const session = await auth();
+    const accessToken =
+      session && session.access_token ? session.access_token : null;
 
-    if (!config.headers["Authorization"]) {
+    if (accessToken !== null && !config.headers["Authorization"]) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
@@ -41,18 +41,3 @@ axiosAuthServer.interceptors.request.use(
   }
 );
 // End of Request interceptor
-
-// Response interceptor
-// axiosAuthServer.interceptors.response.use(
-//   (response) => {
-//     // Modify the response data here
-
-//     return response;
-//   },
-//   (error) => {
-//     // Handle response errors here
-
-//     return Promise.reject(error);
-//   }
-// );
-// // End of Response interceptor

@@ -30,6 +30,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { LoginWithGoogle } from "@/lib/utils/action/AuthActions";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { AiFillGoogleCircle } from "react-icons/ai";
 
 export default function Login() {
   const router = useRouter();
@@ -55,12 +56,11 @@ export default function Login() {
           redirect: false,
           callbackUrl: "/",
         }).then((res) => {
-          console.log(res);
           if (res?.ok) {
             toast.success("Berhasil login");
             router.push("/");
           } else {
-            toast.error(res!.error);
+            toast.error(res!.error as string);
           }
         });
       } catch (error) {
@@ -71,9 +71,6 @@ export default function Login() {
     }
   };
 
-  const LoginGoogle = async () => {
-    await LoginWithGoogle().then((res) => router.push(res));
-  };
   // const getCaptcha = () => {
   //   console.log(cap);
   // };
@@ -93,7 +90,7 @@ export default function Login() {
             <span className="font-semibold text-2xl py-1">Shop</span>
           </CardTitle>
         </Link>
-        <div className="text-center text-xl font-bold text-secondary dark:text-slate-600 py-2 border-b">
+        <div className="text-center text-xl font-bold text-secondary text-slate-600 dark:text-white py-2 border-b">
           <p>Login</p>
         </div>
       </CardHeader>
@@ -141,8 +138,9 @@ export default function Login() {
         </Form>
         <div className="flex flex-col py-3">
           <CardDescription>with media:</CardDescription>
-          <Button onClick={() => LoginGoogle()}>Google</Button>
-          {/* <Button onClick={() => getCaptcha()}>captcha</Button> */}
+          <Button onClick={() => signIn("google")} className="gap-1">
+            <AiFillGoogleCircle className="text-2xl" /> Google
+          </Button>
         </div>
       </CardContent>
       <CardFooter>

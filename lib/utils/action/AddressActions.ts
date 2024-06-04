@@ -1,6 +1,5 @@
 "use server";
 
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import {
   CityArray,
   FormAddAddress,
@@ -10,9 +9,9 @@ import {
   ProvinceArray,
   SubdistrictArray,
 } from "@/lib/types/address";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import axios, { axiosAuthServer } from "@/lib/axios";
+import { auth } from "@/lib/auth";
 
 export const getAllProvince = async (): Promise<ProvinceArray | undefined> => {
   try {
@@ -67,7 +66,7 @@ export const getAllSubdistrict = async (
 
 export const getAddresses = async () => {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     const res = await axiosAuthServer.get(
       `/users/address?search_column[0]=user_id&search_text[0]=${session?.user.id}&search_operator[0]==`
     );
@@ -85,7 +84,7 @@ export const getAddresses = async () => {
 
 export const addAddress = async (data: FormAddAddress) => {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     const res = await axiosAuthServer.post(`/users/address`, {
       user_id: session?.user.id,
       person_name: data.person_name,
@@ -144,7 +143,7 @@ export const changeAddress = async ({
 }) => {
   try {
     if (is_main !== 1) {
-      const session = await getServerSession(options);
+      const session = await auth();
       const res = await axiosAuthServer.post(`/users/main-address`, {
         user_id: session?.user.id,
         address_id: id,

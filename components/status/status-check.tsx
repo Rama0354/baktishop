@@ -8,7 +8,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import { MdClose, MdInfo, MdOutlineWarningAmber } from "react-icons/md";
+import { MdClose, MdOutlineWarningAmber } from "react-icons/md";
 
 export default function StatusCheck() {
   const { data: session, status, update } = useSession();
@@ -83,19 +83,16 @@ export default function StatusCheck() {
   useEffect(() => {
     if (status === "authenticated") {
       let dateNow = Date.now();
-      if (dateNow > session.user.expires_at + 4000) {
+      if (dateNow > session.expires_at + 4000) {
         const refresh = async () => {
-          await refreshTokenApiCall(session.user.refresh_token).then((res) => {
+          await refreshTokenApiCall(session.refresh_token).then((res) => {
             console.log(res);
             if (res.status_code === 200) {
               update({
                 ...session,
-                user: {
-                  ...session.user,
-                  access_token: res.data.access_token,
-                  refresh_token: res.data.refresh_token,
-                  expires_at: Math.ceil(dateNow + res.data.expires_in * 1000),
-                },
+                refresh_token: res.data.refresh_token,
+                access_token: res.data.access_token,
+                expires_at: Math.ceil(dateNow + res.data.expires_in * 1000),
               });
               router.refresh();
             } else {

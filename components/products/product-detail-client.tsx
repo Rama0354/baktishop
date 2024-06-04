@@ -11,6 +11,8 @@ import CountDetail from "../CountDetail";
 import { productDetail, productDetailVariant } from "@/lib/types/product";
 import { Button } from "../ui/button";
 import { RootState } from "@/lib/redux/store";
+import Link from "next/link";
+import Image from "next/image";
 
 type giftDetailClientType = {
   detail: productDetail | null;
@@ -227,14 +229,26 @@ export default function ProductDetailClient({
         <CountDetail count={countItem} setCountItem={setCountItem} />
       </div>
       <div className="flex gap-3">
-        {detail ? (
+        {loginStatus === "authenticated" && detail ? (
           <WishBtn productId={detail.id} is_wishlist={detail.is_wishlist} />
-        ) : varDetail ? (
+        ) : loginStatus === "authenticated" && varDetail ? (
           <WishBtn
             productId={varDetail.products.id}
             is_wishlist={varDetail.products.is_wishlist}
           />
-        ) : null}
+        ) : (
+          <div className="relative">
+            <Link type="checkbox" href={"/login"}>
+              <Image
+                src={`/assets/img/offlike.svg`}
+                alt="favorite"
+                width={54}
+                height={32}
+                className={`object-contain hover:cursor-pointer`}
+              />
+            </Link>
+          </div>
+        )}
         {detail ? (
           <>
             <Button disabled={detail.quantity <= 0} onClick={handleAddToCart}>

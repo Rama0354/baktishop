@@ -1,12 +1,12 @@
 "use server";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+
 import { FormEditPassword } from "@/lib/types/user";
 import { axiosAuthServer } from "@/lib/axios";
+import { auth } from "@/lib/auth";
 
 export async function changePassword(data: FormEditPassword) {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     const res = await axiosAuthServer.patch(
       `/users/${session && session.user.id}`,
       {

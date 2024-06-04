@@ -20,7 +20,7 @@ export async function getCostsExpedition(
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Get Expedition request failed: ${error.response.status} - ${error.response.data.message}`
       );
       return error.response.data;
     } else if (error.request) {

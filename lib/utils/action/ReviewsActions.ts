@@ -1,6 +1,6 @@
 "use server";
 
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/lib/auth";
 import axios, { axiosAuthServer } from "@/lib/axios";
 import {
   formReview,
@@ -8,7 +8,6 @@ import {
   reviewsDataTS,
   reviewsList,
 } from "@/lib/types/review";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
 
@@ -62,7 +61,7 @@ export const getAllReviews = async ({
   params,
 }: z.infer<typeof getAllReviewsType>) => {
   try {
-    const user = await getServerSession(options);
+    const user = await auth();
     const user_id = user?.user.id;
     const res = await axiosAuthServer.get(
       `/reviews?page=${

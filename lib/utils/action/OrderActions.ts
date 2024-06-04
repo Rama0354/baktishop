@@ -1,10 +1,9 @@
 "use server";
 
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/lib/auth";
 import { axiosAuthServer } from "@/lib/axios";
 import { OrdersData, OrdersDataFull } from "@/lib/types/order";
 import { resiHistories } from "@/lib/types/resi";
-import { getServerSession } from "next-auth";
 import * as z from "zod";
 
 const getOrdersType = z.object({
@@ -14,7 +13,7 @@ const getOrdersType = z.object({
 type getOrdersType = z.infer<typeof getOrdersType>;
 
 export const getTransByCode = async (code: string) => {
-  const session = await getServerSession(options);
+  const session = await auth();
   try {
     const res = await axiosAuthServer.get(
       `/orders?search_column[0]=code&search_text[0]=${code}&search_operator[0]==&search_column[1]=user_id&search_text[1]=${session?.user.id}&search_operator[1]==`
@@ -33,7 +32,7 @@ export const getTransByCode = async (code: string) => {
 };
 
 export const getOrdersByUser = async ({ page, params }: getOrdersType) => {
-  const session = await getServerSession(options);
+  const session = await auth();
   const id = session?.user.id;
   try {
     const res = await axiosAuthServer.get(
@@ -60,7 +59,7 @@ export const getResiHistory = async ({
   courier: string;
 }) => {
   try {
-    const user = await getServerSession(options);
+    const user = await auth();
     const user_id = user?.user.id;
     console.log(user_id, resi, courier);
     const res = await axiosAuthServer.post("/binderbyte/tracking-receipts", {

@@ -1,16 +1,15 @@
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/lib/auth";
 import AccountClient from "@/components/users/account/AccountClient";
 import axios from "axios";
-import { getServerSession } from "next-auth";
 import React from "react";
 
 async function getUserData() {
-  const session = await getServerSession(options);
+  const session = await auth();
   const res = await axios
     .get(`${process.env.BACKEND_API}/users/${session?.user.id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.user.access_token}`,
+        Authorization: `Bearer ${session?.access_token}`,
       },
     })
     .then((res) => res.data)

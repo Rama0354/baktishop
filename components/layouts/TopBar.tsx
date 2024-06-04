@@ -45,7 +45,7 @@ const TopBar = () => {
               </div>
             </div>
             <div className="hidden md:flex lg:w-full shrink-0 lg:shrink justify-end items-center gap-3">
-              <ModeToggle />
+              <ModeToggle textMode="light" />
               <NotificationButton />
               {/* <MessageButton /> */}
               <CartButton />

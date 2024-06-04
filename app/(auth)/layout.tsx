@@ -1,8 +1,8 @@
 import "@/app/globals.css";
 import "@/app/nprogress.css";
+import { ModeToggle } from "@/components/mode-toggle";
+import { auth } from "@/lib/auth";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -15,14 +15,17 @@ export default async function AuthRootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(options);
+  const session = await auth();
 
   if (session) {
     return redirect("/");
   }
   return (
-    <section className="w-full min-h-screen flex justify-center items-center bg-secondary">
+    <section className="relative w-full min-h-screen flex justify-center items-center bg-secondary">
       {children}
+      <div className="absolute bottom-3 right-3">
+        <ModeToggle />
+      </div>
     </section>
   );
 }

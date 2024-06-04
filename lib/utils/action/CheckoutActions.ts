@@ -16,7 +16,7 @@ export async function createCheckout(data: Checkout) {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Make Checkout request failed: ${error.response.status} - ${error.response.data.message}`
       );
       return error.response.data;
     } else if (error.request) {
@@ -36,7 +36,7 @@ export async function receiveCheckout(id: number) {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API receive request failed: ${error.response.status} - ${error.response.data.message}`
       );
       return error.response.data;
     } else if (error.request) {

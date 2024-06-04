@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import * as React from "react";
 import ProductRating from "../ProductRating";
@@ -6,16 +5,35 @@ import Link from "next/link";
 import WishBtn from "./WishBtn";
 import { ProductCardType } from "@/lib/types/product";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { auth } from "@/lib/auth";
 
-const ProductCard = ({ product }: { product: ProductCardType }) => {
+const ProductCard = async ({ product }: { product: ProductCardType }) => {
   const priceText = product.fpoint.split(" ~ ");
   const images = product.product_images.map((image) => image);
+  const session = await auth();
   return (
     <Card>
       <div className="max-w-[350px] relative">
         <CardContent>
           <button className="absolute top-0 right-3 shrink-0 w-9 sm:w-12 rounded-full bg-secondary">
-            <WishBtn productId={product.id} is_wishlist={product.is_wishlist} />
+            {session !== null ? (
+              <WishBtn
+                productId={product.id}
+                is_wishlist={product.is_wishlist}
+              />
+            ) : (
+              <div className="relative">
+                <Link type="checkbox" href={"/login"}>
+                  <Image
+                    src={`/assets/img/offlike.svg`}
+                    alt="favorite"
+                    width={54}
+                    height={32}
+                    className={`object-contain hover:cursor-pointer`}
+                  />
+                </Link>
+              </div>
+            )}
           </button>
           <Link href={`/${product.slug}`}>
             <div className="flex items-center justify-center rounded-md w-full overflow-hidden py-2 my-3 bg-secondary">

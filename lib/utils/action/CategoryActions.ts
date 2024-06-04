@@ -1,9 +1,5 @@
 "use server";
-import {
-  GiftCardsByCategory,
-  singleCategory,
-  categoriesList,
-} from "@/lib/types/category";
+import { singleCategory, categoriesList } from "@/lib/types/category";
 import axios, { axiosAuthServer } from "@/lib/axios";
 import { productMin } from "@/lib/types/product";
 
@@ -19,7 +15,7 @@ export async function getCategoryList() {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Get Categories request failed: ${error.response.status} - ${error.response.data.message}`
       );
     } else if (error.request) {
       console.log(`API request failed: No response received`);
@@ -40,7 +36,7 @@ export async function getCategoryBySlug(slug: string) {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Get Category request failed: ${error.response.status} - ${error.response.data.message}`
       );
     } else if (error.request) {
       console.log(`API request failed: No response received`);
@@ -62,7 +58,7 @@ export async function getProductByCategory(slug: string) {
   } catch (error: any) {
     if (error.response) {
       console.log(
-        `API request failed: ${error.response.status} - ${error.response.data.message}`
+        `API Get Product By Category request failed: ${error.response.status} - ${error.response.data.message}`
       );
     } else if (error.request) {
       console.log(`API request failed: No response received`);

@@ -1,14 +1,13 @@
 "use server";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import axios from "axios";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { FormChangeAvatar, FormEditProfile } from "@/lib/types/profile";
 import { axiosAuthServer } from "@/lib/axios";
+import { auth } from "@/lib/auth";
 
 export const getProfie = async () => {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     const res = await axiosAuthServer.get(`/users/${session?.user.id}`);
     return res.data.data;
   } catch (error: any) {

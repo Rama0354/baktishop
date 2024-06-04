@@ -1,8 +1,6 @@
 import Link from "next/link";
 import AuthenticationhButton from "./AuthenticationButton";
 import { getProfie } from "@/lib/utils/action/profileAction";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -12,9 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { auth } from "@/lib/auth";
 
 const AccountButton = async () => {
-  const session = await getServerSession(options);
+  const session = await auth();
   const userData = session && (await getProfie());
   return (
     <div className="flex relative">
