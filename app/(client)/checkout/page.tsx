@@ -14,7 +14,9 @@ import { cartsSort } from "@/lib/types/cart";
 export default async function CheckoutPage() {
   const data = await getCarts();
   const getAddress = await getAddresses();
-  const addresses = getAddress.sort((a: any, b: any) => b.is_main - a.is_main);
+  const addresses = !getAddress.error
+    ? getAddress.sort((a: any, b: any) => b.is_main - a.is_main)
+    : [];
   const cartItems: cartsSort | undefined = data;
   const cartData =
     cartItems &&
@@ -60,7 +62,7 @@ export default async function CheckoutPage() {
               cartItems={cartItems && !data.error ? cartItems : null}
             />
           )}
-          {addresses !== undefined ? (
+          {addresses.length !== 0 ? (
             <CheckoutClient
               address={addresses}
               weights={weightTotal}
