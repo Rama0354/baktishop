@@ -1,9 +1,13 @@
 // import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import { auth as middleware } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 
-export default middleware((req) => {
+export default auth((req) => {
   console.log("request :", req.nextUrl.pathname);
+  if (!req.auth && req.nextUrl.pathname !== "/login") {
+    const newUrl = new URL("/login", req.nextUrl.origin);
+    return NextResponse.redirect(newUrl);
+  }
   if (
     req.nextUrl.pathname.startsWith("/dashboard") &&
     req.auth?.user?.roles[0] !== "admin"
@@ -34,6 +38,7 @@ export default middleware((req) => {
 
 export const config = {
   matcher: [
+    // "/((?!api|_next/static|_next/image|favicon.ico).*)",
     "/users",
     "/users/:path*",
     "/cart",
