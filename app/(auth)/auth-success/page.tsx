@@ -30,7 +30,7 @@ export default function AuthSuccess() {
             setIsloading(false);
             router.push("/");
           } else {
-            toast.error(res!.error);
+            toast.error(res!.error as string);
           }
         });
       } catch (error) {
