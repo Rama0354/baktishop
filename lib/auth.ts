@@ -1,5 +1,5 @@
 import axios from "@/lib/axios";
-import { LoginMedia } from "@/lib/utils/action/AuthActions";
+import { LoginMedia, RegisterMedia } from "@/lib/utils/action/AuthActions";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -37,23 +37,26 @@ const config = {
   ],
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, trigger, session, account, user }) {
       // console.log("account auth : ", account);
       // console.log("user auth : ", user);
-      if (trigger === "update") token.name = session.user.name;
+      // if (trigger === "update") token.name = session.user.name;
       let dateNow = Date.now();
       if (
         account?.provider === "google" &&
         user.email &&
         account.access_token
       ) {
-        const res = await LoginMedia(user.email, account.access_token).then(
-          (res) => {
-            console.log(res);
-            console.log("profile res : ", res.data.users.profile);
+        try {
+          const res = await LoginMedia(user.email, account.access_token);
+
+          // console.log("res login :", res);
+
+          if (res.status_code === 200) {
             return {
               ...token,
               user: {
@@ -68,8 +71,45 @@ const config = {
               expires_at: Math.ceil(dateNow + res.data.expires_in * 1000),
             };
           }
-        );
-        return (token = res);
+
+          if (res.error.status_code === 401) {
+            console.log("lakukan register", {
+              name: user.name,
+              email: user.email,
+              access_token: account.access_token,
+            });
+
+            try {
+              const regRes = await RegisterMedia(
+                user.name as string,
+                user.email,
+                account.access_token
+              );
+
+              // console.log("res register:", regRes);
+
+              return {
+                ...token,
+                user: {
+                  id: regRes.data.users.id,
+                  name: regRes.data.users.profile.name,
+                  email: regRes.data.users.email,
+                  picture: regRes.data.users.profile.avatar_url,
+                  roles: regRes.data.users.roles,
+                },
+                access_token: regRes.data.access_token,
+                refresh_token: regRes.data.refresh_token,
+                expires_at: Math.ceil(dateNow + regRes.data.expires_in * 1000),
+              };
+            } catch (regErr) {
+              console.log("error google register:", regErr);
+              throw new Error("Registration failed");
+            }
+          }
+        } catch (loginErr) {
+          console.log("error google login:", loginErr);
+          throw new Error("Login failed");
+        }
       }
 
       if (user && user.users) {

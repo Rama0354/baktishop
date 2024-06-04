@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,7 +29,8 @@ import {
 } from "@/components/ui/card";
 import { PasswordInput } from "@/components/ui/password-input";
 import ReCAPTCHA from "react-google-recaptcha";
-import { LoginGoogle } from "@/lib/utils/action/GoogleActions";
+import { AiFillGoogleCircle } from "react-icons/ai";
+import { signIn } from "next-auth/react";
 
 export default function Register() {
   const router = useRouter();
@@ -209,7 +209,9 @@ export default function Register() {
         </Form>
         <div className="flex flex-col py-3">
           <CardDescription>with media:</CardDescription>
-          <Button onClick={() => LoginGoogle()}>Google</Button>
+          <Button onClick={() => signIn("google")} className="gap-1">
+            <AiFillGoogleCircle className="text-2xl" /> Google
+          </Button>
           {/* <Button onClick={() => getCaptcha()}>captcha</Button> */}
         </div>
       </CardContent>

@@ -146,6 +146,37 @@ export async function LoginMedia(email: string, access_token: string) {
       console.log(
         `API request failed: ${error.response.status} - ${error.response.data.message}`
       );
+      return error.response.data;
+    } else if (error.request) {
+      console.log(`API request failed: No response received`);
+    } else {
+      console.log(`Unexpected error: ${error.message}`);
+    }
+  }
+}
+
+export async function RegisterMedia(
+  name: string,
+  email: string,
+  access_token: string
+) {
+  try {
+    const res = await axios.post(`/oauth/token/register`, {
+      name: name,
+      username: email,
+      access_token: access_token,
+      grant_type: "social",
+      provider: "google",
+      client_id: process.env.NEXT_PUBLIC_BACKEND_CLIENT_ID,
+      client_secret: process.env.NEXT_PUBLIC_BACKEND_CLIENT_SECRET,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      console.log(
+        `API request failed: ${error.response.status} - ${error.response.data.message}`
+      );
+      return error.response.data;
     } else if (error.request) {
       console.log(`API request failed: No response received`);
     } else {
