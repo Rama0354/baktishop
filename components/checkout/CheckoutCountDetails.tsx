@@ -2,7 +2,7 @@
 import { getCart } from "@/lib/redux/slice/cartSlice";
 import { RootState } from "@/lib/redux/store";
 import { createCheckout } from "@/lib/utils/action/CheckoutActions";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -75,26 +75,27 @@ export default function CheckoutCountDetails({
         /* You may add your own implementation here */
         router.push("/payment-success");
         dispatch(getCart() as any);
-        // console.log(result);
+        // console.log("result on success : ", result);
       },
       onPending: function (result: any) {
         /* You may add your own implementation here */
         toast.loading("Pembayaran anda sedang kami proses mohon bersabar!");
         router.push("/users");
-        // console.log(result);
+        // console.log("result on pending : ", result);
       },
       onError: function (result: any) {
         /* You may add your own implementation here */
         toast.error(
           "Pembayaran anda Gagal!,\n pastikan anda melakukan langkah- langkah pembayaran dengan benar!"
         );
-        // console.log(result);
+        // console.log("Result onError ", result);
       },
       onClose: function () {
         /* You may add your own implementation here */
         toast.success(
           "Pesananmu Berhasil dibuat anda dapat membayarnya nanti pada halaman detail Transaksi"
         );
+        // console.log("customer closed the popup without finishing the payment");
         router.push("/users");
       },
     });
@@ -135,6 +136,7 @@ export default function CheckoutCountDetails({
                   if (res.status_code === 200) {
                     toast.success(res.message);
                     handlePay(res.data.snap_token);
+                    // router.push("/users");
                   } else {
                     toast.error(`${res.error.message}`);
                   }

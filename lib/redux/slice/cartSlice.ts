@@ -22,10 +22,10 @@ const initialState: initialStateProps = {
 };
 
 export const getCart = createAsyncThunk("cart/get", async () => {
-  const session = await auth();
-  if (!session) {
-    return;
-  }
+  // const session = await auth();
+  // if (!session) {
+  //   return;
+  // }
   const res = await getCarts();
   const data: cartListSort | undefined = res?.data;
   const parse = cartListSort.safeParse(data);
